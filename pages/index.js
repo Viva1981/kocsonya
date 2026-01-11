@@ -27,9 +27,9 @@ const IconGift = () => (
 const TRANSLATIONS = {
   hu: {
     hero: {
-      date: "2026. február 6-8.",
-      title1: "A miskolci kocsonya",
-      title2: "az asztalhoz ül.",
+      // Magyarban üres, mert a képen rajta van a szöveg
+      title1: "",
+      title2: "",
       subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
       cta_primary: "Játék és Feltöltés",
       cta_secondary: "Étteremlista"
@@ -73,7 +73,7 @@ const TRANSLATIONS = {
   },
   en: {
     hero: {
-      date: "February 6-8, 2026",
+      // Angolban kiírjuk, mert a képet nem biztos, hogy értik
       title1: "Miskolc Aspic comes",
       title2: "to the table.",
       subtitle: "The Aspic Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
@@ -119,7 +119,7 @@ const TRANSLATIONS = {
   }
 };
 
-// --- ADATOK (Kétnyelvűsítve ahol lehet) ---
+// --- ADATOK ---
 const RESTAURANT_DATA = [
   {
     name: "Renomé Cafe & Bistro",
@@ -230,36 +230,39 @@ const QUOTES = [
 
 export default function HomePage() {
   const { lang, setLang } = useLanguage();
-  const t = TRANSLATIONS[lang]; // Kiválasztjuk a nyelvet
+  const t = TRANSLATIONS[lang]; 
 
   return (
     <Layout lang={lang} setLang={setLang}>
-      {/* 1. HERO SZEKCIÓ */}
-      <section className="relative overflow-hidden rounded-3xl bg-[#387035] text-white shadow-xl">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-           <svg width="100%" height="100%">
-             <pattern id="pattern-circles" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-               <circle cx="20" cy="20" r="2" fill="currentColor" />
-             </pattern>
-             <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern-circles)" />
-           </svg>
+      {/* 1. HERO SZEKCIÓ - ÚJ GRAFIKÁVAL */}
+      <section className="relative rounded-3xl bg-white overflow-hidden shadow-sm">
+        {/* Banner Kép */}
+        <div className="w-full">
+           <img 
+             src="/banner.jpg" 
+             alt="Kocsonya Túra 2026 Miskolc" 
+             className="w-full h-auto object-contain"
+           />
         </div>
 
-        <div className="relative z-10 px-6 py-12 sm:px-12 sm:py-20 text-center">
-          <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[#77b92b] text-white text-sm font-semibold tracking-wide uppercase">
-            {t.hero.date}
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight mb-6 leading-tight">
-            {t.hero.title1} <br className="hidden sm:block" /> {t.hero.title2}
-          </h1>
-          <p className="text-lg sm:text-xl text-green-100 max-w-2xl mx-auto mb-8 leading-relaxed">
+        {/* Szöveges tartalom a kép alatt */}
+        <div className="px-6 py-8 sm:px-12 text-center max-w-4xl mx-auto">
+          
+          {/* Ha angol, akkor kiírjuk a címet, mert a képen magyarul van */}
+          {lang === 'en' && (
+             <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">
+               {t.hero.title1} {t.hero.title2}
+             </h1>
+          )}
+
+          <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">
             {t.hero.subtitle}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/feltoltes"
-              className="inline-flex items-center justify-center rounded-full bg-white text-[#387035] px-8 py-4 font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
+              className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-4 font-bold text-lg hover:bg-[#2a5528] transition-colors shadow-lg"
             >
               {t.hero.cta_primary}
             </Link>
@@ -399,7 +402,6 @@ export default function HomePage() {
                 <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4 group-hover:bg-[#77b92b]"></div>
                 
                 <div className="space-y-3 flex-grow">
-                  {/* Itt választjuk ki a menüt a nyelv alapján */}
                   {restaurant.menu[lang].map((item, i) => (
                     <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
                       {item}
