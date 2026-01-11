@@ -13,12 +13,28 @@ export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  function onSubmit(e) {
-    e.preventDefault();
-    // Ebben a körben még nem küldünk feltöltést.
-    // A Drive bekötése után a következő körben kötjük be a valódi beküldést.
+async function onSubmit(e) {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append("name", name);
+  formData.append("address", address);
+  formData.append("phone", phone);
+  formData.append("lang", lang);
+  formData.append("file", file);
+
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: formData,
+  });
+
+  if (res.ok) {
     setSubmitted(true);
+  } else {
+    alert("Hiba történt a feltöltés során. Próbáld újra.");
   }
+}
+
 
   return (
     <Layout t={t} lang={lang} setLang={setLang}>
