@@ -161,36 +161,42 @@ const QUOTES = [
   }
 ];
 
-// --- SEGÉDFÜGGVÉNY: CSV PARSOLÁS ---
-// Ez alakítja a CSV szöveget használható objektumokká
+// --- JAVÍTOTT CSV PARSOLÓ (Kezeli a vesszőket a szövegben) ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
-  const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, '')); // Fejléc tisztítás
-  
-  // Egy ideiglenes tároló, ahol név alapján csoportosítunk
   const groupedRestaurants = {};
 
-  for (let i = 1; i < lines.length; i++) {
-    // Vessző mentén vágás, de figyelünk az idézőjelekre (bár egyszerű CSV-nél ritka)
-    // Egyszerű split elég most, feltételezve, hogy nincs vessző a szövegekben
-    const row = lines[i].split(",").map(cell => cell.trim().replace(/"/g, ''));
-    
-    if (row.length < 2 || !row[0]) continue; // Üres sorok kihagyása
+  // Regex, ami helyesen darabolja a CSV sort, figyelembe véve az idézőjeleket
+  const csvRegex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
 
-    // Fejléc alapján adatkinyerés (sorrendtől függetlenül, ha a fejléc neve stimmel)
-    // De a te esetedben fix sorrendet feltételezünk a biztonság kedvéért:
-    // 0: Név, 1: Cím, 2: Menü HU, 3: Menü EN, 4: Ár, 5: Aktív
+  for (let i = 1; i < lines.length; i++) {
+    // Üres sorok kihagyása
+    if (!lines[i].trim()) continue;
+
+    // Okos darabolás regex-szel
+    const row = lines[i].split(csvRegex).map(cell => {
+      // Idézőjelek és felesleges szóközök takarítása
+      let clean = cell.trim();
+      if (clean.startsWith('"') && clean.endsWith('"')) {
+        clean = clean.substring(1, clean.length - 1);
+      }
+      return clean.replace(/""/g, '"'); // Dupla idézőjel javítása
+    });
+    
+    // Ha a sor túl rövid, vagy nincs név, ugorjuk
+    if (row.length < 2 || !row[0]) continue;
+
+    // Adatkinyerés (Most már a címben lévő vessző nem rontja el!)
     const name = row[0];
     const address = row[1];
     const menuHu = row[2];
     const menuEn = row[3];
     const price = row[4];
-    const active = row[5]?.toLowerCase();
+    const active = row[5]?.toLowerCase().trim(); // Trim a biztonság kedvéért
 
-    // Csak azt jelenítjük meg, ami "aktiv" (x van a végén)
+    // Csak azt jelenítjük meg, ami "aktiv" (x)
     if (active === 'x') {
       if (!groupedRestaurants[name]) {
-        // Ha még nincs ilyen étterem, létrehozzuk
         groupedRestaurants[name] = {
           name: name,
           address: address,
@@ -198,10 +204,9 @@ const parseCSV = (text) => {
         };
       }
       
-      // Hozzáadjuk a menüt a listához
       groupedRestaurants[name].menus.push({
         nameHu: menuHu,
-        nameEn: menuEn || menuHu, // Ha nincs angol, marad a magyar
+        nameEn: menuEn || menuHu,
         price: price
       });
     }
@@ -214,15 +219,14 @@ export default function HomePage() {
   const { lang, setLang } = useLanguage();
   const t = TRANSLATIONS[lang]; 
   
-  // State az étterem adatokhoz
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Adatok betöltése a Google Sheetből
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRSM975tF3jWF7WhR90O9LQrGuDb-FKJwA9GrSe3wbnuEYVRl9Y_DNYH364g-hkHBYazm3SH-OUXe28/pub?gid=666430223&single=true&output=csv");
+        // Hozzáadtam egy időbélyeget (?t=...) a végére, hogy a böngésző ne cache-elje be a régit
+        const response = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vRSM975tF3jWF7WhR90O9LQrGuDb-FKJwA9GrSe3wbnuEYVRl9Y_DNYH364g-hkHBYazm3SH-OUXe28/pub?gid=666430223&single=true&output=csv&t=${Date.now()}`);
         const csvText = await response.text();
         const data = parseCSV(csvText);
         setRestaurants(data);
@@ -411,7 +415,7 @@ export default function HomePage() {
                          </div>
                          {item.price && (
                            <div className="text-[#C84C44] font-bold text-xs mt-1">
-                             {item.price}
+                             {item.price} Ft
                            </div>
                          )}
                       </div>
