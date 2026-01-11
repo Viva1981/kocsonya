@@ -2,9 +2,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
-// A régi adatfájlokat nem használjuk a szövegekhez, mert a promptban újak érkeztek,
-// de a Layout miatt meghagyjuk az importokat, ha szükségesek lennének.
-import { TEXTS } from "../data/texts";
 
 // --- SVG IKONOK ---
 const IconPlate = () => (
@@ -26,122 +23,220 @@ const IconGift = () => (
   </svg>
 );
 
-// --- ADATOK (A prompt alapján) ---
+// --- SZÓTÁR (HU / EN) ---
+const TRANSLATIONS = {
+  hu: {
+    hero: {
+      date: "2026. február 6-8.",
+      title1: "A miskolci kocsonya",
+      title2: "az asztalhoz ül.",
+      subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
+      cta_primary: "Játék és Feltöltés",
+      cta_secondary: "Étteremlista"
+    },
+    story: {
+      title: "Kocsonya Túra 2026",
+      p1: "Idén egy új összefogás csatlakozik a fesztiválhoz. Több miskolci étterem közösen azon dolgozik, hogy a Kocsonyafesztivál élménye a vendéglátóterekben is megjelenjen.",
+      quote: "„A miskolci kocsonya az asztalhoz ül.”",
+      p2: "A cél az, hogy a kocsonya – mint a Kocsonyafesztivál szimbóluma – minél több arcát mutathassa meg: hagyományosan, modernül, újragondolva, de minden esetben miskolci kötődéssel."
+    },
+    quotes: {
+      title: "Megszólalnak a szervezők",
+      more: "...és még sokan mások a városért."
+    },
+    rules: {
+      title: "Így vehetsz részt a játékban",
+      step1_title: "1. Egyél",
+      step1_desc: "Válassz egyet a résztvevő éttermek különleges kocsonyái közül.",
+      step2_title: "2. Fotózz",
+      step2_desc: "Gyűjts pecsétet vagy fotózd le a kocsonya útleveledet.",
+      step3_title: "3. Nyerj",
+      step3_desc: "Töltsd fel a fotót itt az oldalon és nyerj értékes ajándékokat!",
+      cta: "Fotó feltöltése most"
+    },
+    prizes: {
+      title: "Nyeremények",
+      item1: "3× 2 éjszakás miskolci hétvége",
+      item2: "Szállás + Teljes ellátás",
+      item3: "Miskolc Pass turisztikai kártya",
+      quote: "Ez nem csak egy vacsora. Ez egy miskolci élménycsomag."
+    },
+    restaurants: {
+      title: "Résztvevő éttermek és menük",
+      disclaimer: "A lista és az árak tájékoztató jellegűek.",
+      location: "Miskolc"
+    },
+    footer_cta: {
+      title: "A kocsonya az asztalhoz ül. Te is?",
+      btn: "Csatlakozom a játékhoz"
+    }
+  },
+  en: {
+    hero: {
+      date: "February 6-8, 2026",
+      title1: "Miskolc Aspic comes",
+      title2: "to the table.",
+      subtitle: "The Aspic Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
+      cta_primary: "Play & Upload",
+      cta_secondary: "Restaurant List"
+    },
+    story: {
+      title: "Aspic Tour 2026",
+      p1: "This year, a new collaboration joins the festival. Several Miskolc restaurants are working together to bring the Aspic Festival experience into their dining rooms.",
+      quote: "“The Miskolc Aspic takes a seat at the table.”",
+      p2: "The goal is to show as many faces of the aspic – the symbol of the festival – as possible: traditional, modern, reimagined, but always with a Miskolc connection."
+    },
+    quotes: {
+      title: "Words from the Organizers",
+      more: "...and many others for the city."
+    },
+    rules: {
+      title: "How to Participate",
+      step1_title: "1. Eat",
+      step1_desc: "Choose a special aspic from the participating restaurants.",
+      step2_title: "2. Snap",
+      step2_desc: "Collect a stamp or take a photo of your Aspic Passport.",
+      step3_title: "3. Win",
+      step3_desc: "Upload the photo on this page and win valuable prizes!",
+      cta: "Upload Photo Now"
+    },
+    prizes: {
+      title: "Prizes",
+      item1: "3× 2-night weekend in Miskolc",
+      item2: "Accommodation + Full Board",
+      item3: "Miskolc Pass tourist card",
+      quote: "It's not just a dinner. It's a Miskolc experience package."
+    },
+    restaurants: {
+      title: "Participating Restaurants & Menus",
+      disclaimer: "The list and prices are for information purposes.",
+      location: "Miskolc, Hungary"
+    },
+    footer_cta: {
+      title: "The Aspic takes a seat. Will you?",
+      btn: "Join the Game"
+    }
+  }
+};
+
+// --- ADATOK (Kétnyelvűsítve ahol lehet) ---
 const RESTAURANT_DATA = [
   {
     name: "Renomé Cafe & Bistro",
-    menu: [
-      "Klasszikus Renomé kocsonya (sertés körömmel és füstölt marhanyelvvel)",
-      "Csülkös kocsonya",
-      "Tájvani kacsa kocsonya"
-    ]
+    menu: {
+      hu: ["Klasszikus Renomé kocsonya (sertés körömmel, füstölt marhanyelvvel)", "Csülkös kocsonya", "Tájvani kacsa kocsonya"],
+      en: ["Classic Renomé Aspic (pork trotter, smoked beef tongue)", "Knuckle Aspic", "Taiwanese Duck Aspic"]
+    }
   },
   {
     name: "Lignum Bistro & Café",
-    menu: [
-      "Újévi malackocsonya tormás pofahús terrine-nel, rántott békacombbal, málnaecetes lilahagymával"
-    ]
+    menu: {
+      hu: ["Újévi malackocsonya tormás pofahús terrine-nel, rántott békacombbal"],
+      en: ["New Year Piglet Aspic with horseradish cheek terrine, fried frog legs"]
+    }
   },
   {
     name: "Pizza, Kávé, Világbéke",
-    menu: ["Kocsonya by Anyukám Mondta"]
+    menu: {
+      hu: ["Kocsonya by Anyukám Mondta"],
+      en: ["Aspic by 'Anyukám Mondta'"]
+    }
   },
   {
     name: "Rockabilly Chicken",
-    menu: [
-      "Pork & Jelly (Pulled Pork kocsonya)",
-      "Fried Chicken Jelly (Rántott csirkés kocsonya)",
-      "Joe odaverős hagyományőrző kocsonyája"
-    ]
+    menu: {
+      hu: ["Pork & Jelly (Pulled Pork kocsonya)", "Fried Chicken Jelly (Rántott csirkés kocsonya)", "Joe odaverős hagyományőrző kocsonyája"],
+      en: ["Pork & Jelly (Pulled Pork Aspic)", "Fried Chicken Jelly", "Joe's Traditional Kick-ass Aspic"]
+    }
   },
   {
     name: "Öreg Miskolcz Hotel & Étterem",
-    menu: [
-      "Klasszikus kocsonya sertéshúsból",
-      "Füstölt tarjás kocsonya",
-      "Halkocsonya afrikai harcsával"
-    ]
+    menu: {
+      hu: ["Klasszikus kocsonya sertéshúsból", "Füstölt tarjás kocsonya", "Halkocsonya afrikai harcsával"],
+      en: ["Classic Pork Aspic", "Smoked Pork Neck Aspic", "Fish Aspic with African Catfish"]
+    }
   },
   {
     name: "A LEVES és BURGER",
-    menu: [
-      "Vadkeleti mangalica kocsonya (ázsiai alaplé, mangalica fül, pácolt tojás, savanyított keleti zöldségek, friss koriander, lime, chili olaj)",
-      "24 órás sertéskocsonya (házi disznósajt, savanyított téli zöldségek, fürj tojás)"
-    ]
+    menu: {
+      hu: ["Vadkeleti mangalica kocsonya (ázsiai alaplé, chili olaj)", "24 órás sertéskocsonya (házi disznósajt, fürj tojás)"],
+      en: ["Wild East Mangalica Aspic (Asian broth, chili oil)", "24-hour Pork Aspic (homemade head cheese, quail egg)"]
+    }
   },
   {
-    name: "Creppy PalacsintaHáz Étterem & Center",
-    menu: [
-      "Creppy palacsintás kocsonya (könnyed, tiszta kocsonya csirke- és borjúalapléből, palacsintametélttel)"
-    ]
+    name: "Creppy PalacsintaHáz",
+    menu: {
+      hu: ["Creppy palacsintás kocsonya (csirke- és borjúalapléből)"],
+      en: ["Creppy Pancake Aspic (chicken and veal broth base)"]
+    }
   },
   {
-    name: "Babylon Pizzéria, Vendégház",
-    menu: [
-      "Babylon aszpikos aranykocsonya",
-      "Babylon ízei (füstölt csülkös sertéskocsonya tormával, fürj tojással)"
-    ]
+    name: "Babylon Pizzéria",
+    menu: {
+      hu: ["Babylon aszpikos aranykocsonya", "Babylon ízei (füstölt csülkös)"],
+      en: ["Babylon Aspic Golden Jelly", "Flavors of Babylon (smoked knuckle)"]
+    }
   },
   {
     name: "Vendéglő a Pisztrángoshoz",
-    menu: [
-      "Halkocsonya (Irdalt, grillezett ponty, füstölt pisztráng, harcsa kockák)"
-    ]
+    menu: {
+      hu: ["Halkocsonya (grillezett ponty, füstölt pisztráng)"],
+      en: ["Fish Aspic (grilled carp, smoked trout)"]
+    }
   },
   {
     name: "Rossita Étterem",
-    menu: [
-      "Füstölt húsos kocsonya",
-      "Csülkös kocsonya",
-      "Üres kocsonya"
-    ]
+    menu: {
+      hu: ["Füstölt húsos kocsonya", "Csülkös kocsonya", "Üres kocsonya"],
+      en: ["Smoked Meat Aspic", "Knuckle Aspic", "Plain Aspic"]
+    }
   }
 ];
 
 const QUOTES = [
   {
     name: "Varga Henriett",
-    role: "ötletgazda, Végállomás Bistro & Wine",
-    text: "Számunkra a kocsonya nemcsak hagyományos étel, hanem alapanyag, forma és gondolkodás kérdése is. ...miskolci, őszinte és szerethető."
+    role: { hu: "ötletgazda", en: "Founder of the idea" },
+    text: { 
+      hu: "Számunkra a kocsonya nemcsak hagyományos étel, hanem alapanyag, forma és gondolkodás kérdése is.", 
+      en: "For us, aspic is not just a traditional dish, but a question of ingredient, form, and mentality." 
+    }
   },
   {
     name: "Vass László",
-    role: "főszervező, Rockabilly Chicken",
-    text: "Számomra a szervezés nemcsak feladat, hanem öröm is: az egység megteremtése, a közös cél és az egymást erősítő jelenlét az, ami igazán értéket ad ennek a kezdeményezésnek."
+    role: { hu: "főszervező", en: "Main Organizer" },
+    text: { 
+      hu: "Az egység megteremtése, a közös cél és az egymást erősítő jelenlét az, ami igazán értéket ad.", 
+      en: "Creating unity, a common goal, and a mutually reinforcing presence is what truly adds value." 
+    }
   },
   {
     name: "Fekete-Angyal Enikő",
-    role: "ügyvezető, Visit Miskolc",
-    text: "Miskolc akkor működik igazán desztinációként, ha az élmények összeérnek... Ez a kezdeményezés pontosan ebbe az irányba lép."
+    role: { hu: "ügyvezető, Visit Miskolc", en: "CEO, Visit Miskolc" },
+    text: { 
+      hu: "Miskolc akkor működik igazán desztinációként, ha az élmények összeérnek.", 
+      en: "Miskolc truly works as a destination when experiences come together." 
+    }
   },
   {
     name: "Lipták Ádám",
-    role: "főszervező, Kocsonyafesztivál",
-    text: "Ez az együttműködés egyértelműen win-win helyzet: értéket teremt a fesztiválnak, miközben valódi lehetőséget ad a helyi vendéglátóhelyeknek."
-  },
-  {
-    name: "Oszlánczi Réka",
-    role: "tulajdonos, Creppy PalacsintaHáz",
-    text: "Ha a kocsonya nemcsak a faházak pultjain, hanem asztalainkon is helyet kapna. Ez az összefogás hozzátesz a fesztiválhoz..."
-  },
-  {
-    name: "Szendrei Mihály",
-    role: "tulajdonos, Aranykorona Történelmi Étterem",
-    text: "A Kocsonya legendája az avasi pincékhez kötődik, ezért igyekszünk ezt megismertetni a vendégekkel saját stílusú kocsonyáinkkal."
+    role: { hu: "főszervező", en: "Festival Organizer" },
+    text: { 
+      hu: "Ez az együttműködés egyértelműen win-win helyzet: értéket teremt a fesztiválnak.", 
+      en: "This cooperation is clearly a win-win situation: it creates value for the festival." 
+    }
   }
 ];
 
 export default function HomePage() {
   const { lang, setLang } = useLanguage();
-  // Alapértelmezett szövegek (hardcoded, mert a kampány szövegezése fix)
-  const t = TEXTS[lang]; 
+  const t = TRANSLATIONS[lang]; // Kiválasztjuk a nyelvet
 
   return (
-    <Layout t={t} lang={lang} setLang={setLang}>
+    <Layout lang={lang} setLang={setLang}>
       {/* 1. HERO SZEKCIÓ */}
       <section className="relative overflow-hidden rounded-3xl bg-[#387035] text-white shadow-xl">
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-           {/* Opcionális háttér minta helye */}
            <svg width="100%" height="100%">
              <pattern id="pattern-circles" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
                <circle cx="20" cy="20" r="2" fill="currentColor" />
@@ -152,14 +247,13 @@ export default function HomePage() {
 
         <div className="relative z-10 px-6 py-12 sm:px-12 sm:py-20 text-center">
           <span className="inline-block mb-4 px-3 py-1 rounded-full bg-[#77b92b] text-white text-sm font-semibold tracking-wide uppercase">
-            2026. február 6-8.
+            {t.hero.date}
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight mb-6 leading-tight">
-            A miskolci kocsonya <br className="hidden sm:block" /> az asztalhoz ül.
+            {t.hero.title1} <br className="hidden sm:block" /> {t.hero.title2}
           </h1>
           <p className="text-lg sm:text-xl text-green-100 max-w-2xl mx-auto mb-8 leading-relaxed">
-            A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. 
-            Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!
+            {t.hero.subtitle}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -167,13 +261,13 @@ export default function HomePage() {
               href="/feltoltes"
               className="inline-flex items-center justify-center rounded-full bg-white text-[#387035] px-8 py-4 font-bold text-lg hover:bg-gray-100 transition-colors shadow-lg"
             >
-              Játék és Feltöltés
+              {t.hero.cta_primary}
             </Link>
             <a
               href="#etteremlista"
               className="inline-flex items-center justify-center rounded-full border-2 border-[#77b92b] text-[#77b92b] hover:bg-[#77b92b] hover:text-white px-8 py-4 font-bold text-lg transition-colors"
             >
-              Étteremlista
+              {t.hero.cta_secondary}
             </a>
           </div>
         </div>
@@ -182,39 +276,35 @@ export default function HomePage() {
       {/* 2. BEMUTATKOZÁS & STORY */}
       <section className="mt-12 px-4 sm:px-6 max-w-4xl mx-auto text-center">
         <h2 className="text-3xl font-serif font-bold text-[#387035] mb-6">
-          Kocsonya Túra 2026
+          {t.story.title}
         </h2>
         <div className="prose prose-lg mx-auto text-slate-700 leading-relaxed">
-          <p className="mb-4">
-            Idén egy új összefogás csatlakozik a fesztiválhoz. Több miskolci étterem közösen azon dolgozik, hogy a Kocsonyafesztivál élménye a vendéglátóterekben is megjelenjen.
-          </p>
+          <p className="mb-4">{t.story.p1}</p>
           <p className="font-semibold text-[#387035] text-xl italic mb-6">
-            „A miskolci kocsonya az asztalhoz ül.”
+            {t.story.quote}
           </p>
-          <p>
-            A cél az, hogy a kocsonya – mint a Kocsonyafesztivál szimbóluma – minél több arcát mutathassa meg: hagyományosan, modernül, újragondolva, de minden esetben miskolci kötődéssel.
-          </p>
+          <p>{t.story.p2}</p>
         </div>
       </section>
 
-      {/* 3. SZERVEZŐK IDÉZETEI (Slider helyett grid mobilon) */}
+      {/* 3. SZERVEZŐK IDÉZETEI */}
       <section className="mt-16 bg-[#FDFBF7] py-10 rounded-3xl border border-slate-100">
         <div className="px-6 text-center mb-8">
           <h3 className="text-2xl font-serif font-bold text-[#387035]">
-            Megszólalnak a szervezők
+            {t.quotes.title}
           </h3>
         </div>
         <div className="px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           {QUOTES.slice(0, 4).map((quote, idx) => (
             <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <p className="text-slate-600 italic mb-4">"{quote.text}"</p>
+              <p className="text-slate-600 italic mb-4">"{quote.text[lang]}"</p>
               <div className="font-semibold text-[#387035]">{quote.name}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-wide">{quote.role}</div>
+              <div className="text-xs text-slate-500 uppercase tracking-wide">{quote.role[lang]}</div>
             </div>
           ))}
         </div>
         <div className="text-center mt-6">
-           <p className="text-sm text-slate-400">...és még sokan mások a városért.</p>
+           <p className="text-sm text-slate-400">{t.quotes.more}</p>
         </div>
       </section>
 
@@ -225,15 +315,15 @@ export default function HomePage() {
             
             {/* Játékszabály */}
             <div>
-              <h2 className="text-3xl font-serif font-bold mb-6">Így vehetsz részt a játékban</h2>
+              <h2 className="text-3xl font-serif font-bold mb-6">{t.rules.title}</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-white/10 rounded-2xl text-[#77b92b]">
                     <IconPlate />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg">1. Egyél</h4>
-                    <p className="text-green-100 text-sm">Válassz egyet a résztvevő éttermek különleges kocsonyái közül.</p>
+                    <h4 className="font-bold text-lg">{t.rules.step1_title}</h4>
+                    <p className="text-green-100 text-sm">{t.rules.step1_desc}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -241,8 +331,8 @@ export default function HomePage() {
                     <IconCamera />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg">2. Fotózz</h4>
-                    <p className="text-green-100 text-sm">Gyűjts pecsétet vagy fotózd le a kocsonya útleveledet.</p>
+                    <h4 className="font-bold text-lg">{t.rules.step2_title}</h4>
+                    <p className="text-green-100 text-sm">{t.rules.step2_desc}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -250,34 +340,34 @@ export default function HomePage() {
                     <IconGift />
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg">3. Nyerj</h4>
-                    <p className="text-green-100 text-sm">Töltsd fel a fotót itt az oldalon és nyerj értékes ajándékokat!</p>
+                    <h4 className="font-bold text-lg">{t.rules.step3_title}</h4>
+                    <p className="text-green-100 text-sm">{t.rules.step3_desc}</p>
                   </div>
                 </div>
               </div>
               <div className="mt-8">
                  <Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-[#77b92b] hover:bg-[#68a325] text-white font-bold py-3 px-8 rounded-full transition-colors">
-                   Fotó feltöltése most
+                   {t.rules.cta}
                  </Link>
               </div>
             </div>
 
             {/* Nyeremények Doboz */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
-              <h3 className="text-2xl font-serif font-bold text-[#77b92b] mb-4">Nyeremények</h3>
+              <h3 className="text-2xl font-serif font-bold text-[#77b92b] mb-4">{t.prizes.title}</h3>
               <ul className="space-y-3 text-green-50">
                 <li className="flex items-center gap-2">
-                  <span className="text-[#77b92b]">★</span> 3× 2 éjszakás miskolci hétvége
+                  <span className="text-[#77b92b]">★</span> {t.prizes.item1}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#77b92b]">★</span> Szállás + Teljes ellátás
+                  <span className="text-[#77b92b]">★</span> {t.prizes.item2}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-[#77b92b]">★</span> Miskolc Pass turisztikai kártya
+                  <span className="text-[#77b92b]">★</span> {t.prizes.item3}
                 </li>
               </ul>
               <p className="mt-6 text-sm text-green-200 italic">
-                "Ez nem csak egy vacsora. Ez egy miskolci élménycsomag."
+                "{t.prizes.quote}"
               </p>
             </div>
 
@@ -289,10 +379,10 @@ export default function HomePage() {
       <section id="etteremlista" className="mt-20 mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035]">
-            Résztvevő éttermek és menük
+            {t.restaurants.title}
           </h2>
           <p className="mt-3 text-slate-600">
-            A lista és az árak tájékoztató jellegűek.
+            {t.restaurants.disclaimer}
           </p>
         </div>
 
@@ -309,7 +399,8 @@ export default function HomePage() {
                 <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4 group-hover:bg-[#77b92b]"></div>
                 
                 <div className="space-y-3 flex-grow">
-                  {restaurant.menu.map((item, i) => (
+                  {/* Itt választjuk ki a menüt a nyelv alapján */}
+                  {restaurant.menu[lang].map((item, i) => (
                     <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
                       {item}
                     </div>
@@ -319,7 +410,7 @@ export default function HomePage() {
                 <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400">
                    <span className="flex items-center gap-1">
                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                     Miskolc
+                     {t.restaurants.location}
                    </span>
                 </div>
               </div>
@@ -331,13 +422,13 @@ export default function HomePage() {
       {/* CTA Footer-szerűség */}
       <section className="bg-[#FDFBF7] border-t border-slate-200 py-12 text-center rounded-3xl mb-12">
         <h2 className="text-2xl font-serif font-bold text-[#387035] mb-4">
-          A kocsonya az asztalhoz ül. Te is?
+          {t.footer_cta.title}
         </h2>
         <Link
           href="/feltoltes"
           className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-3 font-bold hover:bg-[#2a5528] transition-colors"
         >
-          Csatlakozom a játékhoz
+          {t.footer_cta.btn}
         </Link>
       </section>
     </Layout>
