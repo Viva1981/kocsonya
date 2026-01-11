@@ -16,23 +16,46 @@ export default function UploadPage() {
 async function onSubmit(e) {
   e.preventDefault();
 
-  const formData = new FormData();
-  formData.append("name", name);
-  formData.append("address", address);
-  formData.append("phone", phone);
-  formData.append("lang", lang);
-  formData.append("file", file);
-
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: formData,
-  });
-
-  if (res.ok) {
-    setSubmitted(true);
-  } else {
-    alert("Hiba történt a feltöltés során. Próbáld újra.");
+  if (!file) {
+    alert("Nincs fájl kiválasztva");
+    return;
   }
+
+  const reader = new FileReader();
+
+  reader.onload = async () => {
+    const base64 = reader.result.split(",")[1];
+
+    const payload = {
+      name,
+      address,
+      phone,
+      lang,
+      file: base64,
+      fileName: file.name,
+      mimeType: file.type,
+    };
+
+    const res = await fetch(
+      "IDE_JÖN_A_SCRIPT_URL",
+      {
+        method: "POST",
+        body: new URLSearchParams({
+          data: JSON.stringify(payload),
+        }),
+      }
+    );
+
+    const json = await res.json();
+
+    if (json.ok) {
+      setSubmitted(true);
+    } else {
+      alert("Hiba történt: " + json.error);
+    }
+  };
+
+  reader.readAsDataURL(file);
 }
 
 
