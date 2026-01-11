@@ -6,7 +6,7 @@ export const config = {
   api: {
     bodyParser: false,
   },
-  runtime: "nodejs", // ⚠️ KÖTELEZŐ: ne Edge runtime
+  runtime: "nodejs",
 };
 
 export default async function handler(req, res) {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ===== 1️⃣ ENV VÁLTOZÓK =====
+    // ===== 1️⃣ ENV =====
     const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
     const sheetId = process.env.GOOGLE_SHEET_ID;
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
@@ -25,17 +25,13 @@ export default async function handler(req, res) {
       throw new Error("Missing Google environment variables");
     }
 
-    // ===== 2️⃣ PRIVATE KEY BASE64 → STRING =====
     const privateKey = Buffer.from(
       privateKeyBase64,
       "base64"
     ).toString("utf8");
 
-    // ===== 3️⃣ FORM PARSE =====
-    const form = formidable({
-      multiples: false,
-      keepExtensions: true,
-    });
+    // ===== 2️⃣ FORM =====
+    const form = formidable({ multiples: false, keepExtensions: true });
 
     const { fields, files } = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
@@ -54,13 +50,10 @@ export default async function handler(req, res) {
       : files.file;
 
     if (!name || !address || !phone || !uploadedFile) {
-      return res.status(400).json({
-        ok: false,
-        message: "Missing form data",
-      });
+      return res.status(400).json({ ok: false, message: "Missing form data" });
     }
 
-    // ===== 4️⃣ GOOGLE AUTH =====
+    // ===== 3️⃣ AUTH =====
     const auth = new google.auth.JWT({
       email: clientEmail,
       key: privateKey,
@@ -73,13 +66,14 @@ export default async function handler(req, res) {
     const drive = google.drive({ version: "v3", auth });
     const sheets = google.sheets({ version: "v4", auth });
 
-    // ===== 5️⃣ FÁJLNÉV =====
+    // ===== 4️⃣ FILENAME =====
     const date = new Date().toISOString().slice(0, 10);
     const safeName = String(name).replace(/\s+/g, "_");
     const fileName = `${date}_${safeName}_${phone}.jpg`;
 
-    // ===== 6️⃣ DRIVE FELTÖLTÉS =====
+    // ===== 5️⃣ DRIVE UPLOAD (🔥 A LÉNYEG ITT VAN) =====
     const driveResponse = await drive.files.create({
+      supportsAllDrives: true,          // 🔥 KELL
       requestBody: {
         name: fileName,
         parents: [folderId],
@@ -93,7 +87,7 @@ export default async function handler(req, res) {
     const fileId = driveResponse.data.id;
     const driveLink = `https://drive.google.com/file/d/${fileId}/view`;
 
-    // ===== 7️⃣ GOOGLE SHEET SOR =====
+    // ===== 6️⃣ SHEET =====
     await sheets.spreadsheets.values.append({
       spreadsheetId: sheetId,
       range: "A:G",
@@ -113,7 +107,6 @@ export default async function handler(req, res) {
       },
     });
 
-    // ===== 8️⃣ KÉSZ =====
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("UPLOAD ERROR:", err);
@@ -123,4 +116,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
