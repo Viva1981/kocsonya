@@ -10,11 +10,14 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ ok: false, message: "Method not allowed" });
+    return res.status(405).json({ ok: false });
   }
 
   try {
-    const form = formidable({ multiples: false });
+    const form = formidable({
+      multiples: false,
+      keepExtensions: true,
+    });
 
     const { fields, files } = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => {
@@ -23,10 +26,17 @@ export default async function handler(req, res) {
       });
     });
 
-    const { name, address, phone, lang } = fields;
-    const file = files.file;
+    const name = fields.name;
+    const address = fields.address;
+    const phone = fields.phone;
+    const lang = fields.lang || "hu";
 
-    if (!name || !address || !phone || !file) {
+    // 👉 EZ A KRITIKUS RÉSZ JAVÍTVA
+    const uploadedFile = Array.isArray(files.file)
+      ? files.file[0]
+      : files.file;
+
+    if (!name || !address || !phone || !uploadedFile) {
       return res.status(400).json({ ok: false, message: "Missing data" });
     }
 
@@ -46,22 +56,22 @@ export default async function handler(req, res) {
     const safeName = name.replace(/\s+/g, "_");
     const fileName = `${date}_${safeName}_${phone}.jpg`;
 
-    // 1️⃣ Feltöltés Drive-ba
+    // 1️⃣ Drive feltöltés
     const driveResponse = await drive.files.create({
       requestBody: {
         name: fileName,
         parents: [process.env.GOOGLE_DRIVE_FOLDER_ID],
       },
       media: {
-        mimeType: file.mimetype,
-        body: fs.createReadStream(file.filepath),
+        mimeType: uploadedFile.mimetype,
+        body: fs.createReadStream(uploadedFile.filepath),
       },
     });
 
     const fileId = driveResponse.data.id;
     const driveLink = `https://drive.google.com/file/d/${fileId}/view`;
 
-    // 2️⃣ Sor beszúrás Google Sheetbe
+    // 2️⃣ Sheet sor
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.GOOGLE_SHEET_ID,
       range: "A:G",
@@ -83,8 +93,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ ok: false, message: "Upload failed" });
+    console.error("UPLOAD ERROR:", err);
+    return res.status(500).json({ ok: false });
   }
 }
-
