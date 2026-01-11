@@ -6,7 +6,7 @@ export const config = {
   api: {
     bodyParser: false,
   },
-  runtime: "nodejs", // 🔥 KRITIKUS: ne Edge runtime legyen
+  runtime: "nodejs", // ⚠️ KÖTELEZŐ: ne Edge runtime
 };
 
 export default async function handler(req, res) {
@@ -15,30 +15,21 @@ export default async function handler(req, res) {
   }
 
   try {
-    // ===== 1️⃣ ENV CHECK (ne omoljon némán) =====
+    // ===== 1️⃣ ENV VÁLTOZÓK =====
     const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-    const rawPrivateKey = process.env.GOOGLE_PRIVATE_KEY;
     const sheetId = process.env.GOOGLE_SHEET_ID;
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    const privateKeyBase64 = process.env.GOOGLE_PRIVATE_KEY_BASE64;
 
-    if (!clientEmail || !rawPrivateKey || !sheetId || !folderId) {
+    if (!clientEmail || !sheetId || !folderId || !privateKeyBase64) {
       throw new Error("Missing Google environment variables");
     }
 
-    if (typeof rawPrivateKey !== "string") {
-      throw new Error("GOOGLE_PRIVATE_KEY is not a string");
-    }
-
-    // ===== 2️⃣ PRIVATE KEY NORMALIZÁLÁS (MINDEN ESETRE) =====
-    let privateKey = rawPrivateKey;
-
-    // ha \n-ekkel van
-    if (privateKey.includes("\\n")) {
-      privateKey = privateKey.replace(/\\n/g, "\n");
-    }
-
-    // ha véletlenül idézőjelek közt lenne
-    privateKey = privateKey.trim();
+    // ===== 2️⃣ PRIVATE KEY BASE64 → STRING =====
+    const privateKey = Buffer.from(
+      privateKeyBase64,
+      "base64"
+    ).toString("utf8");
 
     // ===== 3️⃣ FORM PARSE =====
     const form = formidable({
@@ -63,7 +54,10 @@ export default async function handler(req, res) {
       : files.file;
 
     if (!name || !address || !phone || !uploadedFile) {
-      return res.status(400).json({ ok: false, message: "Missing form data" });
+      return res.status(400).json({
+        ok: false,
+        message: "Missing form data",
+      });
     }
 
     // ===== 4️⃣ GOOGLE AUTH =====
@@ -99,7 +93,7 @@ export default async function handler(req, res) {
     const fileId = driveResponse.data.id;
     const driveLink = `https://drive.google.com/file/d/${fileId}/view`;
 
-    // ===== 7️⃣ SHEET SOR BESZÚRÁS =====
+    // ===== 7️⃣ GOOGLE SHEET SOR =====
     await sheets.spreadsheets.values.append({
       spreadsheetId: sheetId,
       range: "A:G",
@@ -119,7 +113,7 @@ export default async function handler(req, res) {
       },
     });
 
-    // ===== 8️⃣ OK =====
+    // ===== 8️⃣ KÉSZ =====
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("UPLOAD ERROR:", err);
