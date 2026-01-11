@@ -36,15 +36,15 @@ async function onSubmit(e) {
       mimeType: file.type,
     };
 
-    const res = await fetch(
-      "IDE_JÖN_A_SCRIPT_URL",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          data: JSON.stringify(payload),
-        }),
-      }
-    );
+const res = await fetch(
+  "https://script.google.com/macros/s/AKfycbxOzy93QkZghcHsl3Vxsk_MOeqzPyvf4YLJsAH7PZL__YUTzmvTgO0KUc01Q9UwKqOJ/exec",
+  {
+    method: "POST",
+    body: new URLSearchParams({
+      data: JSON.stringify(payload),
+    }),
+  }
+);
 
     const json = await res.json();
 
