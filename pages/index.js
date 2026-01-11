@@ -41,7 +41,7 @@ const TRANSLATIONS = {
       cta_secondary: "Étteremlista"
     },
     story: {
-      title: "Kocsonya Túra 2026",
+      title: "Kocsonya Útlevél 2026",
       p1: "Idén egy új összefogás csatlakozik a fesztiválhoz. Több miskolci étterem közösen azon dolgozik, hogy a Kocsonyafesztivál élménye a vendéglátóterekben is megjelenjen.",
       quote: "„A miskolci kocsonya az asztalhoz ül.”",
       p2: "A cél az, hogy a kocsonya – mint a Kocsonyafesztivál szimbóluma – minél több arcát mutathassa meg: hagyományosan, modernül, újragondolva, de minden esetben miskolci kötődéssel."
@@ -80,17 +80,17 @@ const TRANSLATIONS = {
   },
   en: {
     hero: {
-      title1: "Miskolc Aspic comes",
+      title1: "Miskolc Jelly comes",
       title2: "to the table.",
-      subtitle: "The Aspic Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
+      subtitle: "The Jelly Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
       cta_primary: "Play & Upload",
       cta_secondary: "Restaurant List"
     },
     story: {
-      title: "Aspic Tour 2026",
-      p1: "This year, a new collaboration joins the festival. Several Miskolc restaurants are working together to bring the Aspic Festival experience into their dining rooms.",
-      quote: "“The Miskolc Aspic takes a seat at the table.”",
-      p2: "The goal is to show as many faces of the aspic – the symbol of the festival – as possible: traditional, modern, reimagined, but always with a Miskolc connection."
+      title: "Jelly Passport 2026",
+      p1: "This year, a new collaboration joins the festival. Several Miskolc restaurants are working together to bring the Jelly Festival experience into their dining rooms.",
+      quote: "“The Miskolc Jelly takes a seat at the table.”",
+      p2: "The goal is to show as many faces of the jelly – the symbol of the festival – as possible: traditional, modern, reimagined, but always with a Miskolc connection."
     },
     quotes: {
       title: "Words from the Organizers",
@@ -99,9 +99,9 @@ const TRANSLATIONS = {
     rules: {
       title: "How to Participate",
       step1_title: "1. Eat",
-      step1_desc: "Choose a special aspic from the participating restaurants.",
+      step1_desc: "Choose a special jelly from the participating restaurants.",
       step2_title: "2. Snap",
-      step2_desc: "Collect a stamp or take a photo of your Aspic Passport.",
+      step2_desc: "Collect a stamp or take a photo of your Jelly Passport.",
       step3_title: "3. Win",
       step3_desc: "Upload the photo on this page and win valuable prizes!",
       cta: "Upload Photo Now"
@@ -120,7 +120,7 @@ const TRANSLATIONS = {
       location_btn: "Map"
     },
     footer_cta: {
-      title: "The Aspic takes a seat. Will you?",
+      title: "The Jelly takes a seat. Will you?",
       btn: "Join the Game"
     }
   }
@@ -132,7 +132,7 @@ const QUOTES = [
     role: { hu: "ötletgazda", en: "Founder of the idea" },
     text: { 
       hu: "Számunkra a kocsonya nemcsak hagyományos étel, hanem alapanyag, forma és gondolkodás kérdése is.", 
-      en: "For us, aspic is not just a traditional dish, but a question of ingredient, form, and mentality." 
+      en: "For us, jelly is not just a traditional dish, but a question of ingredient, form, and mentality." 
     }
   },
   {
@@ -161,40 +161,32 @@ const QUOTES = [
   }
 ];
 
-// --- JAVÍTOTT CSV PARSOLÓ (Kezeli a vesszőket a szövegben) ---
+// --- JAVÍTOTT CSV PARSOLÓ ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
-
-  // Regex, ami helyesen darabolja a CSV sort, figyelembe véve az idézőjeleket
   const csvRegex = /,(?=(?:(?:[^"]*"){2})*[^"]*$)/;
 
   for (let i = 1; i < lines.length; i++) {
-    // Üres sorok kihagyása
     if (!lines[i].trim()) continue;
 
-    // Okos darabolás regex-szel
     const row = lines[i].split(csvRegex).map(cell => {
-      // Idézőjelek és felesleges szóközök takarítása
       let clean = cell.trim();
       if (clean.startsWith('"') && clean.endsWith('"')) {
         clean = clean.substring(1, clean.length - 1);
       }
-      return clean.replace(/""/g, '"'); // Dupla idézőjel javítása
+      return clean.replace(/""/g, '"');
     });
     
-    // Ha a sor túl rövid, vagy nincs név, ugorjuk
     if (row.length < 2 || !row[0]) continue;
 
-    // Adatkinyerés (Most már a címben lévő vessző nem rontja el!)
     const name = row[0];
     const address = row[1];
     const menuHu = row[2];
     const menuEn = row[3];
     const price = row[4];
-    const active = row[5]?.toLowerCase().trim(); // Trim a biztonság kedvéért
+    const active = row[5]?.toLowerCase().trim();
 
-    // Csak azt jelenítjük meg, ami "aktiv" (x)
     if (active === 'x') {
       if (!groupedRestaurants[name]) {
         groupedRestaurants[name] = {
@@ -225,7 +217,6 @@ export default function HomePage() {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        // Hozzáadtam egy időbélyeget (?t=...) a végére, hogy a böngésző ne cache-elje be a régit
         const response = await fetch(`https://docs.google.com/spreadsheets/d/e/2PACX-1vRSM975tF3jWF7WhR90O9LQrGuDb-FKJwA9GrSe3wbnuEYVRl9Y_DNYH364g-hkHBYazm3SH-OUXe28/pub?gid=666430223&single=true&output=csv&t=${Date.now()}`);
         const csvText = await response.text();
         const data = parseCSV(csvText);
@@ -247,7 +238,7 @@ export default function HomePage() {
         <div className="w-full">
            <img 
              src="/banner.jpg" 
-             alt="Kocsonya Túra 2026 Miskolc" 
+             alt="Kocsonya Útlevél 2026 Miskolc" 
              className="w-full h-auto object-contain"
            />
         </div>

@@ -5,7 +5,7 @@ export default function Layout({ children, lang, setLang }) {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#FDFBF7] text-slate-800">
       <Head>
-        <title>Kocsonya Túra 2026</title>
+        <title>Kocsonya Útlevél 2026</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="A miskolci kocsonya az asztalhoz ül. Fedezd fel az éttermeket és nyerj!" />
         
@@ -21,7 +21,7 @@ export default function Layout({ children, lang, setLang }) {
           {/* Logó / Főcím */}
           <Link href="/" className="flex flex-col">
             <span className="text-xl sm:text-2xl font-serif font-bold text-[#387035] leading-none">
-              Kocsonya Túra
+              Kocsonya Útlevél
             </span>
             <span className="text-xs text-[#77b92b] font-medium tracking-wider uppercase">
               Miskolc 2026

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
-// --- SZÓTÁR (Helyi definíció a biztonság kedvéért) ---
+// --- SZÓTÁR ---
 const FORM_TEXTS = {
   hu: {
     title: "Kocsonya Útlevél Feltöltése",
@@ -20,8 +20,8 @@ const FORM_TEXTS = {
     successText: "Köszönjük a játékot! A fotódat megkaptuk, sok szerencsét a sorsoláshoz."
   },
   en: {
-    title: "Upload Aspic Passport",
-    note: "Fill in your details and attach the photo of your stamps or the aspic!",
+    title: "Upload Jelly Passport",
+    note: "Fill in your details and attach the photo of your stamps or the jelly!",
     fields: {
       name: "Full Name",
       address: "Address",
@@ -38,21 +38,17 @@ const FORM_TEXTS = {
 
 export default function UploadPage() {
   const { lang, setLang } = useLanguage();
-  const t = FORM_TEXTS[lang]; // Itt a helyi szótárat használjuk
+  const t = FORM_TEXTS[lang]; 
 
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [file, setFile] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  
-  // ÚJ: Töltés állapot figyelése
   const [loading, setLoading] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
-
-    // HA már tölt, ne engedjük újra lefutni
     if (loading) return;
 
     if (!file) {
@@ -60,7 +56,6 @@ export default function UploadPage() {
       return;
     }
 
-    // Bekapcsoljuk a "homokórát" -> Gomb letiltva
     setLoading(true);
 
     const reader = new FileReader();
@@ -79,7 +74,6 @@ export default function UploadPage() {
           mimeType: file.type,
         };
 
-        // A te GAS URL-ed
         const res = await fetch(
           "https://script.google.com/macros/s/AKfycbxOzy93QkZghcHsl3Vxsk_MOeqzPyvf4YLJsAH7PZL__YUTzmvTgO0KUc01Q9UwKqOJ/exec",
           {
@@ -91,16 +85,11 @@ export default function UploadPage() {
         );
 
         const json = await res.json();
-
-        // Feltételezzük, hogy a GAS visszadob egy JSON-t. 
-        // Ha "ok" vagy nincs hiba, akkor sikeresnek vesszük.
         setSubmitted(true);
       } catch (error) {
         console.error(error);
         alert(lang === 'hu' ? "Hiba történt a küldéskor. Kérlek próbáld újra!" : "Error sending data. Please try again!");
       } finally {
-        // Akár sikerült, akár nem, a töltést leállítjuk, 
-        // de ha sikerült, úgyis eltűnik a gomb a "submitted" állapot miatt.
         setLoading(false);
       }
     };
@@ -112,7 +101,6 @@ export default function UploadPage() {
     <Layout lang={lang} setLang={setLang}>
       <section className="max-w-2xl mx-auto rounded-3xl border border-slate-200 bg-white shadow-xl overflow-hidden">
         
-        {/* Fejléc sáv */}
         <div className="bg-[#387035] px-6 py-8 sm:px-10 text-center">
            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight">
             {t.title}
@@ -136,7 +124,6 @@ export default function UploadPage() {
           ) : (
             <form onSubmit={onSubmit} className="space-y-6">
               
-              {/* Név Mező */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   {t.fields.name}
@@ -152,7 +139,6 @@ export default function UploadPage() {
                 />
               </div>
 
-              {/* Cím Mező */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   {t.fields.address}
@@ -168,7 +154,6 @@ export default function UploadPage() {
                 />
               </div>
 
-              {/* Telefon Mező */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   {t.fields.phone}
@@ -184,7 +169,6 @@ export default function UploadPage() {
                 />
               </div>
 
-              {/* Fájl feltöltés (Dizájnosabb) */}
               <div>
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   {t.fields.file}
@@ -221,10 +205,9 @@ export default function UploadPage() {
                 </div>
               </div>
 
-              {/* Submit Gomb - Loading állapottal */}
               <button
                 type="submit"
-                disabled={loading} // Ez akadályozza meg a duplázást
+                disabled={loading} 
                 className={`w-full flex items-center justify-center py-4 px-6 rounded-full font-bold text-lg transition-all shadow-md 
                   ${loading 
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed" 
