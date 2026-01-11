@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
@@ -23,11 +23,17 @@ const IconGift = () => (
   </svg>
 );
 
+const IconMap = () => (
+   <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+   </svg>
+);
+
 // --- SZÓTÁR (HU / EN) ---
 const TRANSLATIONS = {
   hu: {
     hero: {
-      // Magyarban üres, mert a képen rajta van a szöveg
       title1: "",
       title2: "",
       subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
@@ -64,7 +70,8 @@ const TRANSLATIONS = {
     restaurants: {
       title: "Résztvevő éttermek és menük",
       disclaimer: "A lista és az árak tájékoztató jellegűek.",
-      location: "Miskolc"
+      loading: "Éttermek betöltése...",
+      location_btn: "Térkép"
     },
     footer_cta: {
       title: "A kocsonya az asztalhoz ül. Te is?",
@@ -73,7 +80,6 @@ const TRANSLATIONS = {
   },
   en: {
     hero: {
-      // Angolban kiírjuk, mert a képet nem biztos, hogy értik
       title1: "Miskolc Aspic comes",
       title2: "to the table.",
       subtitle: "The Aspic Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
@@ -110,7 +116,8 @@ const TRANSLATIONS = {
     restaurants: {
       title: "Participating Restaurants & Menus",
       disclaimer: "The list and prices are for information purposes.",
-      location: "Miskolc, Hungary"
+      loading: "Loading restaurants...",
+      location_btn: "Map"
     },
     footer_cta: {
       title: "The Aspic takes a seat. Will you?",
@@ -118,80 +125,6 @@ const TRANSLATIONS = {
     }
   }
 };
-
-// --- ADATOK ---
-const RESTAURANT_DATA = [
-  {
-    name: "Renomé Cafe & Bistro",
-    menu: {
-      hu: ["Klasszikus Renomé kocsonya (sertés körömmel, füstölt marhanyelvvel)", "Csülkös kocsonya", "Tájvani kacsa kocsonya"],
-      en: ["Classic Renomé Aspic (pork trotter, smoked beef tongue)", "Knuckle Aspic", "Taiwanese Duck Aspic"]
-    }
-  },
-  {
-    name: "Lignum Bistro & Café",
-    menu: {
-      hu: ["Újévi malackocsonya tormás pofahús terrine-nel, rántott békacombbal"],
-      en: ["New Year Piglet Aspic with horseradish cheek terrine, fried frog legs"]
-    }
-  },
-  {
-    name: "Pizza, Kávé, Világbéke",
-    menu: {
-      hu: ["Kocsonya by Anyukám Mondta"],
-      en: ["Aspic by 'Anyukám Mondta'"]
-    }
-  },
-  {
-    name: "Rockabilly Chicken",
-    menu: {
-      hu: ["Pork & Jelly (Pulled Pork kocsonya)", "Fried Chicken Jelly (Rántott csirkés kocsonya)", "Joe odaverős hagyományőrző kocsonyája"],
-      en: ["Pork & Jelly (Pulled Pork Aspic)", "Fried Chicken Jelly", "Joe's Traditional Kick-ass Aspic"]
-    }
-  },
-  {
-    name: "Öreg Miskolcz Hotel & Étterem",
-    menu: {
-      hu: ["Klasszikus kocsonya sertéshúsból", "Füstölt tarjás kocsonya", "Halkocsonya afrikai harcsával"],
-      en: ["Classic Pork Aspic", "Smoked Pork Neck Aspic", "Fish Aspic with African Catfish"]
-    }
-  },
-  {
-    name: "A LEVES és BURGER",
-    menu: {
-      hu: ["Vadkeleti mangalica kocsonya (ázsiai alaplé, chili olaj)", "24 órás sertéskocsonya (házi disznósajt, fürj tojás)"],
-      en: ["Wild East Mangalica Aspic (Asian broth, chili oil)", "24-hour Pork Aspic (homemade head cheese, quail egg)"]
-    }
-  },
-  {
-    name: "Creppy PalacsintaHáz",
-    menu: {
-      hu: ["Creppy palacsintás kocsonya (csirke- és borjúalapléből)"],
-      en: ["Creppy Pancake Aspic (chicken and veal broth base)"]
-    }
-  },
-  {
-    name: "Babylon Pizzéria",
-    menu: {
-      hu: ["Babylon aszpikos aranykocsonya", "Babylon ízei (füstölt csülkös)"],
-      en: ["Babylon Aspic Golden Jelly", "Flavors of Babylon (smoked knuckle)"]
-    }
-  },
-  {
-    name: "Vendéglő a Pisztrángoshoz",
-    menu: {
-      hu: ["Halkocsonya (grillezett ponty, füstölt pisztráng)"],
-      en: ["Fish Aspic (grilled carp, smoked trout)"]
-    }
-  },
-  {
-    name: "Rossita Étterem",
-    menu: {
-      hu: ["Füstölt húsos kocsonya", "Csülkös kocsonya", "Üres kocsonya"],
-      en: ["Smoked Meat Aspic", "Knuckle Aspic", "Plain Aspic"]
-    }
-  }
-];
 
 const QUOTES = [
   {
@@ -228,15 +161,85 @@ const QUOTES = [
   }
 ];
 
+// --- SEGÉDFÜGGVÉNY: CSV PARSOLÁS ---
+// Ez alakítja a CSV szöveget használható objektumokká
+const parseCSV = (text) => {
+  const lines = text.split("\n");
+  const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, '')); // Fejléc tisztítás
+  
+  // Egy ideiglenes tároló, ahol név alapján csoportosítunk
+  const groupedRestaurants = {};
+
+  for (let i = 1; i < lines.length; i++) {
+    // Vessző mentén vágás, de figyelünk az idézőjelekre (bár egyszerű CSV-nél ritka)
+    // Egyszerű split elég most, feltételezve, hogy nincs vessző a szövegekben
+    const row = lines[i].split(",").map(cell => cell.trim().replace(/"/g, ''));
+    
+    if (row.length < 2 || !row[0]) continue; // Üres sorok kihagyása
+
+    // Fejléc alapján adatkinyerés (sorrendtől függetlenül, ha a fejléc neve stimmel)
+    // De a te esetedben fix sorrendet feltételezünk a biztonság kedvéért:
+    // 0: Név, 1: Cím, 2: Menü HU, 3: Menü EN, 4: Ár, 5: Aktív
+    const name = row[0];
+    const address = row[1];
+    const menuHu = row[2];
+    const menuEn = row[3];
+    const price = row[4];
+    const active = row[5]?.toLowerCase();
+
+    // Csak azt jelenítjük meg, ami "aktiv" (x van a végén)
+    if (active === 'x') {
+      if (!groupedRestaurants[name]) {
+        // Ha még nincs ilyen étterem, létrehozzuk
+        groupedRestaurants[name] = {
+          name: name,
+          address: address,
+          menus: []
+        };
+      }
+      
+      // Hozzáadjuk a menüt a listához
+      groupedRestaurants[name].menus.push({
+        nameHu: menuHu,
+        nameEn: menuEn || menuHu, // Ha nincs angol, marad a magyar
+        price: price
+      });
+    }
+  }
+
+  return Object.values(groupedRestaurants);
+};
+
 export default function HomePage() {
   const { lang, setLang } = useLanguage();
   const t = TRANSLATIONS[lang]; 
+  
+  // State az étterem adatokhoz
+  const [restaurants, setRestaurants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Adatok betöltése a Google Sheetből
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vRSM975tF3jWF7WhR90O9LQrGuDb-FKJwA9GrSe3wbnuEYVRl9Y_DNYH364g-hkHBYazm3SH-OUXe28/pub?gid=666430223&single=true&output=csv");
+        const csvText = await response.text();
+        const data = parseCSV(csvText);
+        setRestaurants(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Hiba az adatok betöltésekor:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   return (
     <Layout lang={lang} setLang={setLang}>
-      {/* 1. HERO SZEKCIÓ - ÚJ GRAFIKÁVAL */}
+      {/* 1. HERO SZEKCIÓ */}
       <section className="relative rounded-3xl bg-white overflow-hidden shadow-sm">
-        {/* Banner Kép */}
         <div className="w-full">
            <img 
              src="/banner.jpg" 
@@ -245,20 +248,15 @@ export default function HomePage() {
            />
         </div>
 
-        {/* Szöveges tartalom a kép alatt */}
         <div className="px-6 py-8 sm:px-12 text-center max-w-4xl mx-auto">
-          
-          {/* Ha angol, akkor kiírjuk a címet, mert a képen magyarul van */}
           {lang === 'en' && (
              <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">
                {t.hero.title1} {t.hero.title2}
              </h1>
           )}
-
           <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">
             {t.hero.subtitle}
           </p>
-          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/feltoltes"
@@ -276,7 +274,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. BEMUTATKOZÁS & STORY */}
+      {/* 2. STORY */}
       <section className="mt-12 px-4 sm:px-6 max-w-4xl mx-auto text-center">
         <h2 className="text-3xl font-serif font-bold text-[#387035] mb-6">
           {t.story.title}
@@ -290,7 +288,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. SZERVEZŐK IDÉZETEI */}
+      {/* 3. QUOTES */}
       <section className="mt-16 bg-[#FDFBF7] py-10 rounded-3xl border border-slate-100">
         <div className="px-6 text-center mb-8">
           <h3 className="text-2xl font-serif font-bold text-[#387035]">
@@ -311,12 +309,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. JÁTÉKSZABÁLY & NYEREMÉNYEK */}
+      {/* 4. RULES */}
       <section className="mt-16">
         <div className="bg-[#387035] rounded-3xl p-8 sm:p-12 text-white">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            {/* Játékszabály */}
             <div>
               <h2 className="text-3xl font-serif font-bold mb-6">{t.rules.title}</h2>
               <div className="space-y-6">
@@ -354,8 +350,6 @@ export default function HomePage() {
                  </Link>
               </div>
             </div>
-
-            {/* Nyeremények Doboz */}
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
               <h3 className="text-2xl font-serif font-bold text-[#77b92b] mb-4">{t.prizes.title}</h3>
               <ul className="space-y-3 text-green-50">
@@ -369,16 +363,13 @@ export default function HomePage() {
                   <span className="text-[#77b92b]">★</span> {t.prizes.item3}
                 </li>
               </ul>
-              <p className="mt-6 text-sm text-green-200 italic">
-                "{t.prizes.quote}"
-              </p>
+              <p className="mt-6 text-sm text-green-200 italic">"{t.prizes.quote}"</p>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* 5. ÉTTEREMLISTA */}
+      {/* 5. ÉTTEREMLISTA (DINAMIKUS) */}
       <section id="etteremlista" className="mt-20 mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035]">
@@ -389,39 +380,65 @@ export default function HomePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {RESTAURANT_DATA.map((restaurant, index) => (
-            <div 
-              key={index} 
-              className="group bg-white rounded-2xl border-2 border-slate-100 hover:border-[#77b92b] transition-all duration-300 shadow-sm hover:shadow-md flex flex-col"
-            >
-              <div className="p-6 flex flex-col h-full">
-                <h3 className="text-xl font-bold text-[#387035] mb-2 group-hover:text-[#77b92b] transition-colors">
-                  {restaurant.name}
-                </h3>
-                <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4 group-hover:bg-[#77b92b]"></div>
-                
-                <div className="space-y-3 flex-grow">
-                  {restaurant.menu[lang].map((item, i) => (
-                    <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
-                      {item}
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400">
-                   <span className="flex items-center gap-1">
-                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                     {t.restaurants.location}
-                   </span>
+        {loading ? (
+          <div className="text-center py-20 text-slate-400">
+            <svg className="animate-spin h-8 w-8 text-[#387035] mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p>{t.restaurants.loading}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {restaurants.map((restaurant, index) => (
+              <div 
+                key={index} 
+                className="group bg-white rounded-2xl border-2 border-slate-100 hover:border-[#77b92b] transition-all duration-300 shadow-sm hover:shadow-md flex flex-col"
+              >
+                <div className="p-6 flex flex-col h-full">
+                  {/* Étterem Név */}
+                  <h3 className="text-xl font-bold text-[#387035] mb-2 group-hover:text-[#77b92b] transition-colors">
+                    {restaurant.name}
+                  </h3>
+                  <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4 group-hover:bg-[#77b92b]"></div>
+                  
+                  {/* Menük felsorolása */}
+                  <div className="space-y-4 flex-grow">
+                    {restaurant.menus.map((item, i) => (
+                      <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
+                         <div className="font-medium">
+                           {lang === 'hu' ? item.nameHu : item.nameEn}
+                         </div>
+                         {item.price && (
+                           <div className="text-[#C84C44] font-bold text-xs mt-1">
+                             {item.price}
+                           </div>
+                         )}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Lábléc: Térkép Link */}
+                  <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400">
+                     <a 
+                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       className="flex items-center gap-1 hover:text-[#387035] transition-colors"
+                       title="Megnyitás Google Térképen"
+                     >
+                       <IconMap />
+                       {restaurant.address}
+                     </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* CTA Footer-szerűség */}
+      {/* CTA Footer */}
       <section className="bg-[#FDFBF7] border-t border-slate-200 py-12 text-center rounded-3xl mb-12">
         <h2 className="text-2xl font-serif font-bold text-[#387035] mb-4">
           {t.footer_cta.title}
