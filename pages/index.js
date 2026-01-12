@@ -229,21 +229,26 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT KÁRTYA KOMPONENS (Egységes minimum méret) ---
+// --- JAVÍTOTT KÁRTYA KOMPONENS (Dizájn háttér + Kép illeszkedés javítása) ---
 const RestaurantCard = ({ restaurant, lang }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    // A változás itt van: min-h-[450px]
-    // Ez garantálja, hogy mobilon is legalább 450px magas legyen minden kártya,
-    // így a hátlapon lévő képek nem lesznek vékony csíkok.
     <div className="relative group perspective-1000 w-full h-full min-h-[450px]">
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP (SZÖVEG) --- */}
-        <div className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col">
-          <div className="p-6 flex flex-col h-full relative">
+        {/* --- ELŐLAP (SZÖVEG + DIZÁJN) --- */}
+        <div className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col overflow-hidden">
+          
+          {/* DIZÁJN HÁTTÉR (VÍZJEL) - Halvány tányér ikon a sarokban */}
+          <div className="absolute -bottom-8 -right-8 text-[#77b92b] opacity-5 transform rotate-12 pointer-events-none select-none z-0">
+             <svg width="180" height="180" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+             </svg>
+          </div>
+
+          <div className="p-6 flex flex-col h-full relative z-10">
             
             {/* Flip gomb (Fényképezőgép) */}
             {restaurant.imageUrl && (
@@ -288,7 +293,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
               ))}
             </div>
             
-            {/* Lábléc: Térkép Link - Mindig alulra kerül */}
+            {/* Lábléc: Térkép Link */}
             <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
@@ -310,10 +315,11 @@ const RestaurantCard = ({ restaurant, lang }) => {
            onClick={() => setIsFlipped(false)}
         >
           {restaurant.imageUrl ? (
+            // A "rounded-2xl" itt is hozzáadva, hogy a kép biztosan ne lógjon ki a keretből
             <img 
               src={restaurant.imageUrl} 
               alt={restaurant.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-2xl"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-400">
