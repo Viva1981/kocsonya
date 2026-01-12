@@ -10,9 +10,9 @@ export default function Layout({ children, lang, setLang }) {
         <meta name="description" content="A miskolci kocsonya az asztalhoz ül. Fedezd fel az éttermeket és nyerj!" />
         
         {/* --- FAVICON BEÁLLÍTÁSOK (JAVÍTVA) --- */}
-        {/* Itt is kell a /kocsonya előtag, mert ezek statikus fájlok */}
-        <link rel="icon" type="image/png" href="/kocsonya/favicon.png" />
-        <link rel="apple-touch-icon" href="/kocsonya/favicon.png" />
+        {/* Most már a helyes .ico fájlra mutat, a /kocsonya előtaggal */}
+        <link rel="icon" href="/kocsonya/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/kocsonya/favicon.ico" />
       </Head>
 
       {/* --- FEJLÉC (FIXED) --- */}
