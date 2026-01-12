@@ -161,7 +161,7 @@ const QUOTES = [
   }
 ];
 
-// --- JAVÍTOTT CSV PARSOLÓ (Leírásokkal) ---
+// --- JAVÍTOTT CSV PARSOLÓ ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -180,14 +180,12 @@ const parseCSV = (text) => {
     
     if (row.length < 2 || !row[0]) continue;
 
-    // FONTOS: Itt olvassuk be az új sorrendet!
-    // 0: Név, 1: Cím, 2: Menü HU, 3: Leírás HU, 4: Menü EN, 5: Leírás EN, 6: Ár, 7: Aktív
     const name = row[0];
     const address = row[1];
     const menuHu = row[2];
-    const descHu = row[3]; // ÚJ
+    const descHu = row[3];
     const menuEn = row[4];
-    const descEn = row[5]; // ÚJ
+    const descEn = row[5];
     const price = row[6];
     const active = row[7]?.toLowerCase().trim();
 
@@ -202,9 +200,9 @@ const parseCSV = (text) => {
       
       groupedRestaurants[name].menus.push({
         nameHu: menuHu,
-        descHu: descHu, // Tároljuk a leírást is
+        descHu: descHu,
         nameEn: menuEn || menuHu,
-        descEn: descEn, // Tároljuk az angol leírást is
+        descEn: descEn,
         price: price
       });
     }
@@ -242,8 +240,9 @@ export default function HomePage() {
       {/* 1. HERO SZEKCIÓ */}
       <section className="relative rounded-3xl bg-white overflow-hidden shadow-sm">
         <div className="w-full">
+           {/* ITT A VÁLTOZÁS: /kocsonya előtag a banner képnek */}
            <img 
-             src="/banner.jpg" 
+             src="/kocsonya/banner.jpg" 
              alt="Kocsonya Útlevél 2026 Miskolc" 
              className="w-full h-auto object-contain"
            />

@@ -9,9 +9,10 @@ export default function Layout({ children, lang, setLang }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="description" content="A miskolci kocsonya az asztalhoz ül. Fedezd fel az éttermeket és nyerj!" />
         
-        {/* --- FAVICON BEÁLLÍTÁSOK --- */}
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
+        {/* --- FAVICON BEÁLLÍTÁSOK (JAVÍTVA) --- */}
+        {/* Itt is kell a /kocsonya előtag, mert ezek statikus fájlok */}
+        <link rel="icon" type="image/png" href="/kocsonya/favicon.png" />
+        <link rel="apple-touch-icon" href="/kocsonya/favicon.png" />
       </Head>
 
       {/* --- FEJLÉC (FIXED) --- */}
@@ -31,7 +32,7 @@ export default function Layout({ children, lang, setLang }) {
           {/* Navigáció és Nyelvválasztó */}
           <div className="flex items-center gap-4 sm:gap-6">
             <nav className="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-600">
-              <a href="/#etteremlista" className="hover:text-[#387035] transition-colors">
+              <a href="/kocsonya#etteremlista" className="hover:text-[#387035] transition-colors">
                 {lang === 'hu' ? 'Éttermek' : 'Restaurants'}
               </a>
               <Link href="/feltoltes" className="hover:text-[#387035] transition-colors">
