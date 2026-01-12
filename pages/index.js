@@ -69,7 +69,7 @@ const TRANSLATIONS = {
     },
     restaurants: {
       title: "Résztvevő éttermek és menük",
-      disclaimer: "A lista és az árak tájékoztató jellegűek.",
+      disclaimer: "A lista és az árak tájékoztató jellegűek. A fényképezőgép ikonra kattintva megnézheted az ételt.",
       loading: "Éttermek betöltése...",
       location_btn: "Térkép"
     },
@@ -115,7 +115,7 @@ const TRANSLATIONS = {
     },
     restaurants: {
       title: "Participating Restaurants & Menus",
-      disclaimer: "The list and prices are for information purposes.",
+      disclaimer: "The list and prices are for information purposes. Click the camera icon to see the dish.",
       loading: "Loading restaurants...",
       location_btn: "Map"
     },
@@ -164,20 +164,17 @@ const QUOTES = [
 // --- SEGÉDFÜGGVÉNY: Google Drive Linkek átalakítása ---
 const getOptimizedImageUrl = (url) => {
   if (!url) return null;
-  
-  // Ha Google Drive link
   if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
-    // Megpróbáljuk kinyerni az ID-t
     const idMatch = url.match(/\/d\/(.*?)\/|id=(.*?)(&|$)/);
     const id = idMatch ? (idMatch[1] || idMatch[2]) : null;
     if (id) {
-      return `https://lh3.googleusercontent.com/d/${id}=w800`; // Google "Magic" link, jobb mint az export=download
+      return `https://lh3.googleusercontent.com/d/${id}=w800`;
     }
   }
   return url;
 };
 
-// --- JAVÍTOTT CSV PARSOLÓ (KÉPPEL) ---
+// --- JAVÍTOTT CSV PARSOLÓ ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -204,7 +201,6 @@ const parseCSV = (text) => {
     const descEn = row[5];
     const price = row[6];
     const active = row[7]?.toLowerCase().trim();
-    // Új mező: Kép URL (8. index, mivel 0-tól indulunk)
     const rawImageUrl = row[8] || ""; 
     const imageUrl = getOptimizedImageUrl(rawImageUrl);
 
@@ -213,11 +209,10 @@ const parseCSV = (text) => {
         groupedRestaurants[name] = {
           name: name,
           address: address,
-          imageUrl: imageUrl, // Kép hozzárendelése
+          imageUrl: imageUrl,
           menus: []
         };
       } else if (!groupedRestaurants[name].imageUrl && imageUrl) {
-        // Ha egy másik sorban van a kép, azt is elfogadjuk
         groupedRestaurants[name].imageUrl = imageUrl;
       }
       
@@ -232,6 +227,117 @@ const parseCSV = (text) => {
   }
 
   return Object.values(groupedRestaurants);
+};
+
+// --- ÚJ KOMPONENS: FORGATHATÓ KÁRTYA ---
+const RestaurantCard = ({ restaurant, lang }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  return (
+    <div className="relative group perspective-1000 h-full min-h-[300px]">
+      <div 
+        className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+      >
+        {/* --- ELŐLAP (SZÖVEG) --- */}
+        <div className="absolute inset-0 [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col overflow-hidden h-full">
+          <div className="p-6 flex flex-col h-full relative">
+            
+            {/* Flip gomb (Fényképezőgép), csak ha van kép */}
+            {restaurant.imageUrl && (
+              <button 
+                onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
+                className="absolute top-4 right-4 z-20 p-2 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-colors"
+                title="Kép megtekintése"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </button>
+            )}
+
+            {/* Étterem Név */}
+            <h3 className="text-xl font-bold text-[#387035] mb-2 pr-10">
+              {restaurant.name}
+            </h3>
+            <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4"></div>
+            
+            {/* Menük felsorolása */}
+            <div className="space-y-4 flex-grow overflow-y-auto mb-4">
+              {restaurant.menus.map((item, i) => (
+                <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
+                   <div className="font-bold text-slate-800">
+                     {lang === 'hu' ? item.nameHu : item.nameEn}
+                   </div>
+                   
+                   {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
+                     <div className="text-sm text-slate-500 mt-1 leading-relaxed">
+                        {lang === 'hu' ? item.descHu : item.descEn}
+                     </div>
+                   )}
+
+                   {item.price && (
+                     <div className="text-[#C84C44] font-bold text-xs mt-2">
+                       {item.price} Ft
+                     </div>
+                   )}
+                </div>
+              ))}
+            </div>
+            
+            {/* Lábléc: Térkép Link (Ez csak az előlapon működik) */}
+            <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
+               <a 
+                 href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="flex items-center gap-1 hover:text-[#387035] transition-colors z-10"
+                 title="Megnyitás Google Térképen"
+               >
+                 <IconMap />
+                 {restaurant.address}
+               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* --- HÁTLAP (KÉP) --- */}
+        <div 
+           className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-2xl overflow-hidden shadow-lg border-2 border-[#77b92b] cursor-pointer"
+           onClick={() => setIsFlipped(false)}
+        >
+          {restaurant.imageUrl ? (
+            <div className="relative w-full h-full">
+               <img 
+                 src={restaurant.imageUrl} 
+                 alt={restaurant.name}
+                 className="w-full h-full object-cover"
+               />
+               {/* Sötétítés a gomb alatt, hogy látható legyen */}
+               <div className="absolute top-0 right-0 p-4 bg-gradient-to-bl from-black/50 to-transparent">
+                  <button 
+                    className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white hover:text-red-500 transition-all"
+                  >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+               </div>
+               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                 <p className="text-white text-center font-bold text-sm">
+                   {lang === 'hu' ? 'Kattints a visszafordításhoz' : 'Click to flip back'}
+                 </p>
+               </div>
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-slate-400">
+              No Image
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default function HomePage() {
@@ -389,7 +495,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. ÉTTEREMLISTA (DINAMIKUS) */}
+      {/* 5. ÉTTEREMLISTA (DINAMIKUS - FLIP KÁRTYÁKKAL) */}
       <section id="etteremlista" className="mt-20 mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035]">
@@ -411,68 +517,9 @@ export default function HomePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {restaurants.map((restaurant, index) => (
-              <div 
-                key={index} 
-                className="group bg-white rounded-2xl border-2 border-slate-100 hover:border-[#77b92b] transition-all duration-300 shadow-sm hover:shadow-md flex flex-col overflow-hidden"
-              >
-                {/* --- KÉP MEGJELENÍTÉS (ÚJ) --- */}
-                {restaurant.imageUrl && (
-                  <div className="w-full h-48 overflow-hidden relative border-b border-slate-100 bg-slate-50">
-                    <img 
-                      src={restaurant.imageUrl} 
-                      alt={restaurant.name}
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  </div>
-                )}
-
-                <div className="p-6 flex flex-col h-full">
-                  {/* Étterem Név */}
-                  <h3 className="text-xl font-bold text-[#387035] mb-2 group-hover:text-[#77b92b] transition-colors">
-                    {restaurant.name}
-                  </h3>
-                  <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4 group-hover:bg-[#77b92b]"></div>
-                  
-                  {/* Menük felsorolása */}
-                  <div className="space-y-4 flex-grow">
-                    {restaurant.menus.map((item, i) => (
-                      <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
-                         {/* Félkövér Név */}
-                         <div className="font-bold text-slate-800">
-                           {lang === 'hu' ? item.nameHu : item.nameEn}
-                         </div>
-                         
-                         {/* Halvány Leírás (Csak ha van adat) */}
-                         {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
-                           <div className="text-sm text-slate-500 mt-1 leading-relaxed">
-                              {lang === 'hu' ? item.descHu : item.descEn}
-                           </div>
-                         )}
-
-                         {item.price && (
-                           <div className="text-[#C84C44] font-bold text-xs mt-2">
-                             {item.price} Ft
-                           </div>
-                         )}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  {/* Lábléc: Térkép Link */}
-                  <div className="mt-6 pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400">
-                     <a 
-                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="flex items-center gap-1 hover:text-[#387035] transition-colors"
-                       title="Megnyitás Google Térképen"
-                     >
-                       <IconMap />
-                       {restaurant.address}
-                     </a>
-                  </div>
-                </div>
+              /* A "magasság" kérdés megoldása: h-auto a rácsban */
+              <div key={index} className="h-full">
+                <RestaurantCard restaurant={restaurant} lang={lang} />
               </div>
             ))}
           </div>
