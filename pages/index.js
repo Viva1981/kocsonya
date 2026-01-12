@@ -229,19 +229,19 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT KÁRTYA KOMPONENS (Scroll nélkül, tiszta hátlappal) ---
+// --- JAVÍTOTT KÁRTYA KOMPONENS (Equal Height Rows) ---
 const RestaurantCard = ({ restaurant, lang }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    // A fix magasságot (h-full, min-h) kivettük, így a tartalom határozza meg a méretet
-    <div className="relative group perspective-1000 w-full">
+    // "h-full" a külső kereten, hogy kitöltse a rács által kiszámolt magasságot
+    <div className="relative group perspective-1000 w-full h-full">
       <div 
-        className={`relative w-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+        className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
         {/* --- ELŐLAP (SZÖVEG) --- */}
-        {/* Relative pozíció, ez határozza meg a kártya magasságát a tartalom alapján */}
-        <div className="relative [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col">
+        {/* "h-full" és "flex flex-col" hogy a tartalmat szét tudjuk húzni */}
+        <div className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col">
           <div className="p-6 flex flex-col h-full relative">
             
             {/* Flip gomb (Fényképezőgép) */}
@@ -264,8 +264,9 @@ const RestaurantCard = ({ restaurant, lang }) => {
             </h3>
             <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4"></div>
             
-            {/* Menük felsorolása - GÖRGETÉS NÉLKÜL */}
-            <div className="space-y-4 mb-4">
+            {/* Menük felsorolása */}
+            {/* "flex-grow": Ez tolja le a láblécet az aljára */}
+            <div className="space-y-4 mb-4 flex-grow">
               {restaurant.menus.map((item, i) => (
                 <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
                    <div className="font-bold text-slate-800">
@@ -287,7 +288,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
               ))}
             </div>
             
-            {/* Lábléc: Térkép Link */}
+            {/* Lábléc: Térkép Link - Mindig alulra kerül */}
             <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
@@ -304,7 +305,6 @@ const RestaurantCard = ({ restaurant, lang }) => {
         </div>
 
         {/* --- HÁTLAP (KÉP) --- */}
-        {/* Absolute pozíció, hogy lefedje az előlaot. Nincs gomb, nincs szöveg. */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-2xl overflow-hidden shadow-lg border-2 border-[#77b92b] cursor-pointer"
            onClick={() => setIsFlipped(false)}
@@ -501,7 +501,8 @@ export default function HomePage() {
             <p>{t.restaurants.loading}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+          /* "items-start" ELTÁVOLÍTVA - így működik a stretch */
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {restaurants.map((restaurant, index) => (
               <RestaurantCard key={index} restaurant={restaurant} lang={lang} />
             ))}
