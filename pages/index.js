@@ -251,9 +251,12 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS ---
-const RestaurantCard = ({ restaurant, lang }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
+// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS (AUTO-FLIP TÁMOGATÁSSAL) ---
+const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
+  const [manualFlip, setManualFlip] = useState(false);
+
+  // A kártya akkor van megfordítva, ha a felhasználó rákattintott, VAGY a gép épp ezt választotta ki
+  const isFlipped = manualFlip || isAutoFlipped;
 
   return (
     <div className="relative group perspective-1000 w-full h-full min-h-[450px]">
@@ -276,7 +279,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
             {/* Flip gomb */}
             {restaurant.imageUrl && (
               <button 
-                onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
+                onClick={(e) => { e.stopPropagation(); setManualFlip(true); }}
                 className="absolute top-6 right-6 z-20 p-2.5 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
                 title="Kép megtekintése"
               >
@@ -320,7 +323,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
         {/* --- HÁTLAP (KÉP) --- */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-3xl shadow-xl border border-slate-100 cursor-pointer overflow-hidden"
-           onClick={() => setIsFlipped(false)}
+           onClick={() => setManualFlip(false)}
            style={{ 
              zIndex: isFlipped ? 20 : 0, 
              WebkitMaskImage: '-webkit-radial-gradient(white, black)'
@@ -331,7 +334,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
               src={restaurant.imageUrl} 
               alt={restaurant.name}
               className="w-full h-full object-cover rounded-3xl transition-transform duration-700 hover:scale-105"
-              onClick={() => setIsFlipped(false)}
+              onClick={() => setManualFlip(false)}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
@@ -348,6 +351,9 @@ export default function HomePage() {
   
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // --- KUKUCSKÁLÓ LOGIKA ---
+  const [autoFlipIndex, setAutoFlipIndex] = useState(null);
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -366,6 +372,30 @@ export default function HomePage() {
     fetchRestaurants();
   }, []);
 
+  // Automata kártyaforgatás effektus (Csak Desktopon)
+  useEffect(() => {
+    // Ha még tölt vagy nincs étterem, ne csináljon semmit
+    if (loading || restaurants.length === 0) return;
+
+    // Ha kicsi a képernyő (mobil/tablet), ne fusson a logika
+    if (window.innerWidth < 1024) return;
+
+    const interval = setInterval(() => {
+      // Véletlenszerű index kiválasztása
+      const randomIndex = Math.floor(Math.random() * restaurants.length);
+      setAutoFlipIndex(randomIndex);
+
+      // 3 másodperc múlva visszafordítjuk
+      setTimeout(() => {
+        setAutoFlipIndex(null);
+      }, 3000);
+      
+    }, 6000); // 6 másodpercenként történik valami
+
+    return () => clearInterval(interval);
+  }, [loading, restaurants]);
+
+
   return (
     <Layout lang={lang} setLang={setLang}>
       <GlobalStyles />
@@ -375,7 +405,6 @@ export default function HomePage() {
         <div className="w-full">
            <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
         </div>
-        {/* Szélesebb konténer a szövegnek (max-w-7xl) és whitespace-nowrap lg képernyőtől */}
         <div className="px-6 py-12 sm:px-12 text-center max-w-7xl mx-auto">
           <h1 className="text-4xl sm:text-6xl lg:text-7xl lg:whitespace-nowrap font-serif font-bold text-[#387035] mb-8 leading-tight tracking-tight">
             {t.hero.title1} {t.hero.title2}
@@ -384,7 +413,6 @@ export default function HomePage() {
             {t.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-5 justify-center">
-            {/* ÚJ GOMB DIZÁJN: Editorial stílus */}
             <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-4 font-bold text-sm uppercase tracking-[0.1em] hover:bg-[#2a5528] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
               {t.hero.cta_primary}
             </Link>
@@ -465,7 +493,14 @@ export default function HomePage() {
           <div className="text-center py-24 text-slate-400 font-light text-xl animate-pulse"><p>{t.restaurants.loading}</p></div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {restaurants.map((restaurant, index) => (<RestaurantCard key={index} restaurant={restaurant} lang={lang} />))}
+            {restaurants.map((restaurant, index) => (
+              <RestaurantCard 
+                key={index} 
+                restaurant={restaurant} 
+                lang={lang} 
+                isAutoFlipped={index === autoFlipIndex} // Itt adjuk át, hogy épp ő a kiválasztott
+              />
+            ))}
           </div>
         )}
       </section>
