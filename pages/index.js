@@ -229,18 +229,19 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT KÁRTYA KOMPONENS (Equal Height Rows) ---
+// --- JAVÍTOTT KÁRTYA KOMPONENS (Egységes minimum méret) ---
 const RestaurantCard = ({ restaurant, lang }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    // "h-full" a külső kereten, hogy kitöltse a rács által kiszámolt magasságot
-    <div className="relative group perspective-1000 w-full h-full">
+    // A változás itt van: min-h-[450px]
+    // Ez garantálja, hogy mobilon is legalább 450px magas legyen minden kártya,
+    // így a hátlapon lévő képek nem lesznek vékony csíkok.
+    <div className="relative group perspective-1000 w-full h-full min-h-[450px]">
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
         {/* --- ELŐLAP (SZÖVEG) --- */}
-        {/* "h-full" és "flex flex-col" hogy a tartalmat szét tudjuk húzni */}
         <div className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col">
           <div className="p-6 flex flex-col h-full relative">
             
@@ -265,7 +266,6 @@ const RestaurantCard = ({ restaurant, lang }) => {
             <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4"></div>
             
             {/* Menük felsorolása */}
-            {/* "flex-grow": Ez tolja le a láblécet az aljára */}
             <div className="space-y-4 mb-4 flex-grow">
               {restaurant.menus.map((item, i) => (
                 <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
@@ -481,7 +481,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. ÉTTEREMLISTA (DINAMIKUS - FLIP KÁRTYÁKKAL) */}
+      {/* 5. ÉTTEREMLISTA */}
       <section id="etteremlista" className="mt-20 mb-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035]">
@@ -501,7 +501,6 @@ export default function HomePage() {
             <p>{t.restaurants.loading}</p>
           </div>
         ) : (
-          /* "items-start" ELTÁVOLÍTVA - így működik a stretch */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {restaurants.map((restaurant, index) => (
               <RestaurantCard key={index} restaurant={restaurant} lang={lang} />
