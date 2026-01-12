@@ -35,7 +35,7 @@ const TRANSLATIONS = {
   hu: {
     hero: {
       title1: "A miskolci kocsonya",
-      title2: "az asztalhoz ül",
+      title2: "az asztalhoz ül.",
       subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
       cta_primary: "Játék és Feltöltés",
       cta_secondary: "Étteremlista"
@@ -249,11 +249,11 @@ export default function HomePage() {
         </div>
 
         <div className="px-6 py-8 sm:px-12 text-center max-w-4xl mx-auto">
-          {lang === 'en' && (
-             <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">
-               {t.hero.title1} {t.hero.title2}
-             </h1>
-          )}
+          {/* ITT TÖRTÉNT A JAVÍTÁS: Kivettem a lang==='en' feltételt, így mindig megjelenik */}
+          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">
+            {t.hero.title1} {t.hero.title2}
+          </h1>
+          
           <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">
             {t.hero.subtitle}
           </p>
