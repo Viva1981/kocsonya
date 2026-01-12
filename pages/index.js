@@ -25,7 +25,7 @@ const GlobalStyles = () => (
   `}</style>
 );
 
-// --- SVG IKONOK (Vékonyabb, elegánsabb vonalakkal) ---
+// --- SVG IKONOK ---
 const IconPlate = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -59,8 +59,8 @@ const TRANSLATIONS = {
       title1: "A miskolci kocsonya",
       title2: "az asztalhoz ül.",
       subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
-      cta_primary: "Játék és Feltöltés",
-      cta_secondary: "Étteremlista"
+      cta_primary: "Játék és feltöltés",
+      cta_secondary: "Étteremlista megtekintése"
     },
     story: {
       title: "Kocsonya Útlevél 2026",
@@ -80,7 +80,7 @@ const TRANSLATIONS = {
       step2_desc: "Gyűjts pecsétet vagy fotózd le a kocsonya útleveledet.",
       step3_title: "3. Nyerj",
       step3_desc: "Töltsd fel a fotót itt az oldalon és nyerj értékes ajándékokat!",
-      cta: "Fotó feltöltése most"
+      cta: "FOTÓ FELTÖLTÉSE MOST"
     },
     prizes: {
       title: "Nyeremények",
@@ -97,7 +97,7 @@ const TRANSLATIONS = {
     },
     footer_cta: {
       title: "A kocsonya az asztalhoz ül. Te is?",
-      btn: "Csatlakozom a játékhoz"
+      btn: "CSATLAKOZOM A JÁTÉKHOZ"
     }
   },
   en: {
@@ -106,7 +106,7 @@ const TRANSLATIONS = {
       title2: "to the table.",
       subtitle: "The Jelly Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
       cta_primary: "Play & Upload",
-      cta_secondary: "Restaurant List"
+      cta_secondary: "View Restaurant List"
     },
     story: {
       title: "Jelly Passport 2026",
@@ -126,7 +126,7 @@ const TRANSLATIONS = {
       step2_desc: "Collect a stamp or take a photo of your Jelly Passport.",
       step3_title: "3. Win",
       step3_desc: "Upload the photo on this page and win valuable prizes!",
-      cta: "Upload Photo Now"
+      cta: "UPLOAD PHOTO NOW"
     },
     prizes: {
       title: "Prizes",
@@ -143,7 +143,7 @@ const TRANSLATIONS = {
     },
     footer_cta: {
       title: "The Jelly takes a seat. Will you?",
-      btn: "Join the Game"
+      btn: "JOIN THE GAME"
     }
   }
 };
@@ -265,7 +265,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
            className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden"
            style={{ zIndex: isFlipped ? 0 : 10 }}
         >
-          {/* VÍZJEL HÁTTÉR - Kicsit halványabb, elegánsabb */}
+          {/* VÍZJEL HÁTTÉR */}
           <div className="absolute -bottom-8 -right-8 text-[#77b92b] opacity-[0.03] transform rotate-12 pointer-events-none select-none z-0">
              <svg width="200" height="200" viewBox="0 0 24 24" stroke="currentColor" fill="none">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -273,7 +273,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
           </div>
 
           <div className="p-8 flex flex-col h-full relative z-10">
-            {/* Flip gomb - Pulzáló effekt */}
+            {/* Flip gomb */}
             {restaurant.imageUrl && (
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
@@ -287,7 +287,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
               </button>
             )}
 
-            {/* Étterem Név - Talpas, Elegáns */}
+            {/* Étterem Név */}
             <h3 className="text-2xl font-serif font-bold text-[#387035] mb-3 pr-10 leading-tight">
               {restaurant.name}
             </h3>
@@ -375,14 +375,20 @@ export default function HomePage() {
         <div className="w-full">
            <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
         </div>
-        <div className="px-6 py-10 sm:px-12 text-center max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-[#387035] mb-6 leading-tight tracking-tight">{t.hero.title1} {t.hero.title2}</h1>
-          <p className="text-lg sm:text-xl text-slate-600 mb-10 leading-relaxed font-light">{t.hero.subtitle}</p>
+        {/* Szélesebb konténer a szövegnek (max-w-7xl) és whitespace-nowrap lg képernyőtől */}
+        <div className="px-6 py-12 sm:px-12 text-center max-w-7xl mx-auto">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl lg:whitespace-nowrap font-serif font-bold text-[#387035] mb-8 leading-tight tracking-tight">
+            {t.hero.title1} {t.hero.title2}
+          </h1>
+          <p className="text-lg sm:text-xl text-slate-600 mb-12 leading-relaxed font-light max-w-3xl mx-auto">
+            {t.hero.subtitle}
+          </p>
           <div className="flex flex-col sm:flex-row gap-5 justify-center">
-            <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-lg hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20 hover:-translate-y-1">
+            {/* ÚJ GOMB DIZÁJN: Editorial stílus */}
+            <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-4 font-bold text-sm uppercase tracking-[0.1em] hover:bg-[#2a5528] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
               {t.hero.cta_primary}
             </Link>
-            <a href="#etteremlista" className="inline-flex items-center justify-center rounded-full border border-[#77b92b] text-[#77b92b] bg-transparent hover:bg-[#77b92b] hover:text-white px-10 py-4 font-bold text-lg transition-all">
+            <a href="#etteremlista" className="inline-flex items-center justify-center rounded-full border border-[#387035] text-[#387035] bg-transparent hover:bg-[#387035] hover:text-white px-8 py-4 font-bold text-sm uppercase tracking-[0.1em] transition-all">
               {t.hero.cta_secondary}
             </a>
           </div>
@@ -429,7 +435,11 @@ export default function HomePage() {
                 <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step2_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2_desc}</p></div></div>
                 <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconGift /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step3_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3_desc}</p></div></div>
               </div>
-              <div className="mt-12"><Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-[#8bc34a] hover:bg-[#7cb342] text-white font-bold py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-green-900/30">{t.rules.cta}</Link></div>
+              <div className="mt-12">
+                <Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl">
+                  {t.rules.cta}
+                </Link>
+              </div>
             </div>
             <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
               <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-6">{t.prizes.title}</h3>
@@ -463,7 +473,9 @@ export default function HomePage() {
       {/* CTA Footer */}
       <section className="bg-white border border-slate-100 soft-shadow py-16 text-center rounded-[2.5rem] mb-12">
         <h2 className="text-3xl font-serif font-bold text-[#387035] mb-8">{t.footer_cta.title}</h2>
-        <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-lg hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20">{t.footer_cta.btn}</Link>
+        <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-sm uppercase tracking-[0.1em] hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20 hover:-translate-y-1">
+          {t.footer_cta.btn}
+        </Link>
       </section>
     </Layout>
   );
