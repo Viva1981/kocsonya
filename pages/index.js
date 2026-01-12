@@ -34,8 +34,8 @@ const IconMap = () => (
 const TRANSLATIONS = {
   hu: {
     hero: {
-      title1: "",
-      title2: "",
+      title1: "A miskolci kocsonya",
+      title2: "az asztalhoz ül",
       subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
       cta_primary: "Játék és Feltöltés",
       cta_secondary: "Étteremlista"
