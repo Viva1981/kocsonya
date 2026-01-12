@@ -174,7 +174,7 @@ const getOptimizedImageUrl = (url) => {
   return url;
 };
 
-// --- JAVÍTOTT CSV PARSOLÓ ---
+// --- CSV PARSOLÓ ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -229,20 +229,22 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- ÚJ KOMPONENS: FORGATHATÓ KÁRTYA ---
+// --- JAVÍTOTT KÁRTYA KOMPONENS (Scroll nélkül, tiszta hátlappal) ---
 const RestaurantCard = ({ restaurant, lang }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   return (
-    <div className="relative group perspective-1000 h-full min-h-[300px]">
+    // A fix magasságot (h-full, min-h) kivettük, így a tartalom határozza meg a méretet
+    <div className="relative group perspective-1000 w-full">
       <div 
-        className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+        className={`relative w-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
         {/* --- ELŐLAP (SZÖVEG) --- */}
-        <div className="absolute inset-0 [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col overflow-hidden h-full">
+        {/* Relative pozíció, ez határozza meg a kártya magasságát a tartalom alapján */}
+        <div className="relative [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col">
           <div className="p-6 flex flex-col h-full relative">
             
-            {/* Flip gomb (Fényképezőgép), csak ha van kép */}
+            {/* Flip gomb (Fényképezőgép) */}
             {restaurant.imageUrl && (
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
@@ -262,8 +264,8 @@ const RestaurantCard = ({ restaurant, lang }) => {
             </h3>
             <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4"></div>
             
-            {/* Menük felsorolása */}
-            <div className="space-y-4 flex-grow overflow-y-auto mb-4">
+            {/* Menük felsorolása - GÖRGETÉS NÉLKÜL */}
+            <div className="space-y-4 mb-4">
               {restaurant.menus.map((item, i) => (
                 <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
                    <div className="font-bold text-slate-800">
@@ -285,7 +287,7 @@ const RestaurantCard = ({ restaurant, lang }) => {
               ))}
             </div>
             
-            {/* Lábléc: Térkép Link (Ez csak az előlapon működik) */}
+            {/* Lábléc: Térkép Link */}
             <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
@@ -302,33 +304,17 @@ const RestaurantCard = ({ restaurant, lang }) => {
         </div>
 
         {/* --- HÁTLAP (KÉP) --- */}
+        {/* Absolute pozíció, hogy lefedje az előlaot. Nincs gomb, nincs szöveg. */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-2xl overflow-hidden shadow-lg border-2 border-[#77b92b] cursor-pointer"
            onClick={() => setIsFlipped(false)}
         >
           {restaurant.imageUrl ? (
-            <div className="relative w-full h-full">
-               <img 
-                 src={restaurant.imageUrl} 
-                 alt={restaurant.name}
-                 className="w-full h-full object-cover"
-               />
-               {/* Sötétítés a gomb alatt, hogy látható legyen */}
-               <div className="absolute top-0 right-0 p-4 bg-gradient-to-bl from-black/50 to-transparent">
-                  <button 
-                    className="p-2 bg-white/20 backdrop-blur-sm rounded-full text-white hover:bg-white hover:text-red-500 transition-all"
-                  >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-               </div>
-               <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                 <p className="text-white text-center font-bold text-sm">
-                   {lang === 'hu' ? 'Kattints a visszafordításhoz' : 'Click to flip back'}
-                 </p>
-               </div>
-            </div>
+            <img 
+              src={restaurant.imageUrl} 
+              alt={restaurant.name}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-400">
               No Image
@@ -515,12 +501,9 @@ export default function HomePage() {
             <p>{t.restaurants.loading}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
             {restaurants.map((restaurant, index) => (
-              /* A "magasság" kérdés megoldása: h-auto a rácsban */
-              <div key={index} className="h-full">
-                <RestaurantCard restaurant={restaurant} lang={lang} />
-              </div>
+              <RestaurantCard key={index} restaurant={restaurant} lang={lang} />
             ))}
           </div>
         )}
