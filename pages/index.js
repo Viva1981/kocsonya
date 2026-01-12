@@ -251,12 +251,13 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS (AUTO-FLIP + SCROLL REVEAL) ---
+// --- JAVÍTOTT KÁRTYA KOMPONENS (AUTO-FLIP + KÉSLELTETETT SCROLL REVEAL) ---
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [userInteracted, setUserInteracted] = useState(false); // Ha a user belenyúlt, ne bántsa a scroll
+  const [delayedReveal, setDelayedReveal] = useState(false); // Ez felel a késleltetésért
+  const [userInteracted, setUserInteracted] = useState(false);
   const cardRef = useRef(null);
 
   // Mobil nézet és Scroll figyelés
@@ -269,10 +270,9 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Amikor a kártya kb 60%-ban látható, akkor tekintjük "nézettnek"
         setIsInView(entry.isIntersecting);
       },
-      { threshold: 0.6 } 
+      { threshold: 0.6 } // Kb. 60%-nál aktiválódik
     );
 
     if (cardRef.current) {
@@ -285,23 +285,36 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
     };
   }, []);
 
+  // --- KÉSLELTETŐ LOGIKA (1 másodperc) ---
+  useEffect(() => {
+    let timer;
+    if (isMobile && !userInteracted) {
+      if (isInView) {
+        // Ha beért középre, várunk 1000ms-t, mielőtt felfedjük a szöveget
+        timer = setTimeout(() => {
+          setDelayedReveal(true);
+        }, 1000); 
+      } else {
+        // Ha kiment a képből, azonnal visszaállítjuk képre (hogy ha visszagörget, újra lássa a képet)
+        setDelayedReveal(false);
+      }
+    }
+    return () => clearTimeout(timer); // Ha közben továbbgörget, a timer törlődik
+  }, [isInView, isMobile, userInteracted]);
+
   // --- FLIP LOGIKA MEGHATÁROZÁSA ---
   let isFlipped = false;
 
   if (isMobile) {
-    // MOBIL LOGIKA:
-    // Ha a user már rákattintott, akkor az ő akarata érvényesül (userInteracted)
     if (userInteracted) {
       isFlipped = manualFlip;
     } else {
-      // SCROLL REVEAL:
-      // Ha nincs a képernyőn (még nem ért oda vagy már elhagyta): KÉP (flipped = true)
-      // Ha a képernyőn van: SZÖVEG (flipped = false)
-      isFlipped = !isInView; 
+      // Ha delayedReveal IGAZ (letelt az idő), akkor szöveg (flip=false).
+      // Ha delayedReveal HAMIS (még vár vagy nincs ott), akkor kép (flip=true).
+      isFlipped = !delayedReveal; 
     }
   } else {
-    // DESKTOP LOGIKA:
-    // Alapból szöveg, kivéve ha user kattintott VAGY az automata logika pörgeti
+    // DESKTOP:
     isFlipped = manualFlip || isAutoFlipped;
   }
 
@@ -309,7 +322,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const handleInteraction = (flippedState) => {
     setManualFlip(flippedState);
     if (isMobile) {
-      setUserInteracted(true); // Mobilon innentől a user vezérel, kikapcsoljuk a scroll effektet ezen a kártyán
+      setUserInteracted(true);
     }
   };
 
@@ -395,9 +408,9 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
             <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
           )}
           
-          {/* Mobilon egy kis vizuális segítség, hogy kattintással megállítható */}
+          {/* Mobilon egy kis vizuális segítség */}
           {isMobile && !userInteracted && (
-              <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+              <div className="absolute bottom-4 right-4 bg-black/40 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/20">
                   Görgesd tovább!
               </div>
           )}
@@ -438,7 +451,6 @@ export default function HomePage() {
   useEffect(() => {
     if (loading || restaurants.length === 0) return;
 
-    // Ha kicsi a képernyő (mobil/tablet), ne fusson a logika
     if (window.innerWidth < 1024) return;
 
     const interval = setInterval(() => {
