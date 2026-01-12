@@ -161,7 +161,7 @@ const QUOTES = [
   }
 ];
 
-// --- JAVÍTOTT CSV PARSOLÓ ---
+// --- JAVÍTOTT CSV PARSOLÓ (Leírásokkal) ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -180,12 +180,16 @@ const parseCSV = (text) => {
     
     if (row.length < 2 || !row[0]) continue;
 
+    // FONTOS: Itt olvassuk be az új sorrendet!
+    // 0: Név, 1: Cím, 2: Menü HU, 3: Leírás HU, 4: Menü EN, 5: Leírás EN, 6: Ár, 7: Aktív
     const name = row[0];
     const address = row[1];
     const menuHu = row[2];
-    const menuEn = row[3];
-    const price = row[4];
-    const active = row[5]?.toLowerCase().trim();
+    const descHu = row[3]; // ÚJ
+    const menuEn = row[4];
+    const descEn = row[5]; // ÚJ
+    const price = row[6];
+    const active = row[7]?.toLowerCase().trim();
 
     if (active === 'x') {
       if (!groupedRestaurants[name]) {
@@ -198,7 +202,9 @@ const parseCSV = (text) => {
       
       groupedRestaurants[name].menus.push({
         nameHu: menuHu,
+        descHu: descHu, // Tároljuk a leírást is
         nameEn: menuEn || menuHu,
+        descEn: descEn, // Tároljuk az angol leírást is
         price: price
       });
     }
@@ -401,11 +407,20 @@ export default function HomePage() {
                   <div className="space-y-4 flex-grow">
                     {restaurant.menus.map((item, i) => (
                       <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
-                         <div className="font-medium">
+                         {/* Félkövér Név */}
+                         <div className="font-bold text-slate-800">
                            {lang === 'hu' ? item.nameHu : item.nameEn}
                          </div>
+                         
+                         {/* Halvány Leírás (Csak ha van adat) */}
+                         {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
+                           <div className="text-sm text-slate-500 mt-1 leading-relaxed">
+                              {lang === 'hu' ? item.descHu : item.descEn}
+                           </div>
+                         )}
+
                          {item.price && (
-                           <div className="text-[#C84C44] font-bold text-xs mt-1">
+                           <div className="text-[#C84C44] font-bold text-xs mt-2">
                              {item.price} Ft
                            </div>
                          )}
