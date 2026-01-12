@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
@@ -251,19 +251,74 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS (AUTO-FLIP TÁMOGATÁSSAL) ---
+// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS (AUTO-FLIP + SCROLL REVEAL) ---
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false); // Ha a user belenyúlt, ne bántsa a scroll
+  const cardRef = useRef(null);
 
-  // A kártya akkor van megfordítva, ha a felhasználó rákattintott, VAGY a gép épp ezt választotta ki
-  const isFlipped = manualFlip || isAutoFlipped;
+  // Mobil nézet és Scroll figyelés
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Amikor a kártya kb 60%-ban látható, akkor tekintjük "nézettnek"
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.6 } 
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (cardRef.current) observer.unobserve(cardRef.current);
+    };
+  }, []);
+
+  // --- FLIP LOGIKA MEGHATÁROZÁSA ---
+  let isFlipped = false;
+
+  if (isMobile) {
+    // MOBIL LOGIKA:
+    // Ha a user már rákattintott, akkor az ő akarata érvényesül (userInteracted)
+    if (userInteracted) {
+      isFlipped = manualFlip;
+    } else {
+      // SCROLL REVEAL:
+      // Ha nincs a képernyőn (még nem ért oda vagy már elhagyta): KÉP (flipped = true)
+      // Ha a képernyőn van: SZÖVEG (flipped = false)
+      isFlipped = !isInView; 
+    }
+  } else {
+    // DESKTOP LOGIKA:
+    // Alapból szöveg, kivéve ha user kattintott VAGY az automata logika pörgeti
+    isFlipped = manualFlip || isAutoFlipped;
+  }
+
+  // User interakció kezelő
+  const handleInteraction = (flippedState) => {
+    setManualFlip(flippedState);
+    if (isMobile) {
+      setUserInteracted(true); // Mobilon innentől a user vezérel, kikapcsoljuk a scroll effektet ezen a kártyán
+    }
+  };
 
   return (
-    <div className="relative group perspective-1000 w-full h-full min-h-[450px]">
+    <div ref={cardRef} className="relative group perspective-1000 w-full h-full min-h-[450px]">
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP (MODERN DIZÁJN) --- */}
+        {/* --- ELŐLAP (SZÖVEG) --- */}
         <div 
            className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden"
            style={{ zIndex: isFlipped ? 0 : 10 }}
@@ -279,7 +334,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
             {/* Flip gomb */}
             {restaurant.imageUrl && (
               <button 
-                onClick={(e) => { e.stopPropagation(); setManualFlip(true); }}
+                onClick={(e) => { e.stopPropagation(); handleInteraction(true); }}
                 className="absolute top-6 right-6 z-20 p-2.5 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
                 title="Kép megtekintése"
               >
@@ -323,7 +378,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
         {/* --- HÁTLAP (KÉP) --- */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-3xl shadow-xl border border-slate-100 cursor-pointer overflow-hidden"
-           onClick={() => setManualFlip(false)}
+           onClick={() => handleInteraction(false)}
            style={{ 
              zIndex: isFlipped ? 20 : 0, 
              WebkitMaskImage: '-webkit-radial-gradient(white, black)'
@@ -334,10 +389,17 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
               src={restaurant.imageUrl} 
               alt={restaurant.name}
               className="w-full h-full object-cover rounded-3xl transition-transform duration-700 hover:scale-105"
-              onClick={() => setManualFlip(false)}
+              onClick={() => handleInteraction(false)}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
+          )}
+          
+          {/* Mobilon egy kis vizuális segítség, hogy kattintással megállítható */}
+          {isMobile && !userInteracted && (
+              <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
+                  Görgesd tovább!
+              </div>
           )}
         </div>
       </div>
@@ -352,7 +414,7 @@ export default function HomePage() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // --- KUKUCSKÁLÓ LOGIKA ---
+  // --- KUKUCSKÁLÓ LOGIKA (CSAK DESKTOP) ---
   const [autoFlipIndex, setAutoFlipIndex] = useState(null);
 
   useEffect(() => {
@@ -374,23 +436,20 @@ export default function HomePage() {
 
   // Automata kártyaforgatás effektus (Csak Desktopon)
   useEffect(() => {
-    // Ha még tölt vagy nincs étterem, ne csináljon semmit
     if (loading || restaurants.length === 0) return;
 
     // Ha kicsi a képernyő (mobil/tablet), ne fusson a logika
     if (window.innerWidth < 1024) return;
 
     const interval = setInterval(() => {
-      // Véletlenszerű index kiválasztása
       const randomIndex = Math.floor(Math.random() * restaurants.length);
       setAutoFlipIndex(randomIndex);
 
-      // 3 másodperc múlva visszafordítjuk
       setTimeout(() => {
         setAutoFlipIndex(null);
       }, 3000);
       
-    }, 6000); // 6 másodpercenként történik valami
+    }, 6000); 
 
     return () => clearInterval(interval);
   }, [loading, restaurants]);
@@ -498,7 +557,7 @@ export default function HomePage() {
                 key={index} 
                 restaurant={restaurant} 
                 lang={lang} 
-                isAutoFlipped={index === autoFlipIndex} // Itt adjuk át, hogy épp ő a kiválasztott
+                isAutoFlipped={index === autoFlipIndex} 
               />
             ))}
           </div>
