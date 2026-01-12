@@ -11,6 +11,7 @@ const nextConfig = {
       {
         source: '/',
         destination: '/kocsonya',
+        basePath: false, // <--- EZ HIÁNYZOTT! Ez mondja meg, hogy a gyökérről irányítson át.
         permanent: false,
       },
     ]
