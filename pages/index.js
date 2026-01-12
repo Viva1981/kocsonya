@@ -3,30 +3,52 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
-// --- SVG IKONOK ---
+// --- STÍLUS ÉS BETŰTÍPUS IMPORTÁLÁS (INLINE) ---
+const GlobalStyles = () => (
+  <style jsx global>{`
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #FDFBF7;
+    }
+    h1, h2, h3, .font-serif {
+      font-family: 'Playfair Display', serif;
+    }
+    .soft-shadow {
+      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px -10px rgba(56, 112, 53, 0.15);
+    }
+  `}</style>
+);
+
+// --- SVG IKONOK (Vékonyabb, elegánsabb vonalakkal) ---
 const IconPlate = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
   </svg>
 );
 
 const IconCamera = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 );
 
 const IconGift = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
   </svg>
 );
 
 const IconMap = () => (
-   <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+   <svg className="w-4 h-4 mr-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
    </svg>
 );
 
@@ -229,7 +251,7 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT KÁRTYA KOMPONENS (Flip hiba javítva + Kép vágás) ---
+// --- JAVÍTOTT, MODERN KÁRTYA KOMPONENS ---
 const RestaurantCard = ({ restaurant, lang }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
@@ -238,53 +260,56 @@ const RestaurantCard = ({ restaurant, lang }) => {
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP (SZÖVEG + DIZÁJN) --- */}
+        {/* --- ELŐLAP (MODERN DIZÁJN) --- */}
         <div 
-           className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-2xl border-2 border-slate-100 shadow-sm flex flex-col overflow-hidden"
-           style={{ zIndex: isFlipped ? 0 : 10 }} // TRÜKK: Ha nincs fordítva, ez van felül
+           className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden"
+           style={{ zIndex: isFlipped ? 0 : 10 }}
         >
-          {/* VÍZJEL HÁTTÉR */}
-          <div className="absolute -bottom-8 -right-8 text-[#77b92b] opacity-5 transform rotate-12 pointer-events-none select-none z-0">
-             <svg width="180" height="180" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+          {/* VÍZJEL HÁTTÉR - Kicsit halványabb, elegánsabb */}
+          <div className="absolute -bottom-8 -right-8 text-[#77b92b] opacity-[0.03] transform rotate-12 pointer-events-none select-none z-0">
+             <svg width="200" height="200" viewBox="0 0 24 24" stroke="currentColor" fill="none">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
              </svg>
           </div>
 
-          <div className="p-6 flex flex-col h-full relative z-10">
-            {/* Flip gomb */}
+          <div className="p-8 flex flex-col h-full relative z-10">
+            {/* Flip gomb - Pulzáló effekt */}
             {restaurant.imageUrl && (
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsFlipped(true); }}
-                className="absolute top-4 right-4 z-20 p-2 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-colors cursor-pointer"
+                className="absolute top-6 right-6 z-20 p-2.5 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
                 title="Kép megtekintése"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </button>
             )}
 
-            <h3 className="text-xl font-bold text-[#387035] mb-2 pr-10">{restaurant.name}</h3>
-            <div className="w-12 h-1 bg-[#FDFBF7] rounded-full mb-4"></div>
+            {/* Étterem Név - Talpas, Elegáns */}
+            <h3 className="text-2xl font-serif font-bold text-[#387035] mb-3 pr-10 leading-tight">
+              {restaurant.name}
+            </h3>
+            <div className="w-10 h-0.5 bg-[#77b92b] rounded-full mb-6 opacity-60"></div>
             
-            <div className="space-y-4 mb-4 flex-grow">
+            <div className="space-y-5 mb-4 flex-grow">
               {restaurant.menus.map((item, i) => (
-                <div key={i} className="text-slate-700 text-sm border-l-2 border-slate-100 pl-3 leading-snug">
-                   <div className="font-bold text-slate-800">{lang === 'hu' ? item.nameHu : item.nameEn}</div>
+                <div key={i} className="text-slate-700 text-sm border-l border-slate-200 pl-4 leading-relaxed">
+                   <div className="font-bold text-slate-800 text-base">{lang === 'hu' ? item.nameHu : item.nameEn}</div>
                    {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
-                     <div className="text-sm text-slate-500 mt-1 leading-relaxed">{lang === 'hu' ? item.descHu : item.descEn}</div>
+                     <div className="text-sm text-slate-500 mt-1.5 font-light tracking-wide">{lang === 'hu' ? item.descHu : item.descEn}</div>
                    )}
-                   {item.price && <div className="text-[#C84C44] font-bold text-xs mt-2">{item.price} Ft</div>}
+                   {item.price && <div className="text-[#C84C44] font-semibold text-xs mt-2 bg-red-50 inline-block px-2 py-0.5 rounded-md">{item.price} Ft</div>}
                 </div>
               ))}
             </div>
             
-            <div className="pt-4 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
+            <div className="pt-6 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
                  target="_blank" rel="noopener noreferrer"
-                 className="flex items-center gap-1 hover:text-[#387035] transition-colors z-10"
+                 className="flex items-center gap-1.5 hover:text-[#387035] transition-colors z-10 font-medium"
                >
                  <IconMap /> {restaurant.address}
                </a>
@@ -294,22 +319,22 @@ const RestaurantCard = ({ restaurant, lang }) => {
 
         {/* --- HÁTLAP (KÉP) --- */}
         <div 
-           className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-2xl shadow-lg border-2 border-[#77b92b] cursor-pointer overflow-hidden"
+           className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-3xl shadow-xl border border-slate-100 cursor-pointer overflow-hidden"
            onClick={() => setIsFlipped(false)}
            style={{ 
-             zIndex: isFlipped ? 20 : 0, // TRÜKK: Ha fordítva van, ez legyen felül, hogy működjön a klikk
-             WebkitMaskImage: '-webkit-radial-gradient(white, black)' // TRÜKK: Ez kényszeríti a lekerekítést Safariban/3D-ben
+             zIndex: isFlipped ? 20 : 0, 
+             WebkitMaskImage: '-webkit-radial-gradient(white, black)'
            }}
         >
           {restaurant.imageUrl ? (
             <img 
               src={restaurant.imageUrl} 
               alt={restaurant.name}
-              className="w-full h-full object-cover rounded-2xl"
-              onClick={() => setIsFlipped(false)} // Duplán biztosítjuk a kattintást
+              className="w-full h-full object-cover rounded-3xl transition-transform duration-700 hover:scale-105"
+              onClick={() => setIsFlipped(false)}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-slate-400">No Image</div>
+            <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
           )}
         </div>
       </div>
@@ -343,90 +368,102 @@ export default function HomePage() {
 
   return (
     <Layout lang={lang} setLang={setLang}>
+      <GlobalStyles />
+      
       {/* HERO SZEKCIÓ */}
-      <section className="relative rounded-3xl bg-white overflow-hidden shadow-sm">
+      <section className="relative rounded-[2.5rem] bg-white overflow-hidden soft-shadow mb-12">
         <div className="w-full">
            <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
         </div>
-        <div className="px-6 py-8 sm:px-12 text-center max-w-4xl mx-auto">
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">{t.hero.title1} {t.hero.title2}</h1>
-          <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">{t.hero.subtitle}</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-4 font-bold text-lg hover:bg-[#2a5528] transition-colors shadow-lg">
+        <div className="px-6 py-10 sm:px-12 text-center max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-[#387035] mb-6 leading-tight tracking-tight">{t.hero.title1} {t.hero.title2}</h1>
+          <p className="text-lg sm:text-xl text-slate-600 mb-10 leading-relaxed font-light">{t.hero.subtitle}</p>
+          <div className="flex flex-col sm:flex-row gap-5 justify-center">
+            <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-lg hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20 hover:-translate-y-1">
               {t.hero.cta_primary}
             </Link>
-            <a href="#etteremlista" className="inline-flex items-center justify-center rounded-full border-2 border-[#77b92b] text-[#77b92b] hover:bg-[#77b92b] hover:text-white px-8 py-4 font-bold text-lg transition-colors">
+            <a href="#etteremlista" className="inline-flex items-center justify-center rounded-full border border-[#77b92b] text-[#77b92b] bg-transparent hover:bg-[#77b92b] hover:text-white px-10 py-4 font-bold text-lg transition-all">
               {t.hero.cta_secondary}
             </a>
           </div>
         </div>
       </section>
 
-      {/* STORY, QUOTES, RULES SZEKCIÓK (Változatlanok) */}
-      <section className="mt-12 px-4 sm:px-6 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-serif font-bold text-[#387035] mb-6">{t.story.title}</h2>
-        <div className="prose prose-lg mx-auto text-slate-700 leading-relaxed">
-          <p className="mb-4">{t.story.p1}</p>
-          <p className="font-semibold text-[#387035] text-xl italic mb-6">{t.story.quote}</p>
+      {/* STORY SZEKCIÓ */}
+      <section className="mt-16 px-4 sm:px-6 max-w-3xl mx-auto text-center">
+        <h2 className="text-4xl font-serif font-bold text-[#387035] mb-8">{t.story.title}</h2>
+        <div className="prose prose-lg mx-auto text-slate-700 leading-8 font-light">
+          <p className="mb-6">{t.story.p1}</p>
+          <p className="font-serif font-medium text-[#387035] text-2xl italic mb-8 relative inline-block">
+            <span className="opacity-20 text-6xl absolute -top-4 -left-6">“</span>
+            {t.story.quote}
+            <span className="opacity-20 text-6xl absolute -bottom-8 -right-6">”</span>
+          </p>
           <p>{t.story.p2}</p>
         </div>
       </section>
 
-      <section className="mt-16 bg-[#FDFBF7] py-10 rounded-3xl border border-slate-100">
-        <div className="px-6 text-center mb-8"><h3 className="text-2xl font-serif font-bold text-[#387035]">{t.quotes.title}</h3></div>
-        <div className="px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* QUOTES SZEKCIÓ */}
+      <section className="mt-20 bg-white py-16 rounded-[2.5rem] soft-shadow">
+        <div className="px-6 text-center mb-10"><h3 className="text-3xl font-serif font-bold text-[#387035]">{t.quotes.title}</h3></div>
+        <div className="px-6 sm:px-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {QUOTES.slice(0, 4).map((quote, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-              <p className="text-slate-600 italic mb-4">"{quote.text[lang]}"</p>
-              <div className="font-semibold text-[#387035]">{quote.name}</div>
-              <div className="text-xs text-slate-500 uppercase tracking-wide">{quote.role[lang]}</div>
+            <div key={idx} className="bg-[#FDFBF7] p-8 rounded-3xl border border-slate-100 hover:shadow-md transition-shadow">
+              <p className="text-slate-600 italic mb-4 font-serif text-lg">"{quote.text[lang]}"</p>
+              <div className="font-bold text-[#387035]">{quote.name}</div>
+              <div className="text-xs text-slate-400 uppercase tracking-widest mt-1">{quote.role[lang]}</div>
             </div>
           ))}
         </div>
-        <div className="text-center mt-6"><p className="text-sm text-slate-400">{t.quotes.more}</p></div>
+        <div className="text-center mt-10"><p className="text-sm text-slate-400 font-medium tracking-wide uppercase">{t.quotes.more}</p></div>
       </section>
 
-      <section className="mt-16">
-        <div className="bg-[#387035] rounded-3xl p-8 sm:p-12 text-white">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      {/* RULES SZEKCIÓ */}
+      <section className="mt-20">
+        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl font-serif font-bold mb-6">{t.rules.title}</h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4"><div className="p-3 bg-white/10 rounded-2xl text-[#77b92b]"><IconPlate /></div><div><h4 className="font-bold text-lg">{t.rules.step1_title}</h4><p className="text-green-100 text-sm">{t.rules.step1_desc}</p></div></div>
-                <div className="flex items-start gap-4"><div className="p-3 bg-white/10 rounded-2xl text-[#77b92b]"><IconCamera /></div><div><h4 className="font-bold text-lg">{t.rules.step2_title}</h4><p className="text-green-100 text-sm">{t.rules.step2_desc}</p></div></div>
-                <div className="flex items-start gap-4"><div className="p-3 bg-white/10 rounded-2xl text-[#77b92b]"><IconGift /></div><div><h4 className="font-bold text-lg">{t.rules.step3_title}</h4><p className="text-green-100 text-sm">{t.rules.step3_desc}</p></div></div>
+              <h2 className="text-4xl font-serif font-bold mb-8">{t.rules.title}</h2>
+              <div className="space-y-8">
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconPlate /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step1_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1_desc}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step2_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2_desc}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconGift /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step3_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3_desc}</p></div></div>
               </div>
-              <div className="mt-8"><Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-[#77b92b] hover:bg-[#68a325] text-white font-bold py-3 px-8 rounded-full transition-colors">{t.rules.cta}</Link></div>
+              <div className="mt-12"><Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-[#8bc34a] hover:bg-[#7cb342] text-white font-bold py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-green-900/30">{t.rules.cta}</Link></div>
             </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
-              <h3 className="text-2xl font-serif font-bold text-[#77b92b] mb-4">{t.prizes.title}</h3>
-              <ul className="space-y-3 text-green-50">
-                <li className="flex items-center gap-2"><span className="text-[#77b92b]">★</span> {t.prizes.item1}</li>
-                <li className="flex items-center gap-2"><span className="text-[#77b92b]">★</span> {t.prizes.item2}</li>
-                <li className="flex items-center gap-2"><span className="text-[#77b92b]">★</span> {t.prizes.item3}</li>
+            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
+              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-6">{t.prizes.title}</h3>
+              <ul className="space-y-4 text-white">
+                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item1}</span></li>
+                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item2}</span></li>
+                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item3}</span></li>
               </ul>
-              <p className="mt-6 text-sm text-green-200 italic">"{t.prizes.quote}"</p>
+              <p className="mt-8 text-sm text-green-200 italic opacity-80 font-serif">"{t.prizes.quote}"</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ÉTTEREMLISTA */}
-      <section id="etteremlista" className="mt-20 mb-20">
-        <div className="text-center mb-12"><h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035]">{t.restaurants.title}</h2><p className="mt-3 text-slate-600">{t.restaurants.disclaimer}</p></div>
+      <section id="etteremlista" className="mt-24 mb-24">
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">{t.restaurants.title}</h2>
+          <div className="h-1 w-20 bg-[#77b92b] mx-auto rounded-full mb-6"></div>
+          <p className="text-slate-500">{t.restaurants.disclaimer}</p>
+        </div>
         {loading ? (
-          <div className="text-center py-20 text-slate-400"><p>{t.restaurants.loading}</p></div>
+          <div className="text-center py-24 text-slate-400 font-light text-xl animate-pulse"><p>{t.restaurants.loading}</p></div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {restaurants.map((restaurant, index) => (<RestaurantCard key={index} restaurant={restaurant} lang={lang} />))}
           </div>
         )}
       </section>
 
       {/* CTA Footer */}
-      <section className="bg-[#FDFBF7] border-t border-slate-200 py-12 text-center rounded-3xl mb-12">
-        <h2 className="text-2xl font-serif font-bold text-[#387035] mb-4">{t.footer_cta.title}</h2>
-        <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-8 py-3 font-bold hover:bg-[#2a5528] transition-colors">{t.footer_cta.btn}</Link>
+      <section className="bg-white border border-slate-100 soft-shadow py-16 text-center rounded-[2.5rem] mb-12">
+        <h2 className="text-3xl font-serif font-bold text-[#387035] mb-8">{t.footer_cta.title}</h2>
+        <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-lg hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20">{t.footer_cta.btn}</Link>
       </section>
     </Layout>
   );
