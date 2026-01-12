@@ -161,7 +161,23 @@ const QUOTES = [
   }
 ];
 
-// --- JAVÍTOTT CSV PARSOLÓ ---
+// --- SEGÉDFÜGGVÉNY: Google Drive Linkek átalakítása ---
+const getOptimizedImageUrl = (url) => {
+  if (!url) return null;
+  
+  // Ha Google Drive link
+  if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
+    // Megpróbáljuk kinyerni az ID-t
+    const idMatch = url.match(/\/d\/(.*?)\/|id=(.*?)(&|$)/);
+    const id = idMatch ? (idMatch[1] || idMatch[2]) : null;
+    if (id) {
+      return `https://lh3.googleusercontent.com/d/${id}=w800`; // Google "Magic" link, jobb mint az export=download
+    }
+  }
+  return url;
+};
+
+// --- JAVÍTOTT CSV PARSOLÓ (KÉPPEL) ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -188,14 +204,21 @@ const parseCSV = (text) => {
     const descEn = row[5];
     const price = row[6];
     const active = row[7]?.toLowerCase().trim();
+    // Új mező: Kép URL (8. index, mivel 0-tól indulunk)
+    const rawImageUrl = row[8] || ""; 
+    const imageUrl = getOptimizedImageUrl(rawImageUrl);
 
     if (active === 'x') {
       if (!groupedRestaurants[name]) {
         groupedRestaurants[name] = {
           name: name,
           address: address,
+          imageUrl: imageUrl, // Kép hozzárendelése
           menus: []
         };
+      } else if (!groupedRestaurants[name].imageUrl && imageUrl) {
+        // Ha egy másik sorban van a kép, azt is elfogadjuk
+        groupedRestaurants[name].imageUrl = imageUrl;
       }
       
       groupedRestaurants[name].menus.push({
@@ -240,7 +263,6 @@ export default function HomePage() {
       {/* 1. HERO SZEKCIÓ */}
       <section className="relative rounded-3xl bg-white overflow-hidden shadow-sm">
         <div className="w-full">
-           {/* ITT A VÁLTOZÁS: /kocsonya előtag a banner képnek */}
            <img 
              src="/kocsonya/banner.jpg" 
              alt="Kocsonya Útlevél 2026 Miskolc" 
@@ -249,11 +271,9 @@ export default function HomePage() {
         </div>
 
         <div className="px-6 py-8 sm:px-12 text-center max-w-4xl mx-auto">
-          {/* ITT TÖRTÉNT A JAVÍTÁS: Kivettem a lang==='en' feltételt, így mindig megjelenik */}
           <h1 className="text-3xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">
             {t.hero.title1} {t.hero.title2}
           </h1>
-          
           <p className="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed">
             {t.hero.subtitle}
           </p>
@@ -393,8 +413,20 @@ export default function HomePage() {
             {restaurants.map((restaurant, index) => (
               <div 
                 key={index} 
-                className="group bg-white rounded-2xl border-2 border-slate-100 hover:border-[#77b92b] transition-all duration-300 shadow-sm hover:shadow-md flex flex-col"
+                className="group bg-white rounded-2xl border-2 border-slate-100 hover:border-[#77b92b] transition-all duration-300 shadow-sm hover:shadow-md flex flex-col overflow-hidden"
               >
+                {/* --- KÉP MEGJELENÍTÉS (ÚJ) --- */}
+                {restaurant.imageUrl && (
+                  <div className="w-full h-48 overflow-hidden relative border-b border-slate-100 bg-slate-50">
+                    <img 
+                      src={restaurant.imageUrl} 
+                      alt={restaurant.name}
+                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+
                 <div className="p-6 flex flex-col h-full">
                   {/* Étterem Név */}
                   <h3 className="text-xl font-bold text-[#387035] mb-2 group-hover:text-[#77b92b] transition-colors">
