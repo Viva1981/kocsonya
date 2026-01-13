@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import Script from "next/script"; // --- ÚJ IMPORT ---
 
 export default function Layout({ children, lang, setLang }) {
   return (
@@ -13,6 +14,23 @@ export default function Layout({ children, lang, setLang }) {
         <link rel="icon" href="/kocsonya/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/kocsonya/favicon.ico" />
       </Head>
+
+      {/* --- GOOGLE ANALYTICS (G-VRLENCLSF5) --- */}
+      {/* 1. A külső script betöltése */}
+      <Script 
+        src="https://www.googletagmanager.com/gtag/js?id=G-VRLENCLSF5" 
+        strategy="afterInteractive" 
+      />
+      {/* 2. A konfigurációs kód futtatása */}
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-VRLENCLSF5');
+        `}
+      </Script>
 
       {/* --- FEJLÉC (FIXED & MODERN) --- */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-300">
@@ -74,7 +92,6 @@ export default function Layout({ children, lang, setLang }) {
       </header>
 
       {/* --- FŐ TARTALOM --- */}
-      {/* pt-32 kell, mert magasabb lett a header (h-24) */}
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-16">
         {children}
       </main>
