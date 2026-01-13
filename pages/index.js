@@ -15,12 +15,13 @@ const GlobalStyles = () => (
     h1, h2, h3, .font-serif {
       font-family: 'Playfair Display', serif;
     }
+    /* Finomított, szélesebb árnyék a prémium hatáshoz */
     .soft-shadow {
-      box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
+      box-shadow: 0 15px 50px -10px rgba(0,0,0,0.05);
     }
     .card-hover:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 40px -10px rgba(56, 112, 53, 0.15);
+      box-shadow: 0 25px 50px -12px rgba(56, 112, 53, 0.12);
     }
   `}</style>
 );
@@ -251,12 +252,12 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT KÁRTYA KOMPONENS (AUTO-FLIP + KÉSLELTETETT SCROLL REVEAL) ---
+// --- JAVÍTOTT, PRÉMIUM KÁRTYA KOMPONENS ---
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [delayedReveal, setDelayedReveal] = useState(false); // Ez felel a késleltetésért
+  const [delayedReveal, setDelayedReveal] = useState(false);
   const [userInteracted, setUserInteracted] = useState(false);
   const cardRef = useRef(null);
 
@@ -272,7 +273,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
       ([entry]) => {
         setIsInView(entry.isIntersecting);
       },
-      { threshold: 0.6 } // Kb. 60%-nál aktiválódik
+      { threshold: 0.6 }
     );
 
     if (cardRef.current) {
@@ -285,21 +286,19 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
     };
   }, []);
 
-  // --- KÉSLELTETŐ LOGIKA (1 másodperc) ---
+  // --- KÉSLELTETŐ LOGIKA ---
   useEffect(() => {
     let timer;
     if (isMobile && !userInteracted) {
       if (isInView) {
-        // Ha beért középre, várunk 1000ms-t, mielőtt felfedjük a szöveget
         timer = setTimeout(() => {
           setDelayedReveal(true);
         }, 1000); 
       } else {
-        // Ha kiment a képből, azonnal visszaállítjuk képre (hogy ha visszagörget, újra lássa a képet)
         setDelayedReveal(false);
       }
     }
-    return () => clearTimeout(timer); // Ha közben továbbgörget, a timer törlődik
+    return () => clearTimeout(timer);
   }, [isInView, isMobile, userInteracted]);
 
   // --- FLIP LOGIKA MEGHATÁROZÁSA ---
@@ -309,16 +308,12 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
     if (userInteracted) {
       isFlipped = manualFlip;
     } else {
-      // Ha delayedReveal IGAZ (letelt az idő), akkor szöveg (flip=false).
-      // Ha delayedReveal HAMIS (még vár vagy nincs ott), akkor kép (flip=true).
       isFlipped = !delayedReveal; 
     }
   } else {
-    // DESKTOP:
     isFlipped = manualFlip || isAutoFlipped;
   }
 
-  // User interakció kezelő
   const handleInteraction = (flippedState) => {
     setManualFlip(flippedState);
     if (isMobile) {
@@ -327,28 +322,28 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   };
 
   return (
-    <div ref={cardRef} className="relative group perspective-1000 w-full h-full min-h-[450px]">
+    <div ref={cardRef} className="relative group perspective-1000 w-full h-full min-h-[500px]">
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP (SZÖVEG) --- */}
+        {/* --- ELŐLAP (PRÉMIUM DIZÁJN) --- */}
         <div 
-           className="relative w-full h-full [backface-visibility:hidden] bg-white rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden"
+           className="relative w-full h-full [backface-visibility:hidden] bg-[#FCFBF9] rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden border border-slate-100"
            style={{ zIndex: isFlipped ? 0 : 10 }}
         >
           {/* VÍZJEL HÁTTÉR */}
-          <div className="absolute -bottom-8 -right-8 text-[#77b92b] opacity-[0.03] transform rotate-12 pointer-events-none select-none z-0">
-             <svg width="200" height="200" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+          <div className="absolute -bottom-10 -right-10 text-[#77b92b] opacity-[0.02] transform rotate-12 pointer-events-none select-none z-0">
+             <svg width="250" height="250" viewBox="0 0 24 24" stroke="currentColor" fill="none">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
              </svg>
           </div>
 
-          <div className="p-8 flex flex-col h-full relative z-10">
+          <div className="p-10 flex flex-col h-full relative z-10">
             {/* Flip gomb */}
             {restaurant.imageUrl && (
               <button 
                 onClick={(e) => { e.stopPropagation(); handleInteraction(true); }}
-                className="absolute top-6 right-6 z-20 p-2.5 bg-green-50 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
+                className="absolute top-8 right-8 z-20 p-2.5 bg-white border border-slate-100 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
                 title="Kép megtekintése"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -358,31 +353,50 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
               </button>
             )}
 
-            {/* Étterem Név */}
-            <h3 className="text-2xl font-serif font-bold text-[#387035] mb-3 pr-10 leading-tight">
+            {/* Étterem Név - Nagyobb, hangsúlyosabb */}
+            <h3 className="text-3xl font-serif font-bold text-[#2a5528] mb-5 pr-12 leading-tight">
               {restaurant.name}
             </h3>
-            <div className="w-10 h-0.5 bg-[#77b92b] rounded-full mb-6 opacity-60"></div>
+            {/* Elválasztó - Vékonyabb, halványabb, több térrel */}
+            <div className="w-12 h-0.5 bg-[#aadd77] opacity-40 rounded-full mb-10"></div>
             
-            <div className="space-y-5 mb-4 flex-grow">
+            {/* Menü Lista - Szellősebb (space-y-8) */}
+            <div className="space-y-8 mb-6 flex-grow">
               {restaurant.menus.map((item, i) => (
-                <div key={i} className="text-slate-700 text-sm border-l border-slate-200 pl-4 leading-relaxed">
-                   <div className="font-bold text-slate-800 text-base">{lang === 'hu' ? item.nameHu : item.nameEn}</div>
+                <div key={i} className="group">
+                   <div className="flex justify-between items-baseline mb-2">
+                      {/* Étel neve - Nagyobb, félkövér */}
+                      <div className="font-bold text-slate-900 text-lg leading-snug pr-4">
+                        {lang === 'hu' ? item.nameHu : item.nameEn}
+                      </div>
+                      
+                      {/* Ár - ÚJ ELEGÁNS DESIGN (Nem piros) */}
+                      {item.price && (
+                        <span className="flex-shrink-0 bg-[#f4f9f2] text-[#2F5E2B] text-xs font-bold px-3 py-1 rounded-full border border-[#e6f0e4] uppercase tracking-wide">
+                          {item.price} Ft
+                        </span>
+                      )}
+                   </div>
+
+                   {/* Leírás - Dőlt, finomabb */}
                    {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
-                     <div className="text-sm text-slate-500 mt-1.5 font-light tracking-wide">{lang === 'hu' ? item.descHu : item.descEn}</div>
+                     <div className="text-[15px] text-slate-600 font-serif italic font-light leading-relaxed opacity-90">
+                       {lang === 'hu' ? item.descHu : item.descEn}
+                     </div>
                    )}
-                   {item.price && <div className="text-[#C84C44] font-semibold text-xs mt-2 bg-red-50 inline-block px-2 py-0.5 rounded-md">{item.price} Ft</div>}
                 </div>
               ))}
             </div>
             
-            <div className="pt-6 border-t border-slate-50 flex items-center justify-between text-sm text-slate-400 mt-auto">
+            {/* Footer - Elkülönítve, prémium érzet */}
+            <div className="pt-8 border-t border-[#f0f5ed] flex items-center justify-between mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
                  target="_blank" rel="noopener noreferrer"
-                 className="flex items-center gap-1.5 hover:text-[#387035] transition-colors z-10 font-medium"
+                 className="flex items-center gap-2 text-sm text-slate-400 hover:text-[#387035] transition-colors font-medium group/link"
                >
-                 <IconMap /> {restaurant.address}
+                 <IconMap /> 
+                 <span className="group-hover/link:underline decoration-[#aadd77] decoration-1 underline-offset-4">{restaurant.address}</span>
                </a>
             </div>
           </div>
@@ -408,7 +422,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
             <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
           )}
           
-          {/* Mobilon egy kis vizuális segítség */}
           {isMobile && !userInteracted && (
               <div className="absolute bottom-4 right-4 bg-black/40 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/20">
                   Görgesd tovább!
@@ -427,7 +440,6 @@ export default function HomePage() {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // --- KUKUCSKÁLÓ LOGIKA (CSAK DESKTOP) ---
   const [autoFlipIndex, setAutoFlipIndex] = useState(null);
 
   useEffect(() => {
@@ -447,10 +459,8 @@ export default function HomePage() {
     fetchRestaurants();
   }, []);
 
-  // Automata kártyaforgatás effektus (Csak Desktopon)
   useEffect(() => {
     if (loading || restaurants.length === 0) return;
-
     if (window.innerWidth < 1024) return;
 
     const interval = setInterval(() => {
