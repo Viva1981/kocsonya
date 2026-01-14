@@ -59,36 +59,16 @@ const TRANSLATIONS = {
     hero: {
       title1: "A miskolci kocsonya",
       title2: "az asztalhoz ül.",
-      subtitle: "A Kocsonyafesztivál élménye idén az éttermekben is folytatódik. Fedezd fel a környék legjobb ízeit, gyűjtsd a pecséteket és nyerj!",
-      cta_primary: "Játék és feltöltés",
-      cta_secondary: "Étteremlista megtekintése"
+      subtitle: "Ha Miskolcra érkezel, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a kocsonya.",
+      cta_primary: "Játék és Feltöltés",
+      cta_secondary: "Étteremlista"
     },
     story: {
-      title: "Kocsonya Útlevél 2026",
-      p1: "Idén egy új összefogás csatlakozik a fesztiválhoz. Több miskolci étterem közösen azon dolgozik, hogy a Kocsonyafesztivál élménye a vendéglátóterekben is megjelenjen.",
-      quote: "„A miskolci kocsonya az asztalhoz ül.”",
-      p2: "A cél az, hogy a kocsonya – mint a Kocsonyafesztivál szimbóluma – minél több arcát mutathassa meg: hagyományosan, modernül, újragondolva, de minden esetben miskolci kötődéssel."
-    },
-    quotes: {
-      title: "Megszólalnak a szervezők",
-      more: "...és még sokan mások a városért."
-    },
-    rules: {
-      title: "Így vehetsz részt a játékban",
-      step1_title: "1. Egyél",
-      step1_desc: "Válassz egyet a résztvevő éttermek különleges kocsonyái közül.",
-      step2_title: "2. Fotózz",
-      step2_desc: "Gyűjts pecsétet vagy fotózd le a kocsonya útleveledet.",
-      step3_title: "3. Nyerj",
-      step3_desc: "Töltsd fel a fotót itt az oldalon és nyerj értékes ajándékokat!",
-      cta: "FOTÓ FELTÖLTÉSE MOST"
-    },
-    prizes: {
-      title: "Nyeremények",
-      item1: "3× 2 éjszakás miskolci hétvége",
-      item2: "Szállás + Teljes ellátás",
-      item3: "Miskolc Pass turisztikai kártya",
-      quote: "Ez nem csak egy vacsora. Ez egy miskolci élménycsomag."
+      p1: "A legendás Miskolci Kocsonyafesztivál most az éttermekben is zajlik, így nem csak az utcán, nem csak papírtálcán, hanem asztalhoz ülve, vendégként is megkóstolhatod a híres fogást.",
+      p2: "Ez a projekt a Kocsonyafesztivál kiegészítő gasztroélménye, és azoknak szól, akik szeretnék megismerni a város történetét a helyi vendéglátósok kocsonyáin keresztül.",
+      p3: "Ha betérsz egy étterembe, asztalhoz ülsz, kocsonyát rendelsz, és a fogással együtt megkapod a Kocsonya Útleveledet is.",
+      p4: "Nincs két egyforma fogás. Van klasszikus, van újragondolt és van egészen meglepő.",
+      closing: "Indulhat a felfedezés."
     },
     restaurants: {
       title: "Résztvevő éttermek és menük",
@@ -96,8 +76,33 @@ const TRANSLATIONS = {
       loading: "Éttermek betöltése...",
       location_btn: "Térkép"
     },
+    transition: {
+      title: "Fedezz fel több ízt, ismerd meg a várost.",
+      text: "Vedd a nyakadba Miskolcot, ismerd meg a Bükk városának különleges gasztronómiáját, és tapasztald meg, milyen sokszínű tud lenni ez a legendás étel."
+    },
+    rules: {
+      title: "Kocsonyából élmény!",
+      subtitle: "Vegyél részt a nyereményjátékban!",
+      step1: "Kóstolj kocsonyát legalább három különböző helyen!",
+      step2: "Gyűjts legalább három pecsétet a Kocsonya Útleveledbe!",
+      step3: "Fotózd le, és töltsd fel!",
+      cta: "FOTÓ FELTÖLTÉSE MOST"
+    },
+    prizes: {
+      title: "Nyerd meg a három nyeremény egyikét!",
+      desc: "A három nyeremény minden esetben tartalmaz:",
+      item1: "Szállást két fő részére két éjszakára (Belvárosi Luxusapartman, Bükk Penthouse, Lillafüredi Hotel Palota)",
+      item2: "Az élményhétvégére teljes ellátást: két reggelit, két ebédet és két vacsorát válogatott éttermekben.",
+      item3: "Két Miskolc Pass-t a Visit Miskolc jóvoltából, amellyel felfedezheted a város attrakcióit."
+    },
+    organizers: {
+      title: "Akik mögötte állnak",
+      p1: "A „A miskolci kocsonya az asztalhoz ül” a miskolci vendéglátók közös ügye.",
+      p2: "Az önszerveződő projekt a helyi éttermek, a Visit Miskolc és a Bükki Kör együttműködésével jött létre, azzal a céllal, hogy Miskolc gasztronómiáját megmutassa és élménnyé formálja."
+    },
     footer_cta: {
-      title: "A kocsonya az asztalhoz ül. Te is?",
+      title: "Indulhatunk?",
+      subtitle: "A miskolci kocsonya az asztalhoz ül. Te is?",
       btn: "CSATLAKOZOM A JÁTÉKHOZ"
     }
   },
@@ -105,36 +110,16 @@ const TRANSLATIONS = {
     hero: {
       title1: "Miskolc Jelly comes",
       title2: "to the table.",
-      subtitle: "The Jelly Festival experience continues in restaurants this year. Discover the best flavors of the region, collect stamps, and win!",
+      subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
       cta_primary: "Play & Upload",
-      cta_secondary: "View Restaurant List"
+      cta_secondary: "Restaurant List"
     },
     story: {
-      title: "Jelly Passport 2026",
-      p1: "This year, a new collaboration joins the festival. Several Miskolc restaurants are working together to bring the Jelly Festival experience into their dining rooms.",
-      quote: "“The Miskolc Jelly takes a seat at the table.”",
-      p2: "The goal is to show as many faces of the jelly – the symbol of the festival – as possible: traditional, modern, reimagined, but always with a Miskolc connection."
-    },
-    quotes: {
-      title: "Words from the Organizers",
-      more: "...and many others for the city."
-    },
-    rules: {
-      title: "How to Participate",
-      step1_title: "1. Eat",
-      step1_desc: "Choose a special jelly from the participating restaurants.",
-      step2_title: "2. Snap",
-      step2_desc: "Collect a stamp or take a photo of your Jelly Passport.",
-      step3_title: "3. Win",
-      step3_desc: "Upload the photo on this page and win valuable prizes!",
-      cta: "UPLOAD PHOTO NOW"
-    },
-    prizes: {
-      title: "Prizes",
-      item1: "3× 2-night weekend in Miskolc",
-      item2: "Accommodation + Full Board",
-      item3: "Miskolc Pass tourist card",
-      quote: "It's not just a dinner. It's a Miskolc experience package."
+      p1: "The legendary Miskolc Jelly Festival is now taking place in restaurants too, so you can taste the famous dish not only on the street, not only on paper trays, but also sitting at a table as a guest.",
+      p2: "This project is a complementary gastro-experience of the Jelly Festival, for those who want to get to know the city's history through the jellies of local restaurateurs.",
+      p3: "If you enter a restaurant, sit at a table, order jelly, you will receive your Jelly Passport along with the dish.",
+      p4: "No two dishes are alike. There are classic, reimagined, and quite surprising ones.",
+      closing: "Let the discovery begin."
     },
     restaurants: {
       title: "Participating Restaurants & Menus",
@@ -142,47 +127,37 @@ const TRANSLATIONS = {
       loading: "Loading restaurants...",
       location_btn: "Map"
     },
+    transition: {
+      title: "Discover more flavors, get to know the city.",
+      text: "Take Miskolc into your own hands, get to know the special gastronomy of the city of Bükk, and experience how diverse this legendary dish can be."
+    },
+    rules: {
+      title: "Make an experience out of Jelly!",
+      subtitle: "Participate in the prize game!",
+      step1: "Taste jelly in at least three different places!",
+      step2: "Collect at least three stamps in your Jelly Passport!",
+      step3: "Take a photo and upload it!",
+      cta: "UPLOAD PHOTO NOW"
+    },
+    prizes: {
+      title: "Win one of the three prizes!",
+      desc: "The three prizes always include:",
+      item1: "Accommodation for two people for two nights (Downtown Luxury Apartment, Bükk Penthouse, Lillafüred Hotel Palota)",
+      item2: "Full board for the experience weekend: two breakfasts, two lunches, and two dinners at selected restaurants.",
+      item3: "Two Miskolc Passes courtesy of Visit Miskolc to discover the city's attractions."
+    },
+    organizers: {
+      title: "The People Behind It",
+      p1: "“Miskolc Jelly takes a seat at the table” is the common cause of Miskolc caterers.",
+      p2: "The self-organized project was created in cooperation with local restaurants, Visit Miskolc, and the Bükk Circle, with the aim of showing Miskolc's gastronomy and turning it into an experience."
+    },
     footer_cta: {
-      title: "The Jelly takes a seat. Will you?",
+      title: "Shall we start?",
+      subtitle: "The Jelly takes a seat. Will you?",
       btn: "JOIN THE GAME"
     }
   }
 };
-
-const QUOTES = [
-  {
-    name: "Varga Henriett",
-    role: { hu: "ötletgazda", en: "Founder of the idea" },
-    text: { 
-      hu: "Számunkra a kocsonya nemcsak hagyományos étel, hanem alapanyag, forma és gondolkodás kérdése is.", 
-      en: "For us, jelly is not just a traditional dish, but a question of ingredient, form, and mentality." 
-    }
-  },
-  {
-    name: "Vass László",
-    role: { hu: "főszervező", en: "Main Organizer" },
-    text: { 
-      hu: "Az egység megteremtése, a közös cél és az egymást erősítő jelenlét az, ami igazán értéket ad.", 
-      en: "Creating unity, a common goal, and a mutually reinforcing presence is what truly adds value." 
-    }
-  },
-  {
-    name: "Fekete-Angyal Enikő",
-    role: { hu: "ügyvezető, Visit Miskolc", en: "CEO, Visit Miskolc" },
-    text: { 
-      hu: "Miskolc akkor működik igazán desztinációként, ha az élmények összeérnek.", 
-      en: "Miskolc truly works as a destination when experiences come together." 
-    }
-  },
-  {
-    name: "Lipták Ádám",
-    role: { hu: "főszervező", en: "Festival Organizer" },
-    text: { 
-      hu: "Ez az együttműködés egyértelműen win-win helyzet: értéket teremt a fesztiválnak.", 
-      en: "This cooperation is clearly a win-win situation: it creates value for the festival." 
-    }
-  }
-];
 
 // --- SEGÉDFÜGGVÉNY: Google Drive Linkek átalakítása ---
 const getOptimizedImageUrl = (url) => {
@@ -252,7 +227,7 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- JAVÍTOTT, PRÉMIUM KÁRTYA KOMPONENS ---
+// --- PRÉMIUM KÁRTYA KOMPONENS (Változatlan) ---
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -261,7 +236,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [userInteracted, setUserInteracted] = useState(false);
   const cardRef = useRef(null);
 
-  // Mobil nézet és Scroll figyelés
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
@@ -286,7 +260,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
     };
   }, []);
 
-  // --- KÉSLELTETŐ LOGIKA ---
   useEffect(() => {
     let timer;
     if (isMobile && !userInteracted) {
@@ -301,7 +274,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
     return () => clearTimeout(timer);
   }, [isInView, isMobile, userInteracted]);
 
-  // --- FLIP LOGIKA MEGHATÁROZÁSA ---
   let isFlipped = false;
 
   if (isMobile) {
@@ -326,12 +298,11 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP (PRÉMIUM DIZÁJN) --- */}
+        {/* --- ELŐLAP --- */}
         <div 
            className="relative w-full h-full [backface-visibility:hidden] bg-[#FCFBF9] rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden border border-slate-100"
            style={{ zIndex: isFlipped ? 0 : 10 }}
         >
-          {/* VÍZJEL HÁTTÉR */}
           <div className="absolute -bottom-10 -right-10 text-[#77b92b] opacity-[0.02] transform rotate-12 pointer-events-none select-none z-0">
              <svg width="250" height="250" viewBox="0 0 24 24" stroke="currentColor" fill="none">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={0.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -339,7 +310,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
           </div>
 
           <div className="p-10 flex flex-col h-full relative z-10">
-            {/* Flip gomb */}
             {restaurant.imageUrl && (
               <button 
                 onClick={(e) => { e.stopPropagation(); handleInteraction(true); }}
@@ -353,24 +323,19 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
               </button>
             )}
 
-            {/* Étterem Név - Nagyobb, hangsúlyosabb */}
             <h3 className="text-3xl font-serif font-bold text-[#2a5528] mb-5 pr-12 leading-tight">
               {restaurant.name}
             </h3>
-            {/* Elválasztó - Vékonyabb, halványabb, több térrel */}
             <div className="w-12 h-0.5 bg-[#aadd77] opacity-40 rounded-full mb-10"></div>
             
-            {/* Menü Lista - Szellősebb (space-y-8) */}
             <div className="space-y-8 mb-6 flex-grow">
               {restaurant.menus.map((item, i) => (
                 <div key={i} className="group">
                    <div className="flex justify-between items-baseline mb-2">
-                      {/* Étel neve - Nagyobb, félkövér */}
                       <div className="font-bold text-slate-900 text-lg leading-snug pr-4">
                         {lang === 'hu' ? item.nameHu : item.nameEn}
                       </div>
                       
-                      {/* Ár - ÚJ ELEGÁNS DESIGN (Nem piros) */}
                       {item.price && (
                         <span className="flex-shrink-0 bg-[#f4f9f2] text-[#2F5E2B] text-xs font-bold px-3 py-1 rounded-full border border-[#e6f0e4] uppercase tracking-wide">
                           {item.price} Ft
@@ -378,7 +343,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
                       )}
                    </div>
 
-                   {/* Leírás - Dőlt, finomabb */}
                    {((lang === 'hu' && item.descHu) || (lang === 'en' && item.descEn)) && (
                      <div className="text-[15px] text-slate-600 font-serif italic font-light leading-relaxed opacity-90">
                        {lang === 'hu' ? item.descHu : item.descEn}
@@ -388,7 +352,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
               ))}
             </div>
             
-            {/* Footer - Elkülönítve, prémium érzet */}
             <div className="pt-8 border-t border-[#f0f5ed] flex items-center justify-between mt-auto">
                <a 
                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address + " " + restaurant.name + " Miskolc")}`}
@@ -402,7 +365,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
           </div>
         </div>
 
-        {/* --- HÁTLAP (KÉP) --- */}
+        {/* --- HÁTLAP --- */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-3xl shadow-xl border border-slate-100 cursor-pointer overflow-hidden"
            onClick={() => handleInteraction(false)}
@@ -481,7 +444,7 @@ export default function HomePage() {
     <Layout lang={lang} setLang={setLang}>
       <GlobalStyles />
       
-      {/* HERO SZEKCIÓ */}
+      {/* 1. HERO SZEKCIÓ */}
       <section className="relative rounded-[2.5rem] bg-white overflow-hidden soft-shadow mb-12">
         <div className="w-full">
            <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
@@ -504,67 +467,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STORY SZEKCIÓ */}
-      <section className="mt-16 px-4 sm:px-6 max-w-3xl mx-auto text-center">
-        <h2 className="text-4xl font-serif font-bold text-[#387035] mb-8">{t.story.title}</h2>
+      {/* 2. BEVEZETŐ STORY */}
+      <section className="mt-16 mb-20 px-4 sm:px-6 max-w-3xl mx-auto text-center">
+        {/* Story tartalom */}
         <div className="prose prose-lg mx-auto text-slate-700 leading-8 font-light">
-          <p className="mb-6">{t.story.p1}</p>
-          <p className="font-serif font-medium text-[#387035] text-2xl italic mb-8 relative inline-block">
-            <span className="opacity-20 text-6xl absolute -top-4 -left-6">“</span>
-            {t.story.quote}
-            <span className="opacity-20 text-6xl absolute -bottom-8 -right-6">”</span>
+          <p className="mb-6 font-medium text-xl text-[#387035]">{t.story.p1}</p>
+          <p className="mb-6">{t.story.p2}</p>
+          <p className="mb-6">{t.story.p3}</p>
+          <p className="mb-8">{t.story.p4}</p>
+          <p className="font-serif font-bold text-[#387035] text-2xl italic relative inline-block">
+             {t.story.closing}
           </p>
-          <p>{t.story.p2}</p>
         </div>
       </section>
 
-      {/* QUOTES SZEKCIÓ */}
-      <section className="mt-20 bg-white py-16 rounded-[2.5rem] soft-shadow">
-        <div className="px-6 text-center mb-10"><h3 className="text-3xl font-serif font-bold text-[#387035]">{t.quotes.title}</h3></div>
-        <div className="px-6 sm:px-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {QUOTES.slice(0, 4).map((quote, idx) => (
-            <div key={idx} className="bg-[#FDFBF7] p-8 rounded-3xl border border-slate-100 hover:shadow-md transition-shadow">
-              <p className="text-slate-600 italic mb-4 font-serif text-lg">"{quote.text[lang]}"</p>
-              <div className="font-bold text-[#387035]">{quote.name}</div>
-              <div className="text-xs text-slate-400 uppercase tracking-widest mt-1">{quote.role[lang]}</div>
-            </div>
-          ))}
-        </div>
-        <div className="text-center mt-10"><p className="text-sm text-slate-400 font-medium tracking-wide uppercase">{t.quotes.more}</p></div>
-      </section>
-
-      {/* RULES SZEKCIÓ */}
-      <section className="mt-20">
-        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl font-serif font-bold mb-8">{t.rules.title}</h2>
-              <div className="space-y-8">
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconPlate /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step1_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1_desc}</p></div></div>
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step2_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2_desc}</p></div></div>
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconGift /></div><div><h4 className="font-bold text-xl mb-1">{t.rules.step3_title}</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3_desc}</p></div></div>
-              </div>
-              <div className="mt-12">
-                <Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl">
-                  {t.rules.cta}
-                </Link>
-              </div>
-            </div>
-            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
-              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-6">{t.prizes.title}</h3>
-              <ul className="space-y-4 text-white">
-                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item1}</span></li>
-                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item2}</span></li>
-                <li className="flex items-center gap-3"><span className="text-[#aadd77] text-xl">★</span> <span className="text-lg">{t.prizes.item3}</span></li>
-              </ul>
-              <p className="mt-8 text-sm text-green-200 italic opacity-80 font-serif">"{t.prizes.quote}"</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ÉTTEREMLISTA */}
-      <section id="etteremlista" className="mt-24 mb-24">
+      {/* 3. ÉTTEREMLISTA (Feljebb hozva) */}
+      <section id="etteremlista" className="mb-24">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">{t.restaurants.title}</h2>
           <div className="h-1 w-20 bg-[#77b92b] mx-auto rounded-full mb-6"></div>
@@ -586,9 +504,70 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* CTA Footer */}
+      {/* 4. ÁTVEZETŐ SZÖVEG */}
+      <section className="mb-24 px-6 text-center max-w-4xl mx-auto">
+         <h3 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035] mb-6">{t.transition.title}</h3>
+         <p className="text-lg text-slate-600 font-light leading-relaxed">{t.transition.text}</p>
+      </section>
+
+      {/* 5. JÁTÉK SZABÁLYOK ÉS NYEREMÉNYEK */}
+      <section className="mb-24">
+        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            
+            {/* Játék menete */}
+            <div>
+              <h2 className="text-4xl font-serif font-bold mb-2">{t.rules.title}</h2>
+              <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
+              
+              <div className="space-y-8">
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconPlate /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconGift /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
+              </div>
+              <div className="mt-12">
+                <Link href="/feltoltes" className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl">
+                  {t.rules.cta}
+                </Link>
+              </div>
+            </div>
+
+            {/* Nyeremények */}
+            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
+              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-4">{t.prizes.title}</h3>
+              <p className="text-white/80 mb-6 text-sm">{t.prizes.desc}</p>
+              <ul className="space-y-5 text-white">
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item1}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item2}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item3}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. SZERVEZŐK (Új szekció a Quotes helyett) */}
+      <section className="mb-24 bg-white py-16 rounded-[2.5rem] soft-shadow text-center px-6">
+        <div className="max-w-3xl mx-auto">
+            <h3 className="text-3xl font-serif font-bold text-[#387035] mb-8">{t.organizers.title}</h3>
+            <p className="text-lg text-slate-600 mb-6 leading-relaxed font-light">{t.organizers.p1}</p>
+            <p className="text-base text-slate-500 leading-relaxed">{t.organizers.p2}</p>
+        </div>
+      </section>
+
+      {/* 7. CTA Footer */}
       <section className="bg-white border border-slate-100 soft-shadow py-16 text-center rounded-[2.5rem] mb-12">
-        <h2 className="text-3xl font-serif font-bold text-[#387035] mb-8">{t.footer_cta.title}</h2>
+        <h2 className="text-3xl font-serif font-bold text-[#387035] mb-2">{t.footer_cta.title}</h2>
+        <p className="text-xl text-slate-600 mb-8">{t.footer_cta.subtitle}</p>
         <Link href="/feltoltes" className="inline-flex items-center justify-center rounded-full bg-[#387035] text-white px-10 py-4 font-bold text-sm uppercase tracking-[0.1em] hover:bg-[#2a5528] transition-all shadow-lg hover:shadow-green-900/20 hover:-translate-y-1">
           {t.footer_cta.btn}
         </Link>
