@@ -66,13 +66,13 @@ const TRANSLATIONS = {
     story: {
       p1: "A legendás Miskolci Kocsonyafesztivál most az éttermekben is zajlik, így nem csak az utcán, nem csak papírtálcán, hanem asztalhoz ülve, vendégként is megkóstolhatod a híres fogást.",
       p2: "Ez a projekt a Kocsonyafesztivál kiegészítő gasztroélménye, és azoknak szól, akik szeretnék megismerni a város történetét a helyi vendéglátósok kocsonyáin keresztül.",
-      p3: "Ha betérsz egy étterembe, asztalhoz ülsz, kocsonyát rendelsz, és a fogással együtt megkapod a Kocsonya Útleveledet is.",
+      p3: "Ha betérsz egy étterembe, asztalhoz ülsz, kocsonyát rendelsz, a fogással együtt megkapod a Kocsonya Útleveledet is.",
       p4: "Nincs két egyforma fogás. Van klasszikus, van újragondolt és van egészen meglepő.",
       closing: "Indulhat a felfedezés."
     },
     restaurants: {
       title: "Résztvevő éttermek és menük",
-      disclaimer: "A lista és az árak tájékoztató jellegűek. A fényképezőgép ikonra kattintva megnézheted az ételt.",
+      disclaimer: "A lista és az árak tájékoztató jellegűek.",
       loading: "Éttermek betöltése...",
       location_btn: "Térkép"
     },
@@ -97,7 +97,7 @@ const TRANSLATIONS = {
     },
     organizers: {
       title: "Akik mögötte állnak",
-      p1: "A „A miskolci kocsonya az asztalhoz ül” a miskolci vendéglátók közös ügye.",
+      p1: "„A miskolci kocsonya az asztalhoz ül” a miskolci vendéglátók közös ügye.",
       p2: "Az önszerveződő projekt a helyi éttermek, a Visit Miskolc és a Bükki Kör együttműködésével jött létre, azzal a céllal, hogy Miskolc gasztronómiáját megmutassa és élménnyé formálja."
     },
     footer_cta: {
