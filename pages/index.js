@@ -26,10 +26,14 @@ const GlobalStyles = () => (
 );
 
 // --- SVG IKONOK ---
-const IconSpoon = () => (
+const IconMeal = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 2v20M9 6l3-4 3 4M9 6v10a3 3 0 006 0V6" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 18v4" />
+    {/* Tányér */}
+    <circle cx="12" cy="12" r="9" strokeWidth={1.2} />
+    {/* Villa bal oldalon */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M8 7v3M7 7v2.5a1 1 0 002 0V7M8 10v7" />
+    {/* Kés jobb oldalon */}
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M16 7v10M16 7a2 2 0 012 2v3a2 2 0 01-2 2" />
   </svg>
 );
 
@@ -498,7 +502,7 @@ export default function HomePage() {
               <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
               
               <div className="space-y-8">
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconSpoon /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconMeal /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
                 <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconBook /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
                 <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
               </div>
