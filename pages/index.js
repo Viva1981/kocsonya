@@ -15,7 +15,6 @@ const GlobalStyles = () => (
     h1, h2, h3, .font-serif {
       font-family: 'Playfair Display', serif;
     }
-    /* Finomított, szélesebb árnyék a prémium hatáshoz */
     .soft-shadow {
       box-shadow: 0 15px 50px -10px rgba(0,0,0,0.05);
     }
@@ -27,7 +26,14 @@ const GlobalStyles = () => (
 );
 
 // --- SVG IKONOK ---
-const IconPlate = () => (
+const IconSpoon = () => (
+  <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 2v20M9 6l3-4 3 4M9 6v10a3 3 0 006 0V6" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 18v4" />
+  </svg>
+);
+
+const IconBook = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
   </svg>
@@ -37,12 +43,6 @@ const IconCamera = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
-const IconGift = () => (
-  <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
   </svg>
 );
 
@@ -72,7 +72,6 @@ const TRANSLATIONS = {
     },
     restaurants: {
       title: "Résztvevő éttermek és menük",
-      disclaimer: "A lista és az árak tájékoztató jellegűek.",
       loading: "Éttermek betöltése...",
       location_btn: "Térkép"
     },
@@ -123,7 +122,6 @@ const TRANSLATIONS = {
     },
     restaurants: {
       title: "Participating Restaurants & Menus",
-      disclaimer: "The list and prices are for information purposes. Click the camera icon to see the dish.",
       loading: "Loading restaurants...",
       location_btn: "Map"
     },
@@ -159,7 +157,6 @@ const TRANSLATIONS = {
   }
 };
 
-// --- SEGÉDFÜGGVÉNY: Google Drive Linkek átalakítása ---
 const getOptimizedImageUrl = (url) => {
   if (!url) return null;
   if (url.includes('drive.google.com') || url.includes('docs.google.com')) {
@@ -172,7 +169,6 @@ const getOptimizedImageUrl = (url) => {
   return url;
 };
 
-// --- CSV PARSOLÓ ---
 const parseCSV = (text) => {
   const lines = text.split("\n");
   const groupedRestaurants = {};
@@ -227,7 +223,6 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
-// --- PRÉMIUM KÁRTYA KOMPONENS (Változatlan) ---
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -298,7 +293,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
-        {/* --- ELŐLAP --- */}
         <div 
            className="relative w-full h-full [backface-visibility:hidden] bg-[#FCFBF9] rounded-3xl soft-shadow card-hover transition-all duration-300 flex flex-col overflow-hidden border border-slate-100"
            style={{ zIndex: isFlipped ? 0 : 10 }}
@@ -314,7 +308,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
               <button 
                 onClick={(e) => { e.stopPropagation(); handleInteraction(true); }}
                 className="absolute top-8 right-8 z-20 p-2.5 bg-white border border-slate-100 rounded-full text-[#387035] hover:bg-[#387035] hover:text-white transition-all shadow-sm hover:shadow-md active:scale-95 group-hover:animate-pulse"
-                title="Kép megtekintése"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -365,7 +358,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
           </div>
         </div>
 
-        {/* --- HÁTLAP --- */}
         <div 
            className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-white rounded-3xl shadow-xl border border-slate-100 cursor-pointer overflow-hidden"
            onClick={() => handleInteraction(false)}
@@ -383,12 +375,6 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-slate-400 font-serif italic">Kép hamarosan...</div>
-          )}
-          
-          {isMobile && !userInteracted && (
-              <div className="absolute bottom-4 right-4 bg-black/40 text-white text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full backdrop-blur-sm border border-white/20">
-                  Görgesd tovább!
-              </div>
           )}
         </div>
       </div>
@@ -444,7 +430,6 @@ export default function HomePage() {
     <Layout lang={lang} setLang={setLang}>
       <GlobalStyles />
       
-      {/* 1. HERO SZEKCIÓ */}
       <section className="relative rounded-[2.5rem] bg-white overflow-hidden soft-shadow mb-12">
         <div className="w-full">
            <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
@@ -467,9 +452,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 2. BEVEZETŐ STORY */}
       <section className="mt-16 mb-20 px-4 sm:px-6 max-w-3xl mx-auto text-center">
-        {/* Story tartalom */}
         <div className="prose prose-lg mx-auto text-slate-700 leading-8 font-light">
           <p className="mb-6 font-medium text-xl text-[#387035]">{t.story.p1}</p>
           <p className="mb-6">{t.story.p2}</p>
@@ -481,12 +464,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 3. ÉTTEREMLISTA (Feljebb hozva) */}
       <section id="etteremlista" className="mb-24">
         <div className="text-center mb-16 max-w-2xl mx-auto">
           <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#387035] mb-4">{t.restaurants.title}</h2>
-          <div className="h-1 w-20 bg-[#77b92b] mx-auto rounded-full mb-6"></div>
-          <p className="text-slate-500">{t.restaurants.disclaimer}</p>
+          <div className="h-1 w-20 bg-[#77b92b] mx-auto rounded-full"></div>
         </div>
         {loading ? (
           <div className="text-center py-24 text-slate-400 font-light text-xl animate-pulse"><p>{t.restaurants.loading}</p></div>
@@ -504,25 +485,21 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 4. ÁTVEZETŐ SZÖVEG */}
       <section className="mb-24 px-6 text-center max-w-4xl mx-auto">
          <h3 className="text-3xl sm:text-4xl font-serif font-bold text-[#387035] mb-6">{t.transition.title}</h3>
          <p className="text-lg text-slate-600 font-light leading-relaxed">{t.transition.text}</p>
       </section>
 
-      {/* 5. JÁTÉK SZABÁLYOK ÉS NYEREMÉNYEK */}
       <section className="mb-24">
         <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            
-            {/* Játék menete */}
             <div>
               <h2 className="text-4xl font-serif font-bold mb-2">{t.rules.title}</h2>
               <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
               
               <div className="space-y-8">
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconPlate /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconGift /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconSpoon /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconBook /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
                 <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
               </div>
               <div className="mt-12">
@@ -532,7 +509,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Nyeremények */}
             <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
               <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-4">{t.prizes.title}</h3>
               <p className="text-white/80 mb-6 text-sm">{t.prizes.desc}</p>
@@ -555,7 +531,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. SZERVEZŐK (Új szekció a Quotes helyett) */}
       <section className="mb-24 bg-white py-16 rounded-[2.5rem] soft-shadow text-center px-6">
         <div className="max-w-3xl mx-auto">
             <h3 className="text-3xl font-serif font-bold text-[#387035] mb-8">{t.organizers.title}</h3>
@@ -564,7 +539,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 7. CTA Footer */}
       <section className="bg-white border border-slate-100 soft-shadow py-16 text-center rounded-[2.5rem] mb-12">
         <h2 className="text-3xl font-serif font-bold text-[#387035] mb-2">{t.footer_cta.title}</h2>
         <p className="text-xl text-slate-600 mb-8">{t.footer_cta.subtitle}</p>
