@@ -24,7 +24,7 @@ const GlobalStyles = () => (
 const FORM_TEXTS = {
   hu: {
     title: "Kocsonya Útlevél Feltöltése",
-    note: "Töltsd ki az adataidat és csatold a fotót a pecsétekről vagy a kocsonyáról!",
+    note: "Töltsd ki az adataidat és csatold a fotót a pecsétekről!",
     fields: {
       name: "Teljes név",
       address: "Lakcím",
@@ -40,7 +40,7 @@ const FORM_TEXTS = {
   },
   en: {
     title: "Upload Jelly Passport",
-    note: "Fill in your details and attach the photo of your stamps or the jelly!",
+    note: "Fill in your details and attach the photo of your stamps!",
     fields: {
       name: "Full Name",
       address: "Address",
