@@ -3,6 +3,9 @@ import Link from "next/link";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
+// --- KONFIGURÁCIÓ ---
+const GOOGLE_MAPS_API_KEY = "AIzaSyDfJBzN33fkvTd6iNITF9aD3_M_N4Iwtwg";
+
 // --- STÍLUS ÉS BETŰTÍPUS IMPORTÁLÁS (INLINE) ---
 const GlobalStyles = () => (
   <style jsx global>{`
@@ -23,6 +26,17 @@ const GlobalStyles = () => (
       transform: translateY(-8px);
       box-shadow: 0 25px 50px -12px rgba(56, 112, 53, 0.12);
     }
+    /* Google Maps InfoWindow stílus finomítás */
+    .gm-style-iw {
+      border-radius: 20px !important;
+      padding: 0 !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+    .gm-style-iw-d {
+      overflow: hidden !important;
+      padding: 0 !important;
+    }
+    .gm-ui-hover-text { display: none !important; }
   `}</style>
 );
 
@@ -44,7 +58,7 @@ const IconBook = () => (
 const IconCamera = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 );
 
@@ -80,6 +94,11 @@ const TRANSLATIONS = {
     transition: {
       title: "Fedezz fel több ízt, ismerd meg Miskolcot.",
       text: "Vedd a nyakadba a várost, ismerd meg a Bükk vidékének különleges gasztronómiáját, és tapasztald meg a KocsonyaÚtlevél segítségével, milyen sokszínű tud lenni ez a legendás étel."
+    },
+    map_section: {
+        title: "Kocsonya-Atlasz",
+        subtitle: "Fedezd fel Miskolc ízeit a térképen!",
+        view_menu: "Megnézem a menüt"
     },
     rules: {
       title: "Kocsonyából élmény!",
@@ -130,6 +149,11 @@ const TRANSLATIONS = {
     transition: {
       title: "Discover more flavors, get to know Miskolc.",
       text: "Take Miskolc into your own hands, get to know the special gastronomy of the Bükk region, and experience how diverse this legendary dish can be with your KocsonyaÚtlevél."
+    },
+    map_section: {
+        title: "Jelly Atlas",
+        subtitle: "Discover the flavors of Miskolc on the map!",
+        view_menu: "View Menu"
     },
     rules: {
       title: "Make an experience out of Jelly!",
@@ -199,6 +223,8 @@ const parseCSV = (text) => {
     const active = row[7]?.toLowerCase().trim();
     const rawImageUrl = row[8] || ""; 
     const imageUrl = getOptimizedImageUrl(rawImageUrl);
+    const lat = row[9];
+    const lng = row[10];
 
     if (active === 'x') {
       if (!groupedRestaurants[name]) {
@@ -206,6 +232,8 @@ const parseCSV = (text) => {
           name: name,
           address: address,
           imageUrl: imageUrl,
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
           menus: []
         };
       } else if (!groupedRestaurants[name].imageUrl && imageUrl) {
@@ -393,6 +421,105 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   );
 };
 
+// --- MAP KOMPONENS ---
+const MapSection = ({ restaurants, lang }) => {
+    const mapRef = useRef(null);
+    const [map, setMap] = useState(null);
+    const t = TRANSLATIONS[lang].map_section;
+
+    useEffect(() => {
+        if (!window.google) {
+            const script = document.createElement("script");
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}`;
+            script.async = true;
+            script.defer = true;
+            script.onload = () => initMap();
+            document.head.appendChild(script);
+        } else {
+            initMap();
+        }
+
+        function initMap() {
+            const miskolcCenter = { lat: 48.103, lng: 20.785 };
+            const editorialMapStyle = [
+                { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#e9e9e9" }, { "lightness": 17 }] },
+                { "featureType": "landscape", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 20 }] },
+                { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [{ "color": "#ffffff" }, { "lightness": 17 }] },
+                { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [{ "color": "#ffffff" }, { "lightness": 29 }, { "weight": 0.2 }] },
+                { "featureType": "road.arterial", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 18 }] },
+                { "featureType": "road.local", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }, { "lightness": 16 }] },
+                { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }, { "lightness": 21 }] },
+                { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e6f0e4" }, { "lightness": 21 }] },
+                { "elementType": "labels.text.stroke", "stylers": [{ "visibility": "on" }, { "color": "#ffffff" }, { "lightness": 16 }] },
+                { "elementType": "labels.text.fill", "stylers": [{ "saturation": 36 }, { "color": "#333333" }, { "lightness": 40 }] },
+                { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }
+            ];
+
+            const newMap = new window.google.maps.Map(mapRef.current, {
+                center: miskolcCenter,
+                zoom: 14,
+                styles: editorialMapStyle,
+                disableDefaultUI: false,
+                zoomControl: true,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true
+            });
+
+            const infoWindow = new window.google.maps.InfoWindow();
+
+            restaurants.forEach((res) => {
+                if (res.lat && res.lng) {
+                    const marker = new window.google.maps.Marker({
+                        position: { lat: res.lat, lng: res.lng },
+                        map: newMap,
+                        title: res.name,
+                        icon: {
+                            path: window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+                            fillColor: "#387035",
+                            fillOpacity: 1,
+                            strokeWeight: 0,
+                            scale: 8
+                        }
+                    });
+
+                    marker.addListener("click", () => {
+                        const contentString = `
+                            <div style="font-family: 'DM Sans', sans-serif; width: 200px; padding: 10px;">
+                                ${res.imageUrl ? `<img src="${res.imageUrl}" style="width: 100%; aspect-ratio: 2/3; object-cover: cover; border-radius: 12px; margin-bottom: 10px;">` : ''}
+                                <h4 style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 16px; margin-bottom: 4px; color: #2a5528;">${res.name}</h4>
+                                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">${res.address}</p>
+                                <button 
+                                    onclick="document.getElementById('${getRestaurantId(res.name)}').scrollIntoView({behavior: 'smooth'})"
+                                    style="width: 100%; background: #387035; color: white; border: none; padding: 8px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 0.1em;"
+                                >
+                                    ${t.view_menu}
+                                </button>
+                            </div>
+                        `;
+                        infoWindow.setContent(contentString);
+                        infoWindow.open(newMap, marker);
+                    });
+                }
+            });
+
+            setMap(newMap);
+        }
+    }, [restaurants, lang]);
+
+    return (
+        <section className="mb-24 px-4 sm:px-6">
+            <div className="text-center mb-12 max-w-2xl mx-auto">
+                <h2 className="text-4xl font-serif font-bold text-[#387035] mb-2">{t.title}</h2>
+                <p className="text-slate-600 font-light italic">{t.subtitle}</p>
+            </div>
+            <div className="max-w-7xl mx-auto h-[600px] rounded-[2.5rem] overflow-hidden soft-shadow border border-white relative">
+                <div ref={mapRef} className="w-full h-full" />
+            </div>
+        </section>
+    );
+};
+
 export default function HomePage() {
   const { lang, setLang } = useLanguage();
   const t = TRANSLATIONS[lang]; 
@@ -576,6 +703,11 @@ export default function HomePage() {
             <p className="text-base text-slate-500 leading-relaxed">{t.organizers.p2}</p>
         </div>
       </section>
+
+      {/* TÉRKÉP SZEKCIÓ */}
+      {!loading && restaurants.length > 0 && (
+          <MapSection restaurants={restaurants} lang={lang} />
+      )}
 
       <section className="bg-white border border-slate-100 soft-shadow py-16 text-center rounded-[2.5rem] mb-12">
         <h2 className="text-3xl font-serif font-bold text-[#387035] mb-2">{t.footer_cta.title}</h2>
