@@ -4,7 +4,7 @@ import { useLanguage } from "../components/useLanguage";
 const TRANSLATIONS = {
   hu: {
     title: "Adatvédelmi tájékoztató",
-    intro: "A Kocsonya Útlevél Nyereményjáték (a továbbiakban: Játék) során a „A miskolci kocsonya az asztalhoz ül” program (a továbbiakban: Adatkezelő) kiemelt figyelmet fordít a személyes adatok védelmére.",
+    intro: "A KocsonyaÚtlevél Nyereményjáték (a továbbiakban: Játék) során a „A miskolci kocsonya az asztalhoz ül” program (a továbbiakban: Adatkezelő) kiemelt figyelmet fordít a személyes adatok védelmére.",
     sections: [
       {
         title: "1. Az adatkezelés célja",
@@ -19,7 +19,7 @@ const TRANSLATIONS = {
       {
         title: "2. A kezelt adatok köre",
         text: "A Játékban való részvétel során az alábbi személyes adatokat kérjük be:",
-        list: ["név", "lakcím", "telefonszám", "feltöltött fénykép (Kocsonya Útlevélről)"]
+        list: ["név", "lakcím", "telefonszám", "feltöltött fénykép (KocsonyaÚtlevélről)"]
       },
       {
         title: "3. Az adatkezelés jogalapja",
@@ -55,7 +55,7 @@ const TRANSLATIONS = {
   },
   en: {
     title: "Privacy Policy",
-    intro: "During the Jelly Passport Prize Game (hereinafter: Game), the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Data Controller) pays special attention to the protection of personal data.",
+    intro: "During the KocsonyaÚtlevél Prize Game (hereinafter: Game), the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Data Controller) pays special attention to the protection of personal data.",
     sections: [
       {
         title: "1. Purpose of Data Processing",
@@ -70,7 +70,7 @@ const TRANSLATIONS = {
       {
         title: "2. Scope of Processed Data",
         text: "The following personal data is requested during participation in the Game:",
-        list: ["name", "address", "phone number", "uploaded photo (of the Jelly Passport)"]
+        list: ["name", "address", "phone number", "uploaded photo (of the KocsonyaÚtlevél)"]
       },
       {
         title: "3. Legal Basis for Data Processing",
