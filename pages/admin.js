@@ -44,20 +44,28 @@ export default function AdminPage() {
           let obj = { id: idx };
           headers.forEach((h, i) => {
              let rawKey = h.toString().toLowerCase().trim();
-             let key = rawKey;
+             let key = `col_${i}`; // Alapértelmezett kulcs az index alapján
              
-             // MAPELÉS A TÁBLÁZAT OSZLOPAI ALAPJÁN
-             if (rawKey === "nev") key = "name";
-             if (rawKey === "cim") key = "address";
-             if (rawKey === "ar") key = "price";
-             if (rawKey === "aktiv") key = "active";
-             if (rawKey === "menu_hu") key = "menuHu";
-             if (rawKey === "description_hu") key = "descHu";
-             if (rawKey === "menu_en") key = "menuEn";
-             if (rawKey === "description_en") key = "descEn";
-             if (rawKey === "kép url" || rawKey === "drive link") key = "imageUrl";
-             if (rawKey === "telefonszám") key = "phone";
-             if (rawKey === "dátum") key = "timestamp";
+             // UNIVERZÁLIS MEZŐ LEKÉPEZÉS (SZÖVEG VAGY OSZLOP INDEX ALAPJÁN)
+             if (action === "readSubmissions") {
+                // NEVEZŐK (Munkalap1)
+                if (i === 0 || rawKey.includes("dátum")) key = "timestamp";
+                if (i === 1 || rawKey.includes("név") || rawKey === "nev") key = "name";
+                if (i === 2 || rawKey.includes("cím") || rawKey === "cim") key = "address";
+                if (i === 3 || rawKey.includes("telefon")) key = "phone";
+                if (i === 5 || rawKey.includes("link") || rawKey.includes("kép")) key = "imageUrl";
+             } else {
+                // ÉTTERMEK (Ettermek)
+                if (i === 0 || rawKey === "nev") key = "name";
+                if (i === 1 || rawKey === "cim") key = "address";
+                if (i === 2 || rawKey === "menu_hu") key = "menuHu";
+                if (i === 3 || rawKey === "description_hu") key = "descHu";
+                if (i === 4 || rawKey === "menu_en") key = "menuEn";
+                if (i === 5 || rawKey === "description_en") key = "descEn";
+                if (i === 6 || rawKey === "ar") key = "price";
+                if (i === 7 || rawKey === "aktiv") key = "active";
+                if (i === 8 || rawKey.includes("kép url")) key = "imageUrl";
+             }
              
              obj[key] = row[i];
           });
@@ -134,7 +142,7 @@ export default function AdminPage() {
                   <tr>
                     <th className="p-6">Dátum</th>
                     <th className="p-6">Név</th>
-                    <th className="p-6">Cím</th>
+                    <th className="p-6 text-center">Cím</th>
                     <th className="p-6">Telefon</th>
                     <th className="p-6 text-center">Fotó</th>
                   </tr>
@@ -144,7 +152,7 @@ export default function AdminPage() {
                     <tr key={i} className="hover:bg-slate-50">
                       <td className="p-6 text-[10px] text-slate-400 font-mono whitespace-nowrap">{s.timestamp}</td>
                       <td className="p-6 font-bold">{s.name}</td>
-                      <td className="p-6 text-sm text-slate-500">{s.address}</td>
+                      <td className="p-6 text-sm text-slate-500 text-center">{s.address}</td>
                       <td className="p-6 text-sm font-medium text-[#387035]">{s.phone}</td>
                       <td className="p-6 flex justify-center">
                         {s.imageUrl ? (
@@ -161,12 +169,11 @@ export default function AdminPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6">
               {restaurants.map((res) => (
-                <div key={res.id} className="bg-white p-8 rounded-[2rem] border soft-shadow">
+                <div key={res.id} className="bg-white p-8 rounded-[2rem] border soft-shadow text-slate-800">
                   {editingId === res.id ? (
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px] font-bold uppercase text-slate-400 tracking-wider">
                         
-                        {/* Alapadatok */}
                         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-3xl">
                            <div className="md:col-span-2"><label className="ml-2 mb-1 block">Étterem Neve</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} /></div>
                            <div><label className="ml-2 mb-1 block">Ár (Ft)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} /></div>
@@ -174,21 +181,18 @@ export default function AdminPage() {
                            <div className="md:col-span-4"><label className="ml-2 mb-1 block">Cím</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} /></div>
                         </div>
 
-                        {/* Magyar menü */}
                         <div className="bg-[#f4f9f2] p-6 rounded-3xl space-y-4 border border-[#e6f0e4]">
                            <h4 className="text-[#387035] text-xs mb-2">Magyar nyelvű tartalom</h4>
                            <div><label className="ml-2 mb-1 block">Menü neve</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.menuHu} onChange={e => setEditForm({...editForm, menuHu: e.target.value})} /></div>
                            <div><label className="ml-2 mb-1 block">Leírás</label><textarea rows="3" className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.descHu} onChange={e => setEditForm({...editForm, descHu: e.target.value})} /></div>
                         </div>
 
-                        {/* Angol menü */}
                         <div className="bg-slate-50 p-6 rounded-3xl space-y-4 border border-slate-200">
                            <h4 className="text-slate-500 text-xs mb-2">Angol nyelvű tartalom</h4>
                            <div><label className="ml-2 mb-1 block">Menü neve (EN)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.menuEn} onChange={e => setEditForm({...editForm, menuEn: e.target.value})} /></div>
                            <div><label className="ml-2 mb-1 block">Leírás (EN)</label><textarea rows="3" className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.descEn} onChange={e => setEditForm({...editForm, descEn: e.target.value})} /></div>
                         </div>
 
-                        {/* Kép */}
                         <div className="md:col-span-2"><label className="ml-2 mb-1 block">Drive Kép URL</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.imageUrl} onChange={e => setEditForm({...editForm, imageUrl: e.target.value})} /></div>
                       </div>
 
