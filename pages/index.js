@@ -26,24 +26,35 @@ const GlobalStyles = () => (
       transform: translateY(-8px);
       box-shadow: 0 25px 50px -12px rgba(56, 112, 53, 0.12);
     }
-    /* Google Maps InfoWindow stílus teljes tisztítás */
+    
+    /* Google Maps InfoWindow - Drasztikus UI tisztítás */
     .gm-style-iw {
       border-radius: 24px !important;
       padding: 0 !important;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
       background: #FCFBF9 !important;
-      max-width: 220px !important;
+      max-width: 240px !important;
     }
     .gm-style-iw-d {
       overflow: hidden !important;
       padding: 0 !important;
       max-height: none !important;
     }
-    .gm-style-iw-tc { display: none !important; } /* Nyíl eltüntetése */
-    .gm-ui-hover-text { display: none !important; }
-    /* Bezáró gomb (X) teljes eltüntetése */
+    /* Felső sáv és bezáró gomb teljes eltüntetése (több verzióra) */
+    .gm-style-iw-ch, 
+    .gm-ui-header-button,
+    button[aria-label="Close"],
+    button[title="Close"],
     .gm-style-iw + button {
       display: none !important;
+    }
+    .gm-style-iw-tc { display: none !important; }
+    .gm-ui-hover-text { display: none !important; }
+    
+    /* InfoWindow belső konténer javítása */
+    .gm-style .gm-style-iw-c {
+        padding: 0 !important;
+        max-height: none !important;
     }
   `}</style>
 );
