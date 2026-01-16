@@ -115,8 +115,8 @@ const TRANSLATIONS = {
       text: "Vedd a nyakadba a várost, ismerd meg a Bükk vidékének különleges gasztronómiáját, és tapasztald meg a KocsonyaÚtlevél segítségével, milyen sokszínű tud lenni ez a legendás étel."
     },
     map_section: {
-        title: "Kocsonya-Atlasz",
-        subtitle: "Fedezd fel Miskolc ízeit a térképen!",
+        title: "Kocsonya Térkép",
+        subtitle: "Keresd meg Miskolc ízeit a térképen!",
         view_menu: "Megnézem a menüt"
     },
     rules: {
@@ -170,7 +170,7 @@ const TRANSLATIONS = {
       text: "Take Miskolc into your own hands, get to know the special gastronomy of the Bükk region, and experience how diverse this legendary dish can be with your KocsonyaÚtlevél."
     },
     map_section: {
-        title: "Jelly Atlas",
+        title: "Jelly Map",
         subtitle: "Discover the flavors of Miskolc on the map!",
         view_menu: "View Menu"
     },
