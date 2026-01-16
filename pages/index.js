@@ -28,11 +28,8 @@ const GlobalStyles = () => (
 // --- SVG IKONOK ---
 const IconMeal = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    {/* Tányér */}
     <circle cx="12" cy="12" r="9" strokeWidth={1.2} />
-    {/* Villa bal oldalon */}
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M8 7v3M7 7v2.5a1 1 0 002 0V7M8 10v7" />
-    {/* Kés jobb oldalon */}
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M16 7v10M16 7a2 2 0 012 2v3a2 2 0 01-2 2" />
   </svg>
 );
@@ -63,15 +60,15 @@ const TRANSLATIONS = {
     hero: {
       title1: "A miskolci kocsonya",
       title2: "az asztalhoz ül.",
-      subtitle: "Ha Miskolcra érkezel, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a kocsonya.",
+      subtitle: "Ha Miskolcra érkezel a Kocsonyafesztivál idején, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a miskolci kocsonya.",
       cta_primary: "Játék és Feltöltés",
       cta_secondary: "Étteremlista"
     },
     story: {
       p1: "A legendás Miskolci Kocsonyafesztivál most az éttermekben is zajlik, így nem csak az utcán, nem csak papírtálcán, hanem asztalhoz ülve, vendégként is megkóstolhatod a híres fogást.",
-      p2: "Ez a projekt a Kocsonyafesztivál kiegészítő gasztroélménye, és azoknak szól, akik szeretnék megismerni a város történetét a helyi vendéglátósok kocsonyáin keresztül.",
-      p3: "Ha betérsz egy étterembe, asztalhoz ülsz, kocsonyát rendelsz, a fogással együtt megkapod a Kocsonya Útleveledet is.",
-      p4: "Nincs két egyforma fogás. Van klasszikus, van újragondolt és van egészen meglepő.",
+      p2: "Ez a projekt a Kocsonyafesztivál kiegészítő gasztroélménye, és azoknak szól, akik szeretnék megismerni Miskolc történetét a helyi vendéglátósok kocsonyáin keresztül.",
+      p3: "Ha betérsz egy étterembe, asztalhoz ülsz és kocsonyát rendelsz, a fogással együtt megkapod a KocsonyaÚtleveledet is.",
+      p4: "Nincs két egyforma fogás. Van klasszikus miskolci kocsonya, van újragondolt és van egészen meglepő is.",
       closing: "Indulhat a felfedezés."
     },
     restaurants: {
@@ -80,22 +77,22 @@ const TRANSLATIONS = {
       location_btn: "Térkép"
     },
     transition: {
-      title: "Fedezz fel több ízt, ismerd meg a várost.",
-      text: "Vedd a nyakadba Miskolcot, ismerd meg a Bükk városának különleges gasztronómiáját, és tapasztald meg, milyen sokszínű tud lenni ez a legendás étel."
+      title: "Fedezz fel több ízt, ismerd meg Miskolcot.",
+      text: "Vedd a nyakadba a várost, ismerd meg a Bükk vidékének különleges gasztronómiáját, és tapasztald meg a KocsonyaÚtlevél segítségével, milyen sokszínű tud lenni ez a legendás étel."
     },
     rules: {
       title: "Kocsonyából élmény!",
-      subtitle: "Vegyél részt a nyereményjátékban!",
-      step1: "Kóstolj kocsonyát legalább három különböző helyen!",
-      step2: "Gyűjts legalább három pecsétet a Kocsonya Útleveledbe!",
-      step3: "Fotózd le, és töltsd fel!",
+      subtitle: "Vegyél részt a KocsonyaÚtlevél nyereményjátékban!",
+      step1: "Kóstolj kocsonyát legalább három különböző helyen Miskolcon!",
+      step2: "Gyűjts legalább három pecsétet a KocsonyaÚtleveledbe!",
+      step3: "Fotózd le a lepecsételt oldalt, és töltsd fel!",
       cta: "FOTÓ FELTÖLTÉSE MOST"
     },
     prizes: {
       title: "Nyerd meg a három nyeremény egyikét!",
       desc: "A három nyeremény minden esetben tartalmaz:",
       item1: "Szállást két fő részére két éjszakára (Belvárosi Luxusapartman, Bükk Penthouse, Lillafüredi Hotel Palota)",
-      item2: "Az élményhétvégére teljes ellátást: két reggelit, két ebédet és két vacsorát válogatott éttermekben.",
+      item2: "Az élményhétvégére teljes ellátást: két reggelit, két ebédet és két vacsorát válogatott miskolci éttermekben.",
       item3: "Két Miskolc Pass-t a Visit Miskolc jóvoltából, amellyel felfedezheted a város attrakcióit."
     },
     organizers: {
@@ -113,14 +110,14 @@ const TRANSLATIONS = {
     hero: {
       title1: "Miskolc Jelly comes",
       title2: "to the table.",
-      subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
+      subtitle: "If you arrive in Miskolc during the Jelly Festival, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
       cta_primary: "Play & Upload",
       cta_secondary: "Restaurant List"
     },
     story: {
-      p1: "The legendary Miskolc Jelly Festival is now taking place in restaurants too, so you can taste the famous dish not only on the street, not only on paper trays, but also sitting at a table as a guest.",
-      p2: "This project is a complementary gastro-experience of the Jelly Festival, for those who want to get to know the city's history through the jellies of local restaurateurs.",
-      p3: "If you enter a restaurant, sit at a table, order jelly, you will receive your Jelly Passport along with the dish.",
+      p1: "The legendary Miskolc Jelly Festival is now taking place in restaurants too, so you can taste the famous dish not only on the street, but also sitting at a table as a guest.",
+      p2: "This project is a complementary gastro-experience of the Jelly Festival, for those who want to get to know the city's history through local gastronomy.",
+      p3: "If you enter a restaurant, sit at a table and order jelly, you will receive your KocsonyaÚtlevél along with the dish.",
       p4: "No two dishes are alike. There are classic, reimagined, and quite surprising ones.",
       closing: "Let the discovery begin."
     },
@@ -130,28 +127,28 @@ const TRANSLATIONS = {
       location_btn: "Map"
     },
     transition: {
-      title: "Discover more flavors, get to know the city.",
-      text: "Take Miskolc into your own hands, get to know the special gastronomy of the city of Bükk, and experience how diverse this legendary dish can be."
+      title: "Discover more flavors, get to know Miskolc.",
+      text: "Take Miskolc into your own hands, get to know the special gastronomy of the Bükk region, and experience how diverse this legendary dish can be with your KocsonyaÚtlevél."
     },
     rules: {
       title: "Make an experience out of Jelly!",
-      subtitle: "Participate in the prize game!",
-      step1: "Taste jelly in at least three different places!",
-      step2: "Collect at least three stamps in your Jelly Passport!",
+      subtitle: "Participate in the KocsonyaÚtlevél prize game!",
+      step1: "Taste jelly in at least three different places in Miskolc!",
+      step2: "Collect at least three stamps in your KocsonyaÚtlevél!",
       step3: "Take a photo and upload it!",
       cta: "UPLOAD PHOTO NOW"
     },
     prizes: {
       title: "Win one of the three prizes!",
       desc: "The three prizes always include:",
-      item1: "Accommodation for two people for two nights (Downtown Luxury Apartment, Bükk Penthouse, Lillafüred Hotel Palota)",
+      item1: "Accommodation for two people for two nights in Miskolc (Downtown Luxury Apartment, Bükk Penthouse, Lillafüred Hotel Palota)",
       item2: "Full board for the experience weekend: two breakfasts, two lunches, and two dinners at selected restaurants.",
       item3: "Two Miskolc Passes courtesy of Visit Miskolc to discover the city's attractions."
     },
     organizers: {
       title: "The People Behind It",
       p1: "“Miskolc Jelly takes a seat at the table” is the common cause of Miskolc caterers.",
-      p2: "The self-organized project was created in cooperation with local restaurants, Visit Miskolc, and the Bükk Circle, with the aim of showing Miskolc's gastronomy and turning it into an experience."
+      p2: "The self-organized project was created in cooperation with local restaurants, Visit Miskolc, and the Bükk Circle."
     },
     footer_cta: {
       title: "Shall we start?",
@@ -436,7 +433,7 @@ export default function HomePage() {
       
       <section className="relative rounded-[2.5rem] bg-white overflow-hidden soft-shadow mb-12">
         <div className="w-full">
-           <img src="/kocsonya/banner.jpg" alt="Kocsonya Útlevél 2026 Miskolc" className="w-full h-auto object-contain" />
+           <img src="/kocsonya/banner.jpg" alt="KocsonyaÚtlevél 2026 Miskolci Kocsonyafesztivál" className="w-full h-auto object-contain" />
         </div>
         <div className="px-6 py-12 sm:px-12 text-center max-w-7xl mx-auto">
           <h1 className="text-4xl sm:text-6xl lg:text-7xl lg:whitespace-nowrap font-serif font-bold text-[#387035] mb-8 leading-tight tracking-tight">
