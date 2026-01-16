@@ -60,7 +60,7 @@ const TRANSLATIONS = {
     hero: {
       title1: "A miskolci kocsonya",
       title2: "az asztalhoz ül.",
-      subtitle: "Ha Miskolcra érkezel a Kocsonyafesztivál idején, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a miskolci kocsonya.",
+      subtitle: "Ha Miskolcra érkezel, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a miskolci kocsonya.",
       cta_primary: "Játék és Feltöltés",
       cta_secondary: "Étteremlista"
     },
@@ -110,7 +110,7 @@ const TRANSLATIONS = {
     hero: {
       title1: "Miskolc Jelly comes",
       title2: "to the table.",
-      subtitle: "If you arrive in Miskolc during the Jelly Festival, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
+      subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
       cta_primary: "Play & Upload",
       cta_secondary: "Restaurant List"
     },
