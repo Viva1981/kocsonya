@@ -44,27 +44,26 @@ export default function AdminPage() {
           let obj = { id: idx };
           headers.forEach((h, i) => {
              let rawKey = h.toString().toLowerCase().trim();
-             let key = `col_${i}`; // Alapértelmezett kulcs az index alapján
+             let key = `col_${i}`; 
              
-             // UNIVERZÁLIS MEZŐ LEKÉPEZÉS (SZÖVEG VAGY OSZLOP INDEX ALAPJÁN)
              if (action === "readSubmissions") {
-                // NEVEZŐK (Munkalap1)
-                if (i === 0 || rawKey.includes("dátum")) key = "timestamp";
-                if (i === 1 || rawKey.includes("név") || rawKey === "nev") key = "name";
-                if (i === 2 || rawKey.includes("cím") || rawKey === "cim") key = "address";
-                if (i === 3 || rawKey.includes("telefon")) key = "phone";
-                if (i === 5 || rawKey.includes("link") || rawKey.includes("kép")) key = "imageUrl";
+                // --- NEVEZŐK (PONTOS OSZLOP INDEXEK) ---
+                if (i === 0) key = "timestamp";
+                if (i === 1) key = "name";      // B oszlop: Név
+                if (i === 2) key = "address";   // C oszlop: Cím
+                if (i === 3) key = "phone";     // D oszlop: Telefonszám
+                if (i === 5) key = "imageUrl";  // F oszlop: Drive link
              } else {
-                // ÉTTERMEK (Ettermek)
-                if (i === 0 || rawKey === "nev") key = "name";
-                if (i === 1 || rawKey === "cim") key = "address";
-                if (i === 2 || rawKey === "menu_hu") key = "menuHu";
-                if (i === 3 || rawKey === "description_hu") key = "descHu";
-                if (i === 4 || rawKey === "menu_en") key = "menuEn";
-                if (i === 5 || rawKey === "description_en") key = "descEn";
-                if (i === 6 || rawKey === "ar") key = "price";
-                if (i === 7 || rawKey === "aktiv") key = "active";
-                if (i === 8 || rawKey.includes("kép url")) key = "imageUrl";
+                // --- ÉTTERMEK ---
+                if (rawKey === "nev") key = "name";
+                if (rawKey === "cim") key = "address";
+                if (rawKey === "menu_hu") key = "menuHu";
+                if (rawKey === "description_hu") key = "descHu";
+                if (rawKey === "menu_en") key = "menuEn";
+                if (rawKey === "description_en") key = "descEn";
+                if (rawKey === "ar") key = "price";
+                if (rawKey === "aktiv") key = "active";
+                if (rawKey.includes("kép url") || rawKey === "imageurl") key = "imageUrl";
              }
              
              obj[key] = row[i];
