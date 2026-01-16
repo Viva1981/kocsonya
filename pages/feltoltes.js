@@ -24,12 +24,12 @@ const GlobalStyles = () => (
 const FORM_TEXTS = {
   hu: {
     title: "KocsonyaÚtlevél Feltöltése",
-    note: "A miskolci kocsonya az asztalhoz ül! Töltsd ki az adataidat és csatold a fotót a lepecsételt KocsonyaÚtleveledről, hogy részt vehess a Kocsonyafesztivál nyereményjátékában!",
+    note: "A miskolci kocsonya az asztalhoz ül! Töltsd ki az adataidat és csatold a fotót a lepecsételt KocsonyaÚtleveledről, hogy részt vehess nyereményjátékban!",
     fields: {
       name: "Teljes név",
-      address: "Lakcím (Miskolc és környéke előnyben)",
+      address: "Lakcím",
       phone: "Telefonszám",
-      file: "Fotó feltöltése a pecsétekről",
+      file: "Fotó feltöltése",
       selected: "Kiválasztott fájl",
       click: "Kattints a kiválasztáshoz"
     },
@@ -40,7 +40,7 @@ const FORM_TEXTS = {
   },
   en: {
     title: "Upload KocsonyaÚtlevél",
-    note: "Miskolc jelly is served! Fill in your details and attach the photo of your stamped KocsonyaÚtlevél to participate in the Jelly Festival prize game!",
+    note: "Miskolc jelly is served! Fill in your details and attach the photo of your stamped KocsonyaÚtlevél to participate in the prize game!",
     fields: {
       name: "Full Name",
       address: "Address",

@@ -4,15 +4,15 @@ import { useLanguage } from "../components/useLanguage";
 const TRANSLATIONS = {
   hu: {
     title: "Játékszabályzat",
-    intro: "A Kocsonya Útlevél Nyereményjáték (a továbbiakban: Játék) szervezője „A miskolci kocsonya az asztalhoz ül” program (a továbbiakban: Szervező).",
+    intro: "A KocsonyaÚtlevél Nyereményjáték (a továbbiakban: Játék) szervezője „A miskolci kocsonya az asztalhoz ül” program (a továbbiakban: Szervező).",
     sections: [
       {
         title: "1. A játékban való részvétel feltételei",
         text: "A Játékban részt vehet minden 18. életévét betöltött természetes személy, aki a játék időtartama alatt:",
         list: [
           "legalább három különböző vendéglátóhelyen kocsonyát fogyaszt,",
-          "a fogyasztást igazoló legalább három pecsétet összegyűjti a Kocsonya Útlevélben,",
-          "az elkészült Kocsonya Útlevelet lefényképezi és feltölti a Szervező által megjelölt online felületen."
+          "a fogyasztást igazoló legalább három pecsétet összegyűjti a KocsonyaÚtlevélben,",
+          "az elkészült KocsonyaÚtlevelet lefényképezi és feltölti a Szervező által megjelölt online felületen."
         ],
         footer: "A részvételhez minden feltétel együttes teljesítése szükséges."
       },
@@ -46,15 +46,15 @@ const TRANSLATIONS = {
   },
   en: {
     title: "Game Rules",
-    intro: "The organizer of the Jelly Passport Prize Game (hereinafter: Game) is the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Organizer).",
+    intro: "The organizer of the KocsonyaÚtlevél Prize Game (hereinafter: Game) is the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Organizer).",
     sections: [
       {
         title: "1. Conditions for Participation",
         text: "Any natural person over the age of 18 who during the duration of the game can participate:",
         list: [
           "consumes jelly at least at three different catering establishments,",
-          "collects at least three stamps certifying consumption in the Jelly Passport,",
-          "takes a photo of the completed Jelly Passport and uploads it to the online interface designated by the Organizer."
+          "collects at least three stamps certifying consumption in the KocsonyaÚtlevél,",
+          "takes a photo of the completed KocsonyaÚtlevél and uploads it to the online interface designated by the Organizer."
         ],
         footer: "To participate, all conditions must be met collectively."
       },
