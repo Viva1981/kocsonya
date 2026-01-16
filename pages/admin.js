@@ -14,7 +14,7 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState({});
 
   // KONFIGURÁCIÓ
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzC_6pVVnwU78r1KWNQkh_4vAwnZS54GZ4t7OQumlZNhSRB3-tJU09hhxafA0kdfmFBg/exec"; 
+  const SCRIPT_URL = "IDE_MÁSOLD_AZ_ÚJ_DEPLOY_URL-T"; 
   const ADMIN_TOKEN = "KOCSONYA_SECRET_2026";
 
   const handleLogin = (e) => {
@@ -43,10 +43,22 @@ export default function AdminPage() {
         const rows = result.data.slice(1).map((row, idx) => {
           let obj = { id: idx };
           headers.forEach((h, i) => {
-             let key = h.toLowerCase().replace(/\s/g, "");
-             if (key === "drivelink" || key === "imageurl") key = "imageUrl";
-             if (key === "telefonszám") key = "phone";
-             if (key === "név") key = "name";
+             let rawKey = h.toString().toLowerCase().trim();
+             let key = rawKey;
+             
+             // UNIVERZÁLIS MEZŐ LEKÉPEZÉS (Magyar -> Angol kód)
+             if (rawKey.includes("név") || rawKey === "name") key = "name";
+             if (rawKey.includes("cím") || rawKey === "address") key = "address";
+             if (rawKey.includes("ár") || rawKey === "price") key = "price";
+             if (rawKey.includes("aktív") || rawKey === "active") key = "active";
+             if (rawKey.includes("menü hu") || rawKey === "menuhu") key = "menuHu";
+             if (rawKey.includes("leírás hu") || rawKey === "deschu") key = "descHu";
+             if (rawKey.includes("menü en") || rawKey === "menuen") key = "menuEn";
+             if (rawKey.includes("leírás en") || rawKey === "descen") key = "descEn";
+             if (rawKey.includes("kép") || rawKey.includes("drive link") || rawKey === "imageurl" || rawKey === "drivelink") key = "imageUrl";
+             if (rawKey.includes("telefonszám") || rawKey === "phone") key = "phone";
+             if (rawKey.includes("dátum") || rawKey === "timestamp") key = "timestamp";
+             
              obj[key] = row[i];
           });
           return obj;
@@ -68,10 +80,10 @@ export default function AdminPage() {
           originalName: editForm.originalName,
           name: editForm.name,
           address: editForm.address,
-          menuHu: editForm.menuhu || editForm.menuHu,
-          descHu: editForm.deschu || editForm.descHu || "",
-          menuEn: editForm.menuen || editForm.menuEn,
-          descEn: editForm.descen || editForm.descEn || "",
+          menuHu: editForm.menuHu,
+          descHu: editForm.descHu || "",
+          menuEn: editForm.menuEn,
+          descEn: editForm.descEn || "",
           price: editForm.price,
           active: editForm.active,
           imageUrl: editForm.imageUrl
@@ -89,8 +101,9 @@ export default function AdminPage() {
 
   const getImg = (url) => {
     if (!url) return null;
-    const id = url.match(/\/d\/(.*?)\/|id=(.*?)(&|$)/);
-    return id ? `https://lh3.googleusercontent.com/d/${id[1] || id[2]}=w200` : null;
+    const idMatch = url.match(/\/d\/(.*?)\/|id=(.*?)(&|$)/);
+    const id = idMatch ? (idMatch[1] || idMatch[2]) : null;
+    return id ? `https://lh3.googleusercontent.com/d/${id}=w200` : null;
   };
 
   if (!isAuthorized) return (
@@ -118,16 +131,25 @@ export default function AdminPage() {
             <div className="bg-white rounded-[2.5rem] soft-shadow border overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-[#f4f9f2] text-[#387035] text-[10px] uppercase tracking-widest">
-                  <tr><th className="p-6">Dátum</th><th className="p-6">Név</th><th className="p-6">Telefon</th><th className="p-6 text-center">Fotó</th></tr>
+                  <tr>
+                    <th className="p-6">Dátum</th>
+                    <th className="p-6">Név</th>
+                    <th className="p-6">Cím</th>
+                    <th className="p-6">Telefon</th>
+                    <th className="p-6 text-center">Fotó</th>
+                  </tr>
                 </thead>
                 <tbody className="divide-y text-slate-700">
                   {submissions.map((s, i) => (
                     <tr key={i} className="hover:bg-slate-50">
-                      <td className="p-6 text-[10px] text-slate-400 font-mono whitespace-nowrap">{s.dátum || s.timestamp}</td>
-                      <td className="p-6 font-bold">{s.name || "Névtelen"}</td>
+                      <td className="p-6 text-[10px] text-slate-400 font-mono whitespace-nowrap">{s.timestamp}</td>
+                      <td className="p-6 font-bold">{s.name}</td>
+                      <td className="p-6 text-sm text-slate-500">{s.address}</td>
                       <td className="p-6 text-sm">{s.phone}</td>
                       <td className="p-6 flex justify-center">
-                        <img src={getImg(s.imageUrl)} className="w-16 h-16 object-cover rounded-lg border shadow-sm" />
+                        <a href={s.imageUrl} target="_blank" rel="noopener noreferrer">
+                            <img src={getImg(s.imageUrl)} className="w-16 h-16 object-cover rounded-lg border shadow-sm" />
+                        </a>
                       </td>
                     </tr>
                   ))}
@@ -140,9 +162,14 @@ export default function AdminPage() {
                 <div key={res.id} className="bg-white p-8 rounded-[2rem] border soft-shadow">
                   {editingId === res.id ? (
                     <div className="space-y-4">
-                      <input className="w-full border p-4 rounded-2xl" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} placeholder="Név" />
-                      <input className="w-full border p-4 rounded-2xl" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} placeholder="Ár" />
-                      <input className="w-full border p-4 rounded-2xl" value={editForm.active} onChange={e => setEditForm({...editForm, active: e.target.value})} placeholder="Aktív (x)" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold uppercase text-slate-400">
+                        <div><label className="ml-2">Név</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} /></div>
+                        <div><label className="ml-2">Ár</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} /></div>
+                        <div className="md:col-span-2"><label className="ml-2">Cím</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} /></div>
+                        <div className="md:col-span-2"><label className="ml-2">Menü (HU)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.menuHu} onChange={e => setEditForm({...editForm, menuHu: e.target.value})} /></div>
+                        <div><label className="ml-2">Aktív (x)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.active} onChange={e => setEditForm({...editForm, active: e.target.value})} /></div>
+                        <div><label className="ml-2">Kép URL</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.imageUrl} onChange={e => setEditForm({...editForm, imageUrl: e.target.value})} /></div>
+                      </div>
                       <div className="flex gap-2">
                         <button onClick={saveEdit} className="bg-[#387035] text-white px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest">Mentés</button>
                         <button onClick={() => setEditingId(null)} className="bg-slate-100 text-slate-500 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest">Mégsem</button>
@@ -151,10 +178,11 @@ export default function AdminPage() {
                   ) : (
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="font-serif font-bold text-2xl text-[#387035]">{res.name || res.név}</h3>
-                        <p className="text-slate-500">{res.price || res.ár} Ft | {res.active === 'x' || res.aktív === 'x' ? '✅ Aktív' : '❌ Inaktív'}</p>
+                        <h3 className="font-serif font-bold text-2xl text-[#387035]">{res.name}</h3>
+                        <p className="text-slate-500">{res.price} Ft | {res.active === 'x' ? '✅ Aktív' : '❌ Inaktív'}</p>
+                        <p className="text-xs text-slate-400 italic mt-1">{res.menuHu}</p>
                       </div>
-                      <button onClick={() => { setEditingId(res.id); setEditForm({ ...res, originalName: res.name || res.név }); }} className="border-2 border-[#387035] text-[#387035] px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#387035] hover:text-white transition-all">Szerkesztés</button>
+                      <button onClick={() => { setEditingId(res.id); setEditForm({ ...res, originalName: res.name }); }} className="border-2 border-[#387035] text-[#387035] px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#387035] hover:text-white transition-all">Szerkesztés</button>
                     </div>
                   )}
                 </div>
