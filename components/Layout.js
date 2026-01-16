@@ -6,9 +6,15 @@ export default function Layout({ children, lang, setLang }) {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#FDFBF7] text-slate-800">
       <Head>
-        <title>Kocsonya Útlevél 2026</title>
+        <title>KocsonyaÚtlevél 2026 - Miskolci Kocsonyafesztivál</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="description" content="A miskolci kocsonya az asztalhoz ül. Fedezd fel az éttermeket és nyerj!" />
+        <meta name="description" content="KocsonyaÚtlevél 2026: A miskolci kocsonya az asztalhoz ül. Fedezd fel a Kocsonyafesztivál legjobb éttermeit Miskolcon, gyűjtsd a pecséteket és nyerj!" />
+        <meta name="keywords" content="Kocsonyafesztivál, Kocsonya, KocsonyaÚtlevél, Miskolc, A kocsonya az asztalhoz ül, gasztronómia, fesztivál" />
+        
+        {/* Open Graph / Facebook SEO */}
+        <meta property="og:title" content="KocsonyaÚtlevél 2026" />
+        <meta property="og:description" content="A miskolci kocsonya az asztalhoz ül. Vegyél részt a játékban!" />
+        <meta property="og:type" content="website" />
         
         {/* --- FAVICON BEÁLLÍTÁSOK --- */}
         <link rel="icon" href="/kocsonya/favicon.ico" sizes="any" />
@@ -39,7 +45,7 @@ export default function Layout({ children, lang, setLang }) {
           {/* Logó / Főcím */}
           <Link href="/" className="group flex flex-col items-start">
             <span className="font-serif font-bold text-2xl sm:text-3xl text-[#387035] leading-none group-hover:opacity-90 transition-opacity">
-              Kocsonya Útlevél
+              KocsonyaÚtlevél
             </span>
             <span className="text-[10px] sm:text-xs text-[#77b92b] font-bold tracking-[0.2em] uppercase mt-1 pl-1">
               Miskolc 2026
@@ -100,7 +106,7 @@ export default function Layout({ children, lang, setLang }) {
       <footer className="bg-[#1a1a1a] text-slate-400 py-16 mt-auto">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="mb-8">
-             <span className="font-serif text-2xl text-slate-600 font-bold opacity-30">Kocsonya Útlevél</span>
+             <span className="font-serif text-2xl text-slate-600 font-bold opacity-30">KocsonyaÚtlevél</span>
           </div>
           <p className="mb-8 text-sm font-light tracking-wide opacity-80">
             © 2026 Kocsonyafesztivál Miskolc. 
