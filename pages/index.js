@@ -26,12 +26,13 @@ const GlobalStyles = () => (
       transform: translateY(-8px);
       box-shadow: 0 25px 50px -12px rgba(56, 112, 53, 0.12);
     }
-    /* Google Maps InfoWindow stílus finomítás */
+    /* Google Maps InfoWindow stílus teljes tisztítás */
     .gm-style-iw {
       border-radius: 24px !important;
       padding: 0 !important;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
       background: #FCFBF9 !important;
+      max-width: 220px !important;
     }
     .gm-style-iw-d {
       overflow: hidden !important;
@@ -40,15 +41,9 @@ const GlobalStyles = () => (
     }
     .gm-style-iw-tc { display: none !important; } /* Nyíl eltüntetése */
     .gm-ui-hover-text { display: none !important; }
-    /* Bezáró gomb finomítása */
+    /* Bezáró gomb (X) teljes eltüntetése */
     .gm-style-iw + button {
-      top: 10px !important;
-      right: 10px !important;
-      background: rgba(255,255,255,0.8) !important;
-      border-radius: 50% !important;
-      width: 24px !important;
-      height: 24px !important;
-      padding: 4px !important;
+      display: none !important;
     }
   `}</style>
 );
@@ -438,17 +433,21 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
 const MapSection = ({ restaurants, lang }) => {
     const mapRef = useRef(null);
     const [map, setMap] = useState(null);
+    const activeInfoWindowRef = useRef(null);
     const t = TRANSLATIONS[lang].map_section;
 
-    // Globális függvény a görgetéshez, hogy a HTML-ből is elérhető legyen
+    // Globális függvények a térkép interakciókhoz
     useEffect(() => {
-        window.scrollToRestaurant = (id) => {
+        window.scrollToRestaurantAndClose = (id) => {
             const el = document.getElementById(id);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth' });
-                // InfoWindow bezárása trükk: a gombostűre kattintás után az InfoWindow-nak nincs egyszerű "close" parancsa kívülről, 
-                // de mivel a térkép újrarenderelődhet vagy rákattinthatunk máshová, ez így rendben lesz.
+                if (activeInfoWindowRef.current) activeInfoWindowRef.current.close();
             }
+        };
+
+        window.closeMapPopup = () => {
+            if (activeInfoWindowRef.current) activeInfoWindowRef.current.close();
         };
     }, []);
 
@@ -510,20 +509,25 @@ const MapSection = ({ restaurants, lang }) => {
 
                     marker.addListener("click", () => {
                         const contentString = `
-                            <div 
-                              onclick="window.scrollToRestaurant('${getRestaurantId(res.name)}')"
-                              style="font-family: 'DM Sans', sans-serif; cursor: pointer; background: #FCFBF9; overflow: hidden;"
-                            >
-                                ${res.imageUrl ? `<img src="${res.imageUrl}" style="width: 100%; max-height: 180px; object-fit: cover; border-bottom: 1px solid #f0f0f0;">` : ''}
-                                <div style="padding: 15px;">
-                                    <h4 style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; margin: 0 0 4px 0; color: #2a5528;">${res.name}</h4>
-                                    <p style="font-size: 13px; color: #64748b; margin: 0 0 8px 0; line-height: 1.4;">${res.address}</p>
+                            <div style="font-family: 'DM Sans', sans-serif; background: #FCFBF9; width: 220px;">
+                                <!-- Képre kattintva bezáródik -->
+                                <div onclick="window.closeMapPopup()" style="cursor: pointer; position: relative;">
+                                    ${res.imageUrl ? `<img src="${res.imageUrl}" style="width: 100%; aspect-ratio: 2/3; object-fit: cover;">` : ''}
+                                </div>
+                                <!-- Szövegre kattintva odaugrik a menühöz és bezáródik -->
+                                <div 
+                                    onclick="window.scrollToRestaurantAndClose('${getRestaurantId(res.name)}')"
+                                    style="padding: 16px; cursor: pointer;"
+                                >
+                                    <h4 style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; margin: 0 0 4px 0; color: #2a5528; line-height: 1.2;">${res.name}</h4>
+                                    <p style="font-size: 13px; color: #64748b; margin: 0 0 10px 0; line-height: 1.4;">${res.address}</p>
                                     <p style="font-size: 10px; font-weight: bold; color: #387035; text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">${t.view_menu} →</p>
                                 </div>
                             </div>
                         `;
                         infoWindow.setContent(contentString);
                         infoWindow.open(newMap, marker);
+                        activeInfoWindowRef.current = infoWindow;
                     });
                 }
             });
