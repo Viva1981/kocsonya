@@ -14,12 +14,12 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState({});
 
   // KONFIGURÁCIÓ
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6kFRR-Fgad54o7k1-XrWgEjAacN6GO9WsBGnXsCU68lyouw4BqPltXWNxRm2HxWSM-g/exec"; 
+  const SCRIPT_URL = "IDE_MÁSOLD_AZ_UTOLSÓ_ÉLES_SCRIPT_URL-EDET"; 
   const ADMIN_TOKEN = "KOCSONYA_SECRET_2026";
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === "miskolc2026") setIsAuthorized(true);
+    if (password === "MiskolC2026!+") setIsAuthorized(true);
     else alert("Helytelen jelszó!");
   };
 
@@ -46,11 +46,11 @@ export default function AdminPage() {
              let rawKey = h.toString().toLowerCase().trim();
              let key = rawKey;
              
-             // PONTOS ILLESZTÉS A TE TÁBLÁZATODHOZ
-             if (rawKey === "nev" || rawKey === "név") key = "name";
-             if (rawKey === "cim" || rawKey === "cím") key = "address";
-             if (rawKey === "ar" || rawKey === "ár") key = "price";
-             if (rawKey === "aktiv" || rawKey === "aktív") key = "active";
+             // MAPELÉS A TÁBLÁZAT OSZLOPAI ALAPJÁN
+             if (rawKey === "nev") key = "name";
+             if (rawKey === "cim") key = "address";
+             if (rawKey === "ar") key = "price";
+             if (rawKey === "aktiv") key = "active";
              if (rawKey === "menu_hu") key = "menuHu";
              if (rawKey === "description_hu") key = "descHu";
              if (rawKey === "menu_en") key = "menuEn";
@@ -81,9 +81,9 @@ export default function AdminPage() {
           name: editForm.name,
           address: editForm.address,
           menuHu: editForm.menuHu,
-          descHu: editForm.descHu || "",
+          descHu: editForm.descHu,
           menuEn: editForm.menuEn,
-          descEn: editForm.descEn || "",
+          descEn: editForm.descEn,
           price: editForm.price,
           active: editForm.active,
           imageUrl: editForm.imageUrl
@@ -130,7 +130,7 @@ export default function AdminPage() {
           activeTab === "submissions" ? (
             <div className="bg-white rounded-[2.5rem] soft-shadow border overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-[#f4f9f2] text-[#387035] text-[10px] uppercase tracking-widest">
+                <thead className="bg-[#f4f9f2] text-[#387035] text-[10px] uppercase tracking-widest border-b">
                   <tr>
                     <th className="p-6">Dátum</th>
                     <th className="p-6">Név</th>
@@ -145,11 +145,13 @@ export default function AdminPage() {
                       <td className="p-6 text-[10px] text-slate-400 font-mono whitespace-nowrap">{s.timestamp}</td>
                       <td className="p-6 font-bold">{s.name}</td>
                       <td className="p-6 text-sm text-slate-500">{s.address}</td>
-                      <td className="p-6 text-sm">{s.phone}</td>
+                      <td className="p-6 text-sm font-medium text-[#387035]">{s.phone}</td>
                       <td className="p-6 flex justify-center">
-                        <a href={s.imageUrl} target="_blank" rel="noopener noreferrer">
-                            <img src={getImg(s.imageUrl)} className="w-16 h-16 object-cover rounded-lg border shadow-sm" />
-                        </a>
+                        {s.imageUrl ? (
+                           <a href={s.imageUrl} target="_blank" rel="noopener noreferrer">
+                              <img src={getImg(s.imageUrl)} className="w-16 h-16 object-cover rounded-lg border shadow-sm" />
+                           </a>
+                        ) : <span className="text-[10px] text-slate-300">Nincs kép</span>}
                       </td>
                     </tr>
                   ))}
@@ -161,28 +163,53 @@ export default function AdminPage() {
               {restaurants.map((res) => (
                 <div key={res.id} className="bg-white p-8 rounded-[2rem] border soft-shadow">
                   {editingId === res.id ? (
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-bold uppercase text-slate-400">
-                        <div><label className="ml-2">Név</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} /></div>
-                        <div><label className="ml-2">Ár</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} /></div>
-                        <div className="md:col-span-2"><label className="ml-2">Cím</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} /></div>
-                        <div className="md:col-span-2"><label className="ml-2">Menü (HU)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.menuHu} onChange={e => setEditForm({...editForm, menuHu: e.target.value})} /></div>
-                        <div><label className="ml-2">Aktív (x)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.active} onChange={e => setEditForm({...editForm, active: e.target.value})} /></div>
-                        <div><label className="ml-2">Kép URL</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case" value={editForm.imageUrl} onChange={e => setEditForm({...editForm, imageUrl: e.target.value})} /></div>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                        
+                        {/* Alapadatok */}
+                        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-4 gap-4 bg-slate-50 p-6 rounded-3xl">
+                           <div className="md:col-span-2"><label className="ml-2 mb-1 block">Étterem Neve</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} /></div>
+                           <div><label className="ml-2 mb-1 block">Ár (Ft)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.price} onChange={e => setEditForm({...editForm, price: e.target.value})} /></div>
+                           <div><label className="ml-2 mb-1 block">Aktív (x)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.active} onChange={e => setEditForm({...editForm, active: e.target.value})} /></div>
+                           <div className="md:col-span-4"><label className="ml-2 mb-1 block">Cím</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.address} onChange={e => setEditForm({...editForm, address: e.target.value})} /></div>
+                        </div>
+
+                        {/* Magyar menü */}
+                        <div className="bg-[#f4f9f2] p-6 rounded-3xl space-y-4 border border-[#e6f0e4]">
+                           <h4 className="text-[#387035] text-xs mb-2">Magyar nyelvű tartalom</h4>
+                           <div><label className="ml-2 mb-1 block">Menü neve</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.menuHu} onChange={e => setEditForm({...editForm, menuHu: e.target.value})} /></div>
+                           <div><label className="ml-2 mb-1 block">Leírás</label><textarea rows="3" className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.descHu} onChange={e => setEditForm({...editForm, descHu: e.target.value})} /></div>
+                        </div>
+
+                        {/* Angol menü */}
+                        <div className="bg-slate-50 p-6 rounded-3xl space-y-4 border border-slate-200">
+                           <h4 className="text-slate-500 text-xs mb-2">Angol nyelvű tartalom</h4>
+                           <div><label className="ml-2 mb-1 block">Menü neve (EN)</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.menuEn} onChange={e => setEditForm({...editForm, menuEn: e.target.value})} /></div>
+                           <div><label className="ml-2 mb-1 block">Leírás (EN)</label><textarea rows="3" className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.descEn} onChange={e => setEditForm({...editForm, descEn: e.target.value})} /></div>
+                        </div>
+
+                        {/* Kép */}
+                        <div className="md:col-span-2"><label className="ml-2 mb-1 block">Drive Kép URL</label><input className="w-full border p-4 rounded-2xl text-slate-800 normal-case bg-white outline-none focus:ring-2 focus:ring-[#77b92b]" value={editForm.imageUrl} onChange={e => setEditForm({...editForm, imageUrl: e.target.value})} /></div>
                       </div>
-                      <div className="flex gap-2">
-                        <button onClick={saveEdit} className="bg-[#387035] text-white px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest">Mentés</button>
-                        <button onClick={() => setEditingId(null)} className="bg-slate-100 text-slate-500 px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest">Mégsem</button>
+
+                      <div className="flex gap-4 pt-4 border-t border-slate-100">
+                        <button onClick={saveEdit} className="bg-[#387035] text-white px-10 py-4 rounded-full font-bold text-xs uppercase tracking-widest shadow-lg hover:bg-[#2a5528] transition-all">Mentés a táblázatba</button>
+                        <button onClick={() => setEditingId(null)} className="bg-slate-100 text-slate-500 px-10 py-4 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">Mégsem</button>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="font-serif font-bold text-2xl text-[#387035]">{res.name}</h3>
-                        <p className="text-slate-500">{res.price} Ft | {res.active === 'x' ? '✅ Aktív' : '❌ Inaktív'}</p>
-                        <p className="text-xs text-slate-400 italic mt-1">{res.menuHu}</p>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                      <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 bg-[#f4f9f2] rounded-2xl flex items-center justify-center border border-[#e6f0e4] text-xl">
+                            {res.active === 'x' ? '✅' : '❌'}
+                        </div>
+                        <div>
+                           <h3 className="font-serif font-bold text-2xl text-[#387035] leading-tight">{res.name}</h3>
+                           <p className="text-slate-500 font-medium">{res.price} Ft</p>
+                           <p className="text-xs text-slate-400 italic mt-1 max-w-xl line-clamp-1">{res.menuHu}</p>
+                        </div>
                       </div>
-                      <button onClick={() => { setEditingId(res.id); setEditForm({ ...res, originalName: res.name }); }} className="border-2 border-[#387035] text-[#387035] px-6 py-2 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#387035] hover:text-white transition-all">Szerkesztés</button>
+                      <button onClick={() => { setEditingId(res.id); setEditForm({ ...res, originalName: res.name }); }} className="w-full md:w-auto border-2 border-[#387035] text-[#387035] px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest hover:bg-[#387035] hover:text-white transition-all shadow-sm">Szerkesztés</button>
                     </div>
                   )}
                 </div>
