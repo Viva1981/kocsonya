@@ -14,7 +14,7 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState({});
 
   // KONFIGURÁCIÓ
-  const SCRIPT_URL = "IDE_MÁSOLD_AZ_ÚJ_DEPLOY_URL-T"; 
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6kFRR-Fgad54o7k1-XrWgEjAacN6GO9WsBGnXsCU68lyouw4BqPltXWNxRm2HxWSM-g/exec"; 
   const ADMIN_TOKEN = "KOCSONYA_SECRET_2026";
 
   const handleLogin = (e) => {
@@ -46,18 +46,18 @@ export default function AdminPage() {
              let rawKey = h.toString().toLowerCase().trim();
              let key = rawKey;
              
-             // UNIVERZÁLIS MEZŐ LEKÉPEZÉS (Magyar -> Angol kód)
-             if (rawKey.includes("név") || rawKey === "name") key = "name";
-             if (rawKey.includes("cím") || rawKey === "address") key = "address";
-             if (rawKey.includes("ár") || rawKey === "price") key = "price";
-             if (rawKey.includes("aktív") || rawKey === "active") key = "active";
-             if (rawKey.includes("menü hu") || rawKey === "menuhu") key = "menuHu";
-             if (rawKey.includes("leírás hu") || rawKey === "deschu") key = "descHu";
-             if (rawKey.includes("menü en") || rawKey === "menuen") key = "menuEn";
-             if (rawKey.includes("leírás en") || rawKey === "descen") key = "descEn";
-             if (rawKey.includes("kép") || rawKey.includes("drive link") || rawKey === "imageurl" || rawKey === "drivelink") key = "imageUrl";
-             if (rawKey.includes("telefonszám") || rawKey === "phone") key = "phone";
-             if (rawKey.includes("dátum") || rawKey === "timestamp") key = "timestamp";
+             // PONTOS ILLESZTÉS A TE TÁBLÁZATODHOZ
+             if (rawKey === "nev" || rawKey === "név") key = "name";
+             if (rawKey === "cim" || rawKey === "cím") key = "address";
+             if (rawKey === "ar" || rawKey === "ár") key = "price";
+             if (rawKey === "aktiv" || rawKey === "aktív") key = "active";
+             if (rawKey === "menu_hu") key = "menuHu";
+             if (rawKey === "description_hu") key = "descHu";
+             if (rawKey === "menu_en") key = "menuEn";
+             if (rawKey === "description_en") key = "descEn";
+             if (rawKey === "kép url" || rawKey === "drive link") key = "imageUrl";
+             if (rawKey === "telefonszám") key = "phone";
+             if (rawKey === "dátum") key = "timestamp";
              
              obj[key] = row[i];
           });
