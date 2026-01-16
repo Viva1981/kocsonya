@@ -11,6 +11,7 @@ const GlobalStyles = () => (
     body {
       font-family: 'DM Sans', sans-serif;
       background-color: #FDFBF7;
+      scroll-behavior: smooth;
     }
     h1, h2, h3, .font-serif {
       font-family: 'Playfair Display', serif;
@@ -224,6 +225,11 @@ const parseCSV = (text) => {
   return Object.values(groupedRestaurants);
 };
 
+// Segédfüggvény az ID generáláshoz a görgetéshez
+const getRestaurantId = (name) => {
+  return name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+};
+
 const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   const [manualFlip, setManualFlip] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -290,7 +296,11 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
   };
 
   return (
-    <div ref={cardRef} className="relative group perspective-1000 w-full h-full min-h-[500px]">
+    <div 
+      id={getRestaurantId(restaurant.name)} 
+      ref={cardRef} 
+      className="relative group perspective-1000 w-full h-full min-h-[500px] scroll-mt-32"
+    >
       <div 
         className={`relative w-full h-full transition-all duration-700 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
       >
@@ -453,7 +463,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mt-16 mb-20 px-4 sm:px-6 max-w-3xl mx-auto text-center">
+      <section className="mt-16 mb-12 px-4 sm:px-6 max-w-3xl mx-auto text-center">
         <div className="prose prose-lg mx-auto text-slate-700 leading-8 font-light">
           <p className="mb-6 font-medium text-xl text-[#387035]">{t.story.p1}</p>
           <p className="mb-6">{t.story.p2}</p>
@@ -464,6 +474,33 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      {/* VIZUÁLIS VÁLASZTÓ (LOGO GRID) */}
+      {!loading && restaurants.length > 0 && (
+        <section className="mb-20 px-4 sm:px-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-6">
+            {restaurants.map((res, i) => (
+              <a 
+                key={i} 
+                href={`#${getRestaurantId(res.name)}`}
+                className="group relative aspect-square bg-white rounded-2xl border border-slate-100 soft-shadow overflow-hidden hover:border-[#77b92b] hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              >
+                {res.imageUrl ? (
+                  <img 
+                    src={res.imageUrl} 
+                    alt={res.name} 
+                    className="w-full h-full object-contain p-3 sm:p-5 opacity-80 group-hover:opacity-100 transition-opacity"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-400 p-2 text-center font-serif italic">
+                    {res.name}
+                  </div>
+                )}
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section id="etteremlista" className="mb-24">
         <div className="text-center mb-16 max-w-2xl mx-auto">
