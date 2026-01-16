@@ -14,7 +14,7 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState({});
 
   // KONFIGURÁCIÓ
-  const SCRIPT_URL = "IDE_MÁSOLD_AZ_UTOLSÓ_ÉLES_SCRIPT_URL-EDET"; 
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6kFRR-Fgad54o7k1-XrWgEjAacN6GO9WsBGnXsCU68lyouw4BqPltXWNxRm2HxWSM-g/exec"; 
   const ADMIN_TOKEN = "KOCSONYA_SECRET_2026";
 
   const handleLogin = (e) => {
