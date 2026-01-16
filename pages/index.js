@@ -28,15 +28,28 @@ const GlobalStyles = () => (
     }
     /* Google Maps InfoWindow stílus finomítás */
     .gm-style-iw {
-      border-radius: 20px !important;
+      border-radius: 24px !important;
       padding: 0 !important;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+      background: #FCFBF9 !important;
     }
     .gm-style-iw-d {
       overflow: hidden !important;
       padding: 0 !important;
+      max-height: none !important;
     }
+    .gm-style-iw-tc { display: none !important; } /* Nyíl eltüntetése */
     .gm-ui-hover-text { display: none !important; }
+    /* Bezáró gomb finomítása */
+    .gm-style-iw + button {
+      top: 10px !important;
+      right: 10px !important;
+      background: rgba(255,255,255,0.8) !important;
+      border-radius: 50% !important;
+      width: 24px !important;
+      height: 24px !important;
+      padding: 4px !important;
+    }
   `}</style>
 );
 
@@ -427,6 +440,18 @@ const MapSection = ({ restaurants, lang }) => {
     const [map, setMap] = useState(null);
     const t = TRANSLATIONS[lang].map_section;
 
+    // Globális függvény a görgetéshez, hogy a HTML-ből is elérhető legyen
+    useEffect(() => {
+        window.scrollToRestaurant = (id) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                // InfoWindow bezárása trükk: a gombostűre kattintás után az InfoWindow-nak nincs egyszerű "close" parancsa kívülről, 
+                // de mivel a térkép újrarenderelődhet vagy rákattinthatunk máshová, ez így rendben lesz.
+            }
+        };
+    }, []);
+
     useEffect(() => {
         if (!window.google) {
             const script = document.createElement("script");
@@ -485,16 +510,16 @@ const MapSection = ({ restaurants, lang }) => {
 
                     marker.addListener("click", () => {
                         const contentString = `
-                            <div style="font-family: 'DM Sans', sans-serif; width: 200px; padding: 10px;">
-                                ${res.imageUrl ? `<img src="${res.imageUrl}" style="width: 100%; aspect-ratio: 2/3; object-cover: cover; border-radius: 12px; margin-bottom: 10px;">` : ''}
-                                <h4 style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 16px; margin-bottom: 4px; color: #2a5528;">${res.name}</h4>
-                                <p style="font-size: 12px; color: #64748b; margin-bottom: 12px;">${res.address}</p>
-                                <button 
-                                    onclick="document.getElementById('${getRestaurantId(res.name)}').scrollIntoView({behavior: 'smooth'})"
-                                    style="width: 100%; background: #387035; color: white; border: none; padding: 8px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; letter-spacing: 0.1em;"
-                                >
-                                    ${t.view_menu}
-                                </button>
+                            <div 
+                              onclick="window.scrollToRestaurant('${getRestaurantId(res.name)}')"
+                              style="font-family: 'DM Sans', sans-serif; cursor: pointer; background: #FCFBF9; overflow: hidden;"
+                            >
+                                ${res.imageUrl ? `<img src="${res.imageUrl}" style="width: 100%; max-height: 180px; object-fit: cover; border-bottom: 1px solid #f0f0f0;">` : ''}
+                                <div style="padding: 15px;">
+                                    <h4 style="font-family: 'Playfair Display', serif; font-weight: bold; font-size: 18px; margin: 0 0 4px 0; color: #2a5528;">${res.name}</h4>
+                                    <p style="font-size: 13px; color: #64748b; margin: 0 0 8px 0; line-height: 1.4;">${res.address}</p>
+                                    <p style="font-size: 10px; font-weight: bold; color: #387035; text-transform: uppercase; letter-spacing: 0.1em; margin: 0;">${t.view_menu} →</p>
+                                </div>
                             </div>
                         `;
                         infoWindow.setContent(contentString);
