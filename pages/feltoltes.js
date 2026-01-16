@@ -2,7 +2,7 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
-// --- STÍLUS ÉS BETŰTÍPUS (Hogy itt is biztosan betöltődjön) ---
+// --- STÍLUS ÉS BETŰTÍPUS ---
 const GlobalStyles = () => (
   <style jsx global>{`
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
@@ -23,36 +23,36 @@ const GlobalStyles = () => (
 // --- SZÓTÁR ---
 const FORM_TEXTS = {
   hu: {
-    title: "Kocsonya Útlevél Feltöltése",
-    note: "Töltsd ki az adataidat és csatold a fotót a pecsétekről!",
+    title: "KocsonyaÚtlevél Feltöltése",
+    note: "A miskolci kocsonya az asztalhoz ül! Töltsd ki az adataidat és csatold a fotót a lepecsételt KocsonyaÚtleveledről, hogy részt vehess a Kocsonyafesztivál nyereményjátékában!",
     fields: {
       name: "Teljes név",
-      address: "Lakcím",
+      address: "Lakcím (Miskolc és környéke előnyben)",
       phone: "Telefonszám",
-      file: "Fotó feltöltése",
+      file: "Fotó feltöltése a pecsétekről",
       selected: "Kiválasztott fájl",
       click: "Kattints a kiválasztáshoz"
     },
     submit: "Beküldés és játék",
     loading: "Küldés folyamatban...",
     successTitle: "Sikeres feltöltés!",
-    successText: "Köszönjük a játékot! A fotódat megkaptuk, sok szerencsét a sorsoláshoz."
+    successText: "Köszönjük a játékot! A fotódat megkaptuk. Reméljük, ízlett a miskolci kocsonya! Sok szerencsét a sorsoláshoz."
   },
   en: {
-    title: "Upload Jelly Passport",
-    note: "Fill in your details and attach the photo of your stamps!",
+    title: "Upload KocsonyaÚtlevél",
+    note: "Miskolc jelly is served! Fill in your details and attach the photo of your stamped KocsonyaÚtlevél to participate in the Jelly Festival prize game!",
     fields: {
       name: "Full Name",
       address: "Address",
       phone: "Phone Number",
-      file: "Upload Photo",
+      file: "Upload Photo of Stamps",
       selected: "Selected file",
       click: "Click to select"
     },
     submit: "Submit & Play",
     loading: "Sending...",
     successTitle: "Upload Successful!",
-    successText: "Thank you for playing! We received your photo, good luck with the draw."
+    successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc jelly! Good luck with the draw."
   }
 };
 
