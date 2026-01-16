@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
 // --- KONFIGURÁCIÓ ---
-const GOOGLE_MAPS_API_KEY = "AIzaSyDfJBzN33fkvTd6iNITF9aD3_M_N4Iwtwg";
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 // --- STÍLUS ÉS BETŰTÍPUS IMPORTÁLÁS (INLINE) ---
 const GlobalStyles = () => (
