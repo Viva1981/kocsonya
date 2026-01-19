@@ -45,7 +45,7 @@ export default function Layout({ children, lang, setLang }) {
           {/* Logó / Főcím */}
           <Link href="/" className="group flex flex-col items-start">
             <span className="font-serif font-bold text-2xl sm:text-3xl text-[#387035] leading-none group-hover:opacity-90 transition-opacity">
-              KocsonyaÚtlevél
+              {lang === 'hu' ? 'KocsonyaÚtlevél' : 'AspicPass'}
             </span>
             <span className="text-[10px] sm:text-xs text-[#77b92b] font-bold tracking-[0.2em] uppercase mt-1 pl-1">
               Miskolc 2026
@@ -106,10 +106,12 @@ export default function Layout({ children, lang, setLang }) {
       <footer className="bg-[#1a1a1a] text-slate-400 py-16 mt-auto">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <div className="mb-8">
-             <span className="font-serif text-2xl text-slate-600 font-bold opacity-30">KocsonyaÚtlevél</span>
+             <span className="font-serif text-2xl text-slate-600 font-bold opacity-30">
+               {lang === 'hu' ? 'KocsonyaÚtlevél' : 'AspicPass'}
+             </span>
           </div>
           <p className="mb-8 text-sm font-light tracking-wide opacity-80">
-            © 2026 Kocsonyafesztivál Miskolc. 
+            © 2026 {lang === 'hu' ? 'Kocsonyafesztivál Miskolc' : 'Miskolc Aspic Festival'}. 
             {lang === 'hu' ? ' Minden jog fenntartva.' : ' All rights reserved.'}
           </p>
           <div className="flex justify-center gap-8 text-xs font-bold uppercase tracking-[0.15em]">
@@ -119,6 +121,18 @@ export default function Layout({ children, lang, setLang }) {
             <Link href="/jatekszabaly" className="hover:text-white transition-colors">
               {lang === 'hu' ? 'Játékszabályok' : 'Rules'}
             </Link>
+          </div>
+          
+          {/* Powered by TripLog */}
+          <div className="mt-10 pt-6 border-t border-white/5">
+            <a 
+              href="https://www.triplog.hu/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-[10px] font-sans font-medium uppercase tracking-widest opacity-30 hover:opacity-80 transition-opacity"
+            >
+              Powered by TripLog
+            </a>
           </div>
         </div>
       </footer>
