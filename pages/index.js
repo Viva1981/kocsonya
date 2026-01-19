@@ -147,16 +147,16 @@ const TRANSLATIONS = {
   },
   en: {
     hero: {
-      title1: "Miskolc Jelly comes",
+      title1: "Miskolc Aspic comes",
       title2: "to the table.",
-      subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the jelly.",
+      subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the aspic.",
       cta_primary: "Play & Upload",
       cta_secondary: "Restaurant List"
     },
     story: {
-      p1: "The legendary Miskolc Jelly Festival is now taking place in restaurants too, so you can taste the famous dish not only on the street, but also sitting at a table as a guest.",
-      p2: "This project is a complementary gastro-experience of the Jelly Festival, for those who want to get to know the city's history through local gastronomy.",
-      p3: "If you enter a restaurant, sit at a table and order jelly, you will receive your KocsonyaÚtlevél along with the dish.",
+      p1: "The legendary Miskolc Aspic Festival is now taking place in restaurants too, so you can taste the famous dish not only on the street, but also sitting at a table as a guest.",
+      p2: "This project is a complementary gastro-experience of the Aspic Festival, for those who want to get to know the city's history through local gastronomy.",
+      p3: "If you enter a restaurant, sit at a table and order aspic, you will receive your AspicPass along with the dish.",
       p4: "No two dishes are alike. There are classic, reimagined, and quite surprising ones.",
       closing: "Let the discovery begin."
     },
@@ -167,18 +167,18 @@ const TRANSLATIONS = {
     },
     transition: {
       title: "Discover more flavors, get to know Miskolc.",
-      text: "Take Miskolc into your own hands, get to know the special gastronomy of the Bükk region, and experience how diverse this legendary dish can be with your KocsonyaÚtlevél."
+      text: "Take Miskolc into your own hands, get to know the special gastronomy of the Bükk region, and experience how diverse this legendary dish can be with your AspicPass."
     },
     map_section: {
-        title: "Jelly Map",
+        title: "Aspic Map",
         subtitle: "Discover the flavors of Miskolc on the map!",
         view_menu: "View Menu"
     },
     rules: {
-      title: "Make an experience out of Jelly!",
-      subtitle: "Participate in the KocsonyaÚtlevél prize game!",
-      step1: "Taste jelly in at least three different places in Miskolc!",
-      step2: "Collect at least three stamps in your KocsonyaÚtlevél!",
+      title: "Make an experience out of Aspic!",
+      subtitle: "Participate in the AspicPass prize game!",
+      step1: "Taste aspic in at least three different places in Miskolc!",
+      step2: "Collect at least three stamps in your AspicPass!",
       step3: "Take a photo and upload it!",
       cta: "UPLOAD PHOTO NOW"
     },
@@ -191,12 +191,12 @@ const TRANSLATIONS = {
     },
     organizers: {
       title: "The People Behind It",
-      p1: "“Miskolc Jelly takes a seat at the table” is the common cause of Miskolc caterers.",
+      p1: "“Miskolc Aspic takes a seat at the table” is the common cause of Miskolc caterers.",
       p2: "The self-organized project was created in cooperation with local restaurants, Visit Miskolc, and the Bükk Circle."
     },
     footer_cta: {
       title: "Shall we start?",
-      subtitle: "The Jelly takes a seat. Will you?",
+      subtitle: "The Aspic takes a seat. Will you?",
       btn: "JOIN THE GAME"
     }
   }
