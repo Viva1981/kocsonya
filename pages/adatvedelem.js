@@ -55,7 +55,7 @@ const TRANSLATIONS = {
   },
   en: {
     title: "Privacy Policy",
-    intro: "During the KocsonyaÚtlevél Prize Game (hereinafter: Game), the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Data Controller) pays special attention to the protection of personal data.",
+    intro: "During the AspicPass Prize Game (hereinafter: Game), the 'Miskolc Aspic Takes a Seat at the Table' program (hereinafter: Data Controller) pays special attention to the protection of personal data.",
     sections: [
       {
         title: "1. Purpose of Data Processing",
@@ -70,7 +70,7 @@ const TRANSLATIONS = {
       {
         title: "2. Scope of Processed Data",
         text: "The following personal data is requested during participation in the Game:",
-        list: ["name", "address", "phone number", "uploaded photo (of the KocsonyaÚtlevél)"]
+        list: ["name", "address", "phone number", "uploaded photo (of the AspicPass)"]
       },
       {
         title: "3. Legal Basis for Data Processing",

@@ -46,15 +46,15 @@ const TRANSLATIONS = {
   },
   en: {
     title: "Game Rules",
-    intro: "The organizer of the KocsonyaÚtlevél Prize Game (hereinafter: Game) is the 'Miskolc Jelly Takes a Seat at the Table' program (hereinafter: Organizer).",
+    intro: "The organizer of the AspicPass Prize Game (hereinafter: Game) is the 'Miskolc Aspic Takes a Seat at the Table' program (hereinafter: Organizer).",
     sections: [
       {
         title: "1. Conditions for Participation",
         text: "Any natural person over the age of 18 who during the duration of the game can participate:",
         list: [
-          "consumes jelly at least at three different catering establishments,",
-          "collects at least three stamps certifying consumption in the KocsonyaÚtlevél,",
-          "takes a photo of the completed KocsonyaÚtlevél and uploads it to the online interface designated by the Organizer."
+          "consumes aspic at least at three different catering establishments,",
+          "collects at least three stamps certifying consumption in the AspicPass,",
+          "takes a photo of the completed AspicPass and uploads it to the online interface designated by the Organizer."
         ],
         footer: "To participate, all conditions must be met collectively."
       },
