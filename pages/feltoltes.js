@@ -39,8 +39,8 @@ const FORM_TEXTS = {
     successText: "Köszönjük a játékot! A fotódat megkaptuk. Reméljük, ízlett a miskolci kocsonya! Sok szerencsét a sorsoláshoz."
   },
   en: {
-    title: "Upload KocsonyaÚtlevél",
-    note: "Miskolc jelly is served! Fill in your details and attach the photo of your stamped KocsonyaÚtlevél to participate in the prize game!",
+    title: "Upload AspicPass",
+    note: "Miskolc aspic is served! Fill in your details and attach the photo of your stamped AspicPass to participate in the prize game!",
     fields: {
       name: "Full Name",
       address: "Address",
@@ -52,7 +52,7 @@ const FORM_TEXTS = {
     submit: "Submit & Play",
     loading: "Sending...",
     successTitle: "Upload Successful!",
-    successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc jelly! Good luck with the draw."
+    successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc aspic! Good luck with the draw."
   }
 };
 
