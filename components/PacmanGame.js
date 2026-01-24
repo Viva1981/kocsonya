@@ -43,11 +43,13 @@ export default function PacmanGame() {
     powerMode: false,
     powerTimer: 0,
     frameCount: 0,
-    gameOver: false, // Belső flag a loop-hoz
+    gameOver: false,
     gameWon: false
   });
 
   const requestRef = useRef();
+  // Ref a touch koordináták tárolására, hogy ne rendereljünk újra minden mozdulatnál
+  const touchStartRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     initGame();
@@ -55,29 +57,27 @@ export default function PacmanGame() {
     const handleKey = (e) => handleKeyDown(e);
     window.addEventListener('keydown', handleKey);
     
-    const canvas = canvasRef.current;
-    const preventScroll = (e) => {
-        if(e.target === canvasRef.current) e.preventDefault();
-    };
+    // Touch eventek
+    // Fontos: a touchmove-ban kezeljük az irányítást az azonnali reakcióhoz
+    const handleMove = (e) => handleTouchMove(e);
+    const handleStart = (e) => handleTouchStart(e);
     
-    window.addEventListener('touchmove', preventScroll, { passive: false });
-    window.addEventListener('touchstart', handleTouchStart, { passive: false });
-    window.addEventListener('touchend', handleTouchEnd, { passive: false });
+    // A canvas-ra kötjük az eseményeket, de a window-ra is tehetnénk
+    // A passzív: false fontos a scroll tiltáshoz
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchstart', handleStart, { passive: false });
 
     return () => {
       window.removeEventListener('keydown', handleKey);
-      window.removeEventListener('touchmove', preventScroll);
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchstart', handleStart);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
   }, []);
 
   const initGame = () => {
-    // Stop loop
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
 
-    // Reset State Refs
     gameState.current.map = JSON.parse(JSON.stringify(RAW_MAP));
     gameState.current.player = { x: 9 * TILE_SIZE, y: 12 * TILE_SIZE, dir: {x:0, y:0}, nextDir: {x:0, y:0} };
     gameState.current.ghosts = [
@@ -89,13 +89,11 @@ export default function PacmanGame() {
     gameState.current.gameOver = false;
     gameState.current.gameWon = false;
     
-    // Reset UI State
     setScore(0);
     setGameOver(false);
     setGameWon(false);
     setGameActive(false); 
     
-    // Initial Draw
     if (canvasRef.current) {
         canvasRef.current.width = RAW_MAP[0].length * TILE_SIZE;
         canvasRef.current.height = RAW_MAP.length * TILE_SIZE;
@@ -104,7 +102,6 @@ export default function PacmanGame() {
   };
 
   const startGameIfNotActive = () => {
-    // Csak akkor indítunk, ha még nem fut és nincs vége
     if (!gameActive && !gameState.current.gameOver && !gameState.current.gameWon) {
         setGameActive(true);
         if (requestRef.current) cancelAnimationFrame(requestRef.current);
@@ -120,7 +117,6 @@ export default function PacmanGame() {
         startGameIfNotActive();
     }
     
-    // Ha vége a játéknak, tiltjuk az irányítást
     if (gameState.current.gameOver || gameState.current.gameWon) return;
 
     switch(e.key) {
@@ -131,27 +127,47 @@ export default function PacmanGame() {
     }
   };
 
-  let touchStartX = 0;
-  let touchStartY = 0;
-
+  // --- MOBIL IRÁNYÍTÁS (AZONNALI REAGÁLÁS) ---
+  
   const handleTouchStart = (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
+      // Csak rögzítjük a kezdőpontot
+      if(e.target === canvasRef.current) {
+         // Nem hívunk preventDefault-ot itt, mert az néha blokkolja a kattintást gombokra
+      }
+      touchStartRef.current = {
+          x: e.changedTouches[0].screenX,
+          y: e.changedTouches[0].screenY
+      };
   };
 
-  const handleTouchEnd = (e) => {
-      const touchEndX = e.changedTouches[0].screenX;
-      const touchEndY = e.changedTouches[0].screenY;
-      const diffX = touchEndX - touchStartX;
-      const diffY = touchEndY - touchStartY;
+  const handleTouchMove = (e) => {
+      // Itt tiltjuk a scrollt, ha a játékon vagyunk
+      if (e.target === canvasRef.current) {
+          e.preventDefault();
+      }
 
-      if (Math.abs(diffX) > 20 || Math.abs(diffY) > 20) {
+      const touchX = e.changedTouches[0].screenX;
+      const touchY = e.changedTouches[0].screenY;
+      
+      const diffX = touchX - touchStartRef.current.x;
+      const diffY = touchY - touchStartRef.current.y;
+
+      // Érzékenység: 10 pixel elmozdulás már irányváltást jelent!
+      // Ez teszi lehetővé, hogy még azelőtt reagáljon, hogy felemelnéd az ujjad.
+      const SENSITIVITY = 10; 
+
+      if (Math.abs(diffX) > SENSITIVITY || Math.abs(diffY) > SENSITIVITY) {
           startGameIfNotActive();
           
+          if (gameState.current.gameOver || gameState.current.gameWon) return;
+
+          // Melyik irányba húztuk jobban?
           if (Math.abs(diffX) > Math.abs(diffY)) {
+              // Vízszintes
               if (diffX > 0) gameState.current.player.nextDir = {x: 1, y: 0};
               else gameState.current.player.nextDir = {x: -1, y: 0};
           } else {
+              // Függőleges
               if (diffY > 0) gameState.current.player.nextDir = {x: 0, y: 1};
               else gameState.current.player.nextDir = {x: 0, y: -1};
           }
@@ -242,6 +258,7 @@ export default function PacmanGame() {
   };
 
   const movePlayer = (entity, speed) => {
+    // Előre "eltárolt" irány (NextDir) kezelése
     if (entity.nextDir.x !== 0 || entity.nextDir.y !== 0) {
         if (isAtCenter(entity)) {
             const cx = Math.round(entity.x / TILE_SIZE);
@@ -253,6 +270,7 @@ export default function PacmanGame() {
             }
         }
     }
+    // Falnak ütközés
     if (isAtCenter(entity)) {
         const cx = Math.round(entity.x / TILE_SIZE);
         const cy = Math.round(entity.y / TILE_SIZE);
@@ -418,11 +436,10 @@ export default function PacmanGame() {
 
       {(gameOver || gameWon) && (
           <button 
-            // CSAK initGame-t hívunk, így visszaáll alaphelyzetbe és várja a játékos inputját (stabilabb)
             onClick={initGame}
             className="mt-8 px-8 py-3 bg-[#C5A059] text-[#051f0e] font-bold rounded-full uppercase tracking-wider hover:bg-white transition-colors z-20 relative cursor-pointer"
           >
-            Új játék
+            Újra Kocsonya
           </button>
       )}
     </div>
