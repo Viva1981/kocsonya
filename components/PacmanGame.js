@@ -6,7 +6,11 @@ const SPEED = 2;
 const GHOST_SPEED = 1; 
 const WALL_COLOR = '#C5A059'; 
 const BG_COLOR = '#051f0e';   
-// const DOT_COLOR = '#FDFBF7'; // Ezt dinamikusan kezeljük a remegésnél
+
+// Színek
+const PLATE_COLOR = '#FFFFFF'; // Tányér fehér
+const JELLY_COLOR = '#C8A880'; // Kocsonya barnás/áttetsző szín
+const MEAT_COLOR = '#8B4513';  // Hús a közepén (opcionális részlet)
 
 // Pálya definíció
 const RAW_MAP = [
@@ -55,10 +59,9 @@ export default function PacmanGame() {
     const handleKey = (e) => handleKeyDown(e);
     window.addEventListener('keydown', handleKey);
     
-    // Mobil Touch (Swipe) figyelők - PASSIVE: FALSE a scroll tiltáshoz
     const canvas = canvasRef.current;
     
-    // Globális tiltás helyett a canvas-ra rakunk egy "prevent default" listenert
+    // Mobil Scroll Tiltás
     const preventScroll = (e) => {
         if(e.target === canvasRef.current) {
             e.preventDefault();
@@ -133,10 +136,6 @@ export default function PacmanGame() {
   let touchStartY = 0;
 
   const handleTouchStart = (e) => {
-      // Ha a canvasra nyomtunk, tiltsuk a scrollt
-      if (e.target === canvasRef.current) {
-          // e.preventDefault(); // Ez néha túl agresszív, a touchmove-nál kezeljük
-      }
       touchStartX = e.changedTouches[0].screenX;
       touchStartY = e.changedTouches[0].screenY;
   };
@@ -179,7 +178,6 @@ export default function PacmanGame() {
 
     movePlayer(state.player, SPEED);
 
-    // Ütközés
     const pCenter = getCenter(state.player);
     const pRow = Math.round(pCenter.y);
     const pCol = Math.round(pCenter.x);
@@ -200,7 +198,6 @@ export default function PacmanGame() {
         }
     }
 
-    // Win Check
     const hasDots = state.map.some(row => row.includes(0) || row.includes(2));
     if (!hasDots) {
         state.gameWon = true; 
@@ -208,7 +205,6 @@ export default function PacmanGame() {
         return;
     }
 
-    // Ghosts
     state.ghosts.forEach(ghost => {
         const gCenter = getCenter(ghost);
         if (isAtCenter(ghost)) {
@@ -294,7 +290,6 @@ export default function PacmanGame() {
     ctx.fillStyle = BG_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // KOCSONYA REMEGÉS EFFEKT (Wobble)
     const wobble = Math.sin(state.frameCount * 0.15) * 1.5;
 
     // Pálya rajzolás
@@ -305,25 +300,51 @@ export default function PacmanGame() {
             const y = row * TILE_SIZE;
 
             if (tile === 1) {
-                // Ha powerMode van, pulzáljon a fal színe kicsit
+                // Falak
                 ctx.strokeStyle = state.powerMode 
                     ? (state.frameCount % 20 < 10 ? '#E5C079' : WALL_COLOR) 
                     : WALL_COLOR;
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
             } else if (tile === 0) {
-                // Kis kocsonya remeg
-                ctx.fillStyle = '#FDFBF7';
+                // KIS KOCSONYA TÁNYÉRON
+                const cx = x + TILE_SIZE/2;
+                const cy = y + TILE_SIZE/2;
+                
+                // Tányér
+                ctx.fillStyle = PLATE_COLOR;
                 ctx.beginPath();
-                // Ellipszis ami változik
-                ctx.ellipse(x + TILE_SIZE/2, y + TILE_SIZE/2, 2 + wobble/2, 2 - wobble/2, 0, 0, Math.PI*2);
+                ctx.arc(cx, cy, 3.5, 0, Math.PI*2);
                 ctx.fill();
-            } else if (tile === 2) {
-                // Nagy kocsonya
-                const offset = Math.sin(state.frameCount * 0.2) * 2;
-                ctx.fillStyle = '#aadd77';
+
+                // Kocsonya (remeg)
+                ctx.fillStyle = JELLY_COLOR;
                 ctx.beginPath();
-                ctx.ellipse(x + TILE_SIZE/2, y + TILE_SIZE/2, 5 + offset/2, 5 - offset/2, 0, 0, Math.PI*2);
+                ctx.ellipse(cx, cy, 2 + wobble/3, 2 - wobble/3, 0, 0, Math.PI*2);
+                ctx.fill();
+
+            } else if (tile === 2) {
+                // NAGY POWERUP KOCSONYA TÁNYÉRON
+                const cx = x + TILE_SIZE/2;
+                const cy = y + TILE_SIZE/2;
+                const offset = Math.sin(state.frameCount * 0.2) * 1.5;
+
+                // Tányér
+                ctx.fillStyle = PLATE_COLOR;
+                ctx.beginPath();
+                ctx.arc(cx, cy, 7, 0, Math.PI*2);
+                ctx.fill();
+
+                // Kocsonya
+                ctx.fillStyle = JELLY_COLOR;
+                ctx.beginPath();
+                ctx.ellipse(cx, cy, 5 + offset, 5 - offset, 0, 0, Math.PI*2);
+                ctx.fill();
+                
+                // Kis hús a közepén
+                ctx.fillStyle = MEAT_COLOR;
+                ctx.beginPath();
+                ctx.arc(cx, cy, 2, 0, Math.PI*2);
                 ctx.fill();
             }
         }
@@ -336,13 +357,12 @@ export default function PacmanGame() {
   };
 
   const drawFrog = (ctx, x, y, dir, isPowered) => {
-      // Ha "powered", akkor kicsit nagyobb (felfúvódik a kocsonyától)
       const scale = isPowered ? 1.3 : 1.0;
       
       ctx.save();
       ctx.translate(x, y);
       
-      // Forgatás az irányba
+      // Forgatás
       let angle = 0;
       if (dir.x === 1) angle = 0;
       if (dir.x === -1) angle = Math.PI;
@@ -352,37 +372,24 @@ export default function PacmanGame() {
       ctx.rotate(angle);
       ctx.scale(scale, scale);
 
-      // LÁBAK (egyszerű vonalak)
-      ctx.strokeStyle = '#4ade80'; // Béka zöld
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      // Bal hátsó
-      ctx.moveTo(-6, 4); ctx.lineTo(-10, 8);
-      // Jobb hátsó
-      ctx.moveTo(-6, -4); ctx.lineTo(-10, -8);
-      // Bal első
-      ctx.moveTo(4, 4); ctx.lineTo(8, 8);
-      // Jobb első
-      ctx.moveTo(4, -4); ctx.lineTo(8, -8);
-      ctx.stroke();
-
-      // TEST
+      // TEST (Lábak nélkül, egyszerűen)
       ctx.fillStyle = '#4ade80';
       ctx.beginPath();
-      ctx.ellipse(0, 0, 7, 6, 0, 0, Math.PI*2);
+      ctx.arc(0, 0, 7, 0, Math.PI*2); // Kicsit ducibb kör
       ctx.fill();
       
       // SZEMEK
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      ctx.arc(3, -3, 3, 0, Math.PI*2);
-      ctx.arc(3, 3, 3, 0, Math.PI*2);
+      // Kicsit kidülledő szemek felül
+      ctx.arc(3, -4, 3, 0, Math.PI*2);
+      ctx.arc(3, 4, 3, 0, Math.PI*2);
       ctx.fill();
       
       ctx.fillStyle = 'black';
       ctx.beginPath();
-      ctx.arc(4, -3, 1, 0, Math.PI*2);
-      ctx.arc(4, 3, 1, 0, Math.PI*2);
+      ctx.arc(4, -4, 1.2, 0, Math.PI*2);
+      ctx.arc(4, 4, 1.2, 0, Math.PI*2);
       ctx.fill();
 
       ctx.restore();
@@ -392,34 +399,29 @@ export default function PacmanGame() {
       let drawX = x;
       let drawY = y;
 
-      // Ha félnek, reszketnek (random elmozdulás)
       if (isScared) {
           drawX += (Math.random() - 0.5) * 2;
           drawY += (Math.random() - 0.5) * 2;
       }
 
-      ctx.fillStyle = isScared ? '#3b82f6' : 'white'; // Sapka
-      ctx.fillRect(drawX - 5, drawY - 10, 10, 8); // Sapka
+      ctx.fillStyle = isScared ? '#3b82f6' : 'white'; 
+      ctx.fillRect(drawX - 5, drawY - 10, 10, 8); 
       
-      // Fej
       if (isScared) {
-        ctx.fillStyle = '#93c5fd'; // Fagyott kék arc
+        ctx.fillStyle = '#93c5fd'; 
       } else {
-        ctx.fillStyle = color; // Normál szín
+        ctx.fillStyle = color; 
       }
       ctx.beginPath();
       ctx.arc(drawX, drawY, 6, 0, Math.PI*2);
       ctx.fill();
       
-      // Szemek
       ctx.fillStyle = 'black';
       ctx.beginPath();
       if (isScared) {
-          // Tágra nyílt szemek
           ctx.arc(drawX - 2, drawY, 1.5, 0, Math.PI*2);
           ctx.arc(drawX + 2, drawY, 1.5, 0, Math.PI*2);
           
-          // Hullámos száj (ijedt)
           ctx.strokeStyle = 'white';
           ctx.lineWidth = 1;
           ctx.beginPath();
@@ -446,7 +448,7 @@ export default function PacmanGame() {
          {gameWon && <div className="text-[#aadd77] font-bold">GYŐZELEM!</div>}
       </div>
 
-      {/* CANVAS - touch-action: none a Tailwind-ben + preventDefault JS-ben */}
+      {/* CANVAS */}
       <div className="relative w-full flex justify-center px-2">
         <canvas 
             ref={canvasRef} 
