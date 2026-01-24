@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
-// --- JÁTÉK KONFIGURÁCIÓ (JAVÍTOTT MATEMATIKA) ---
-// Fontos: A TILE_SIZE osztható kell legyen a SPEED-del, különben a kanyarok nem működnek!
+// --- JÁTÉK KONFIGURÁCIÓ ---
 const TILE_SIZE = 20; 
-const SPEED = 2;       // Béka sebessége (20 / 2 = 10 frame/kocka)
-const GHOST_SPEED = 1; // Szakács sebessége (Lassabb, könnyebb menekülni)
+const SPEED = 2;       
+const GHOST_SPEED = 1; 
 const WALL_COLOR = '#C5A059'; 
 const BG_COLOR = '#051f0e';   
-const DOT_COLOR = '#FDFBF7';  
+// const DOT_COLOR = '#FDFBF7'; // Ezt dinamikusan kezeljük a remegésnél
 
 // Pálya definíció
 const RAW_MAP = [
@@ -37,7 +36,7 @@ export default function PacmanGame() {
   const [gameWon, setGameWon] = useState(false);
   const [gameActive, setGameActive] = useState(false);
   
-  // Referenciák a játékciklushoz (Mutable state)
+  // Referenciák a játékciklushoz
   const gameState = useRef({
     map: [],
     player: { x: 9 * TILE_SIZE, y: 12 * TILE_SIZE, dir: {x:0, y:0}, nextDir: {x:0, y:0} },
@@ -53,16 +52,26 @@ export default function PacmanGame() {
   useEffect(() => {
     initGame();
     
-    // Billentyűzet figyelő
     const handleKey = (e) => handleKeyDown(e);
     window.addEventListener('keydown', handleKey);
     
-    // Mobil Touch (Swipe) figyelők
+    // Mobil Touch (Swipe) figyelők - PASSIVE: FALSE a scroll tiltáshoz
+    const canvas = canvasRef.current;
+    
+    // Globális tiltás helyett a canvas-ra rakunk egy "prevent default" listenert
+    const preventScroll = (e) => {
+        if(e.target === canvasRef.current) {
+            e.preventDefault();
+        }
+    };
+    
+    window.addEventListener('touchmove', preventScroll, { passive: false });
     window.addEventListener('touchstart', handleTouchStart, { passive: false });
     window.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     return () => {
       window.removeEventListener('keydown', handleKey);
+      window.removeEventListener('touchmove', preventScroll);
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
@@ -70,14 +79,11 @@ export default function PacmanGame() {
   }, []);
 
   const initGame = () => {
-    // Stop existing loop if any
     if (requestRef.current) cancelAnimationFrame(requestRef.current);
 
     gameState.current.map = JSON.parse(JSON.stringify(RAW_MAP));
-    // Béka kezdőpozíció
     gameState.current.player = { x: 9 * TILE_SIZE, y: 12 * TILE_SIZE, dir: {x:0, y:0}, nextDir: {x:0, y:0} };
     
-    // Szellemek (Szakácsok) kezdőpozíciói
     gameState.current.ghosts = [
       { x: 8 * TILE_SIZE, y: 7 * TILE_SIZE, color: 'red', dir: {x:1, y:0} },
       { x: 9 * TILE_SIZE, y: 7 * TILE_SIZE, color: 'pink', dir: {x:-1, y:0} },
@@ -93,7 +99,6 @@ export default function PacmanGame() {
     if (canvasRef.current) {
         canvasRef.current.width = RAW_MAP[0].length * TILE_SIZE;
         canvasRef.current.height = RAW_MAP.length * TILE_SIZE;
-        // Azonnali első rajzolás
         setTimeout(draw, 50); 
     }
   };
@@ -101,23 +106,19 @@ export default function PacmanGame() {
   const startGameIfNotActive = () => {
     if (!gameActive && !gameOver && !gameWon) {
         setGameActive(true);
-        // Biztos ami biztos, töröljük az előzőt
         if (requestRef.current) cancelAnimationFrame(requestRef.current);
         requestRef.current = requestAnimationFrame(gameLoop);
     }
   };
 
-  // --- INPUT KEZELÉS (DESKTOP) ---
+  // --- INPUT KEZELÉS ---
   const handleKeyDown = (e) => {
     if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
         e.preventDefault();
     }
-
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         startGameIfNotActive();
     }
-
-    // Ha vége a játéknak, ne fogadjon inputot (kivéve restart gomb, ami nem itt van)
     if (gameState.current.gameOver || gameState.current.gameWon) return;
 
     switch(e.key) {
@@ -128,11 +129,14 @@ export default function PacmanGame() {
     }
   };
 
-  // --- INPUT KEZELÉS (MOBIL SWIPE) ---
   let touchStartX = 0;
   let touchStartY = 0;
 
   const handleTouchStart = (e) => {
+      // Ha a canvasra nyomtunk, tiltsuk a scrollt
+      if (e.target === canvasRef.current) {
+          // e.preventDefault(); // Ez néha túl agresszív, a touchmove-nál kezeljük
+      }
       touchStartX = e.changedTouches[0].screenX;
       touchStartY = e.changedTouches[0].screenY;
   };
@@ -156,14 +160,11 @@ export default function PacmanGame() {
       }
   };
 
-  // --- JÁTÉK CIKLUS ---
+  // --- GAME LOOP & UPDATE ---
   const gameLoop = () => {
-    // Ellenőrzés Ref-ből, hogy a legfrissebb állapotot lássuk
     if (gameState.current.gameOver || gameState.current.gameWon) return;
-
     update();
     draw();
-    
     requestRef.current = requestAnimationFrame(gameLoop);
   };
 
@@ -176,44 +177,40 @@ export default function PacmanGame() {
         if (state.powerTimer <= 0) state.powerMode = false;
     }
 
-    // Játékos mozgatása
     movePlayer(state.player, SPEED);
 
-    // Ütközés és evés logika
-    // A játékos középpontja alapján nézzük, hol van
+    // Ütközés
     const pCenter = getCenter(state.player);
     const pRow = Math.round(pCenter.y);
     const pCol = Math.round(pCenter.x);
     
     if (pRow >= 0 && pRow < state.map.length && pCol >= 0 && pCol < state.map[0].length) {
-        // Pici tolerancia, hogy ne kelljen pixelpontosan a közepén lenni az evéshez
         const dist = Math.hypot(state.player.x - pCol * TILE_SIZE, state.player.y - pRow * TILE_SIZE);
         
-        if (dist < 5) { // Ha közel van a csempe közepéhez
+        if (dist < 5) { 
             if (state.map[pRow][pCol] === 0) {
-                state.map[pRow][pCol] = 9; // Megevett
+                state.map[pRow][pCol] = 9; 
                 setScore(s => s + 10);
             } else if (state.map[pRow][pCol] === 2) {
-                state.map[pRow][pCol] = 9; // Megevett powerup
+                state.map[pRow][pCol] = 9; 
                 setScore(s => s + 50);
                 state.powerMode = true;
-                state.powerTimer = 400; // Hosszabb power mode
+                state.powerTimer = 400; 
             }
         }
     }
 
-    // Nyerés ellenőrzése
+    // Win Check
     const hasDots = state.map.some(row => row.includes(0) || row.includes(2));
     if (!hasDots) {
-        state.gameWon = true; // Ref update azonnal
+        state.gameWon = true; 
         setGameWon(true);
         return;
     }
 
-    // Szellemek mozgatása
+    // Ghosts
     state.ghosts.forEach(ghost => {
         const gCenter = getCenter(ghost);
-        // Csak akkor vált irányt, ha pontosan a rács közepén van
         if (isAtCenter(ghost)) {
              const possibleDirs = [];
              const gx = Math.round(gCenter.x);
@@ -224,7 +221,6 @@ export default function PacmanGame() {
              if (!isWall(gy, gx - 1)) possibleDirs.push({x:-1, y:0});
              if (!isWall(gy, gx + 1)) possibleDirs.push({x:1, y:0});
 
-             // Ne forduljon vissza, ha lehet máshova menni
              const forwardDirs = possibleDirs.filter(d => !(d.x === -ghost.dir.x && d.y === -ghost.dir.y));
              
              if (forwardDirs.length > 0) {
@@ -238,16 +234,14 @@ export default function PacmanGame() {
         ghost.x += ghost.dir.x * currentSpeed;
         ghost.y += ghost.dir.y * currentSpeed;
 
-        // Ütközés a játékossal
         const dist = Math.hypot(state.player.x - ghost.x, state.player.y - ghost.y);
         if (dist < TILE_SIZE * 0.8) {
             if (state.powerMode) {
-                // Szellem megeszése -> visszamegy középre
                 ghost.x = 9 * TILE_SIZE;
-                ghost.y = 7 * TILE_SIZE; // Ghost house
+                ghost.y = 7 * TILE_SIZE; 
                 setScore(s => s + 200);
             } else {
-                state.gameOver = true; // Ref update
+                state.gameOver = true;
                 setGameOver(true);
             }
         }
@@ -255,10 +249,6 @@ export default function PacmanGame() {
   };
 
   const movePlayer = (entity, speed) => {
-    // Itt a trükk: Csak akkor engedünk kanyarodni, ha "majdnem" a rácsponton vagyunk.
-    // Mivel a TILE_SIZE = 20 és SPEED = 2, mindig lesz olyan frame, ahol pont 0 a maradék.
-    
-    // Először próbáljuk meg a kanyarodást (nextDir)
     if (entity.nextDir.x !== 0 || entity.nextDir.y !== 0) {
         if (isAtCenter(entity)) {
             const cx = Math.round(entity.x / TILE_SIZE);
@@ -266,22 +256,18 @@ export default function PacmanGame() {
             
             if (!isWall(cy + entity.nextDir.y, cx + entity.nextDir.x)) {
                 entity.dir = entity.nextDir;
-                // Fontos: rácshoz igazítás, hogy ne csússzon el pixelre
                 entity.x = cx * TILE_SIZE;
                 entity.y = cy * TILE_SIZE;
             }
         }
     }
 
-    // Ha falnak menne a jelenlegi iránnyal, álljon meg
     if (isAtCenter(entity)) {
         const cx = Math.round(entity.x / TILE_SIZE);
         const cy = Math.round(entity.y / TILE_SIZE);
         if (isWall(cy + entity.dir.y, cx + entity.dir.x)) {
             entity.x = cx * TILE_SIZE;
             entity.y = cy * TILE_SIZE;
-            // Nem nullázzuk a dir-t teljesen, csak nem adunk hozzá, 
-            // így megáll, de az irány megmarad (animációhoz jó lenne, de most mindegy)
             return; 
         }
     }
@@ -291,13 +277,7 @@ export default function PacmanGame() {
   };
 
   const getCenter = (e) => ({ x: e.x / TILE_SIZE, y: e.y / TILE_SIZE });
-  
-  // Segédfüggvény: pontosan a rács közepén vagyunk-e?
-  const isAtCenter = (e) => {
-      // Mivel a sebesség (2) osztója a méretnek (20), a maradéknak 0-nak kell lennie
-      return (e.x % TILE_SIZE === 0) && (e.y % TILE_SIZE === 0);
-  };
-
+  const isAtCenter = (e) => (e.x % TILE_SIZE === 0) && (e.y % TILE_SIZE === 0);
   const isWall = (row, col) => {
       if (row < 0 || row >= RAW_MAP.length || col < 0 || col >= RAW_MAP[0].length) return true;
       return RAW_MAP[row][col] === 1;
@@ -314,7 +294,10 @@ export default function PacmanGame() {
     ctx.fillStyle = BG_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Pálya
+    // KOCSONYA REMEGÉS EFFEKT (Wobble)
+    const wobble = Math.sin(state.frameCount * 0.15) * 1.5;
+
+    // Pálya rajzolás
     for (let row = 0; row < state.map.length; row++) {
         for (let col = 0; col < state.map[row].length; col++) {
             const tile = state.map[row][col];
@@ -322,15 +305,21 @@ export default function PacmanGame() {
             const y = row * TILE_SIZE;
 
             if (tile === 1) {
-                ctx.strokeStyle = WALL_COLOR;
+                // Ha powerMode van, pulzáljon a fal színe kicsit
+                ctx.strokeStyle = state.powerMode 
+                    ? (state.frameCount % 20 < 10 ? '#E5C079' : WALL_COLOR) 
+                    : WALL_COLOR;
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x + 2, y + 2, TILE_SIZE - 4, TILE_SIZE - 4);
             } else if (tile === 0) {
-                ctx.fillStyle = DOT_COLOR;
+                // Kis kocsonya remeg
+                ctx.fillStyle = '#FDFBF7';
                 ctx.beginPath();
-                ctx.arc(x + TILE_SIZE/2, y + TILE_SIZE/2, 2, 0, Math.PI*2);
+                // Ellipszis ami változik
+                ctx.ellipse(x + TILE_SIZE/2, y + TILE_SIZE/2, 2 + wobble/2, 2 - wobble/2, 0, 0, Math.PI*2);
                 ctx.fill();
             } else if (tile === 2) {
+                // Nagy kocsonya
                 const offset = Math.sin(state.frameCount * 0.2) * 2;
                 ctx.fillStyle = '#aadd77';
                 ctx.beginPath();
@@ -340,76 +329,124 @@ export default function PacmanGame() {
         }
     }
 
-    drawFrog(ctx, state.player.x + TILE_SIZE/2, state.player.y + TILE_SIZE/2, state.player.dir);
+    drawFrog(ctx, state.player.x + TILE_SIZE/2, state.player.y + TILE_SIZE/2, state.player.dir, state.powerMode);
     state.ghosts.forEach(ghost => {
         drawChef(ctx, ghost.x + TILE_SIZE/2, ghost.y + TILE_SIZE/2, ghost.color, state.powerMode);
     });
   };
 
-  const drawFrog = (ctx, x, y, dir) => {
+  const drawFrog = (ctx, x, y, dir, isPowered) => {
+      // Ha "powered", akkor kicsit nagyobb (felfúvódik a kocsonyától)
+      const scale = isPowered ? 1.3 : 1.0;
+      
+      ctx.save();
+      ctx.translate(x, y);
+      
+      // Forgatás az irányba
+      let angle = 0;
+      if (dir.x === 1) angle = 0;
+      if (dir.x === -1) angle = Math.PI;
+      if (dir.y === 1) angle = Math.PI / 2;
+      if (dir.y === -1) angle = -Math.PI / 2;
+      
+      ctx.rotate(angle);
+      ctx.scale(scale, scale);
+
+      // LÁBAK (egyszerű vonalak)
+      ctx.strokeStyle = '#4ade80'; // Béka zöld
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      // Bal hátsó
+      ctx.moveTo(-6, 4); ctx.lineTo(-10, 8);
+      // Jobb hátsó
+      ctx.moveTo(-6, -4); ctx.lineTo(-10, -8);
+      // Bal első
+      ctx.moveTo(4, 4); ctx.lineTo(8, 8);
+      // Jobb első
+      ctx.moveTo(4, -4); ctx.lineTo(8, -8);
+      ctx.stroke();
+
+      // TEST
       ctx.fillStyle = '#4ade80';
       ctx.beginPath();
-      // Kisebb sugár a kisebb tile miatt
-      ctx.arc(x, y, TILE_SIZE/2 - 1, 0, Math.PI*2);
+      ctx.ellipse(0, 0, 7, 6, 0, 0, Math.PI*2);
       ctx.fill();
       
-      // Szemek
+      // SZEMEK
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      // Irány szerinti eltolás
-      const lookX = dir.x * 4;
-      const lookY = dir.y * 4;
-      
-      ctx.arc(x - 4 + lookX, y - 4 + lookY, 3, 0, Math.PI*2);
-      ctx.arc(x + 4 + lookX, y - 4 + lookY, 3, 0, Math.PI*2);
+      ctx.arc(3, -3, 3, 0, Math.PI*2);
+      ctx.arc(3, 3, 3, 0, Math.PI*2);
       ctx.fill();
       
       ctx.fillStyle = 'black';
       ctx.beginPath();
-      ctx.arc(x - 4 + lookX, y - 4 + lookY, 1, 0, Math.PI*2);
-      ctx.arc(x + 4 + lookX, y - 4 + lookY, 1, 0, Math.PI*2);
+      ctx.arc(4, -3, 1, 0, Math.PI*2);
+      ctx.arc(4, 3, 1, 0, Math.PI*2);
       ctx.fill();
+
+      ctx.restore();
   };
 
   const drawChef = (ctx, x, y, color, isScared) => {
-      ctx.fillStyle = isScared ? '#3b82f6' : 'white'; // Sapka színe (fehér, ha nem ijedt)
-      // Sapka
-      ctx.fillRect(x - 5, y - 10, 10, 8);
-      ctx.beginPath();
-      ctx.arc(x, y, 6, 0, Math.PI*2); // Fej
-      ctx.fill();
-      
-      // Arc (Szín)
-      if (!isScared) {
-        ctx.fillStyle = color; // A test/kendő színe az eredeti szellem szín
-        ctx.beginPath();
-        ctx.arc(x, y + 4, 4, 0, Math.PI*2);
-        ctx.fill();
+      let drawX = x;
+      let drawY = y;
+
+      // Ha félnek, reszketnek (random elmozdulás)
+      if (isScared) {
+          drawX += (Math.random() - 0.5) * 2;
+          drawY += (Math.random() - 0.5) * 2;
       }
 
+      ctx.fillStyle = isScared ? '#3b82f6' : 'white'; // Sapka
+      ctx.fillRect(drawX - 5, drawY - 10, 10, 8); // Sapka
+      
+      // Fej
+      if (isScared) {
+        ctx.fillStyle = '#93c5fd'; // Fagyott kék arc
+      } else {
+        ctx.fillStyle = color; // Normál szín
+      }
+      ctx.beginPath();
+      ctx.arc(drawX, drawY, 6, 0, Math.PI*2);
+      ctx.fill();
+      
+      // Szemek
       ctx.fillStyle = 'black';
       ctx.beginPath();
       if (isScared) {
-          ctx.arc(x - 2, y, 1, 0, Math.PI*2);
-          ctx.arc(x + 2, y, 1, 0, Math.PI*2);
+          // Tágra nyílt szemek
+          ctx.arc(drawX - 2, drawY, 1.5, 0, Math.PI*2);
+          ctx.arc(drawX + 2, drawY, 1.5, 0, Math.PI*2);
+          
+          // Hullámos száj (ijedt)
+          ctx.strokeStyle = 'white';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(drawX - 3, drawY + 4);
+          ctx.lineTo(drawX - 1, drawY + 2);
+          ctx.lineTo(drawX + 1, drawY + 4);
+          ctx.lineTo(drawX + 3, drawY + 2);
+          ctx.stroke();
+
       } else {
-          ctx.arc(x - 2, y, 1, 0, Math.PI*2);
-          ctx.arc(x + 2, y, 1, 0, Math.PI*2);
+          ctx.arc(drawX - 2, drawY, 1, 0, Math.PI*2);
+          ctx.arc(drawX + 2, drawY, 1, 0, Math.PI*2);
       }
       ctx.fill();
   };
 
   return (
-    <div className="flex flex-col items-center w-full">
+    <div className="flex flex-col items-center w-full select-none">
       {/* HUD */}
       <div className="flex justify-between w-full max-w-[380px] mb-4 font-serif text-[#C5A059] px-2">
          <div className="text-xl font-bold">SCORE: {score}</div>
-         {!gameActive && !gameOver && !gameWon && <div className="animate-pulse text-sm">INDÍTÁS: NYÍL VAGY HÚZÁS</div>}
+         {!gameActive && !gameOver && !gameWon && <div className="animate-pulse text-sm">INDÍTÁS: ÉRINTÉS / NYÍL</div>}
          {gameOver && <div className="text-red-500 font-bold">VÉGE</div>}
          {gameWon && <div className="text-[#aadd77] font-bold">GYŐZELEM!</div>}
       </div>
 
-      {/* CANVAS KONTÉNER */}
+      {/* CANVAS - touch-action: none a Tailwind-ben + preventDefault JS-ben */}
       <div className="relative w-full flex justify-center px-2">
         <canvas 
             ref={canvasRef} 
@@ -419,7 +456,7 @@ export default function PacmanGame() {
                 height: 'auto',
                 aspectRatio: `${RAW_MAP[0].length}/${RAW_MAP.length}` 
             }}
-            className="shadow-2xl rounded-lg border-4 border-[#387035] bg-[#051f0e] touch-none"
+            className="shadow-2xl rounded-lg border-4 border-[#387035] bg-[#051f0e] touch-none cursor-pointer"
         />
       </div>
 
