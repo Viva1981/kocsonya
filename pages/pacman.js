@@ -6,7 +6,7 @@ import Link from 'next/link';
 // A Canvas komponens dinamikus betöltése (fontos Next.js-nél)
 const PacmanGame = dynamic(() => import('../components/PacmanGame'), {
   ssr: false,
-  loading: () => <p className="text-center text-white p-10">Konyha előkészítése...</p>
+  loading: () => <p className="text-center text-white p-10 font-serif">Konyha előkészítése...</p>
 });
 
 export default function PacmanPage() {
@@ -14,23 +14,20 @@ export default function PacmanPage() {
 
   return (
     <Layout lang={lang} setLang={setLang}>
-      <div className="min-h-screen bg-[#051f0e] -mt-24 pt-32 pb-20 px-4">
+      <div className="min-h-screen bg-[#051f0e] -mt-32 pt-40 pb-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
           
-          {/* CÍMSOR */}
-          <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#C5A059] mb-4">
+          <h1 className="text-4xl sm:text-6xl font-serif font-bold text-[#C5A059] mb-4">
             Kocsonya <span className="text-white">Chase</span>
           </h1>
-          <p className="text-[#aadd77] mb-8 font-light tracking-wide uppercase text-sm">
-            Menekülj a séfek elől • Egyél kocsonyát • Gyűjtsd a fokhagymát
+          <p className="text-[#aadd77] mb-12 font-light tracking-widest uppercase text-xs sm:text-sm opacity-80">
+            A BÉKA MENEKÜL • A SÉFEK ÉHESEK • AZ ÉLMÉNY GARANTÁLT
           </p>
 
-          {/* JÁTÉK TÉR */}
-          <div className="mb-10">
+          <div className="mb-12">
             <PacmanGame />
           </div>
 
-          {/* NAVIGÁCIÓ */}
           <div className="flex justify-center gap-6">
             <Link 
               href="/" 
@@ -38,10 +35,6 @@ export default function PacmanPage() {
             >
               Vissza a Főoldalra
             </Link>
-          </div>
-
-          <div className="mt-12 opacity-30 text-xs text-white font-serif">
-            Használd a nyilakat az irányításhoz (Hamarosan...)
           </div>
 
         </div>

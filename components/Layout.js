@@ -1,8 +1,36 @@
 import Head from "next/head";
 import Link from "next/link";
-import Script from "next/script"; // --- ÚJ IMPORT ---
+import Script from "next/script";
+import { useRouter } from 'next/router'; // Router importálása
+import { useState, useEffect } from 'react'; // State importálása
 
 export default function Layout({ children, lang, setLang }) {
+  const router = useRouter();
+
+  // --- EASTER EGG LOGIKA (TITKOS KAPU) ---
+  const [secretClicks, setSecretClicks] = useState(0);
+
+  useEffect(() => {
+    // Ha 2 másodpercig nem kattint, nullázzuk a számlálót
+    const timer = setTimeout(() => setSecretClicks(0), 2000);
+    return () => clearTimeout(timer);
+  }, [secretClicks]);
+
+  const handleSecretTrigger = () => {
+    const newCount = secretClicks + 1;
+    setSecretClicks(newCount);
+    
+    // Opcionális: Konzol üzenet teszteléshez
+    if (newCount === 3) console.log("...valami mocorog a kocsonyában...");
+
+    if (newCount >= 5) {
+      // 5. kattintásra átirányítás a játékra
+      router.push('/pacman');
+      setSecretClicks(0);
+    }
+  };
+  // ----------------------------------------
+
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#FDFBF7] text-slate-800">
       <Head>
@@ -11,23 +39,18 @@ export default function Layout({ children, lang, setLang }) {
         <meta name="description" content="KocsonyaÚtlevél 2026: A miskolci kocsonya az asztalhoz ül. Fedezd fel a Kocsonyafesztivál legjobb éttermeit Miskolcon, gyűjtsd a pecséteket és nyerj!" />
         <meta name="keywords" content="Kocsonyafesztivál, Kocsonya, KocsonyaÚtlevél, Miskolc, A kocsonya az asztalhoz ül, gasztronómia, fesztivál" />
         
-        {/* Open Graph / Facebook SEO */}
         <meta property="og:title" content="KocsonyaÚtlevél 2026" />
         <meta property="og:description" content="A miskolci kocsonya az asztalhoz ül. Vegyél részt a játékban!" />
         <meta property="og:type" content="website" />
         
-        {/* --- FAVICON BEÁLLÍTÁSOK --- */}
         <link rel="icon" href="/kocsonya/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/kocsonya/favicon.ico" />
       </Head>
 
-      {/* --- GOOGLE ANALYTICS (G-VRLENCLSF5) --- */}
-      {/* 1. A külső script betöltése */}
       <Script 
         src="https://www.googletagmanager.com/gtag/js?id=G-VRLENCLSF5" 
         strategy="afterInteractive" 
       />
-      {/* 2. A konfigurációs kód futtatása */}
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
@@ -38,11 +61,9 @@ export default function Layout({ children, lang, setLang }) {
         `}
       </Script>
 
-      {/* --- FEJLÉC (FIXED & MODERN) --- */}
       <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-300">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 h-24 flex items-center justify-between">
           
-          {/* Logó / Főcím */}
           <Link href="/" className="group flex flex-col items-start">
             <span className="font-serif font-bold text-2xl sm:text-3xl text-[#387035] leading-none group-hover:opacity-90 transition-opacity">
               {lang === 'hu' ? 'KocsonyaÚtlevél' : 'AspicPass'}
@@ -52,7 +73,6 @@ export default function Layout({ children, lang, setLang }) {
             </span>
           </Link>
 
-          {/* Navigáció és Nyelvválasztó */}
           <div className="flex items-center gap-6 sm:gap-10">
             <nav className="hidden md:flex items-center gap-8">
               <a 
@@ -61,7 +81,6 @@ export default function Layout({ children, lang, setLang }) {
               >
                 {lang === 'hu' ? 'Éttermek' : 'Restaurants'}
               </a>
-              {/* Kiemelt CTA Gomb a menüben */}
               <Link 
                 href="/feltoltes" 
                 className="text-xs font-bold uppercase tracking-[0.15em] bg-[#387035] text-white px-6 py-3 rounded-full hover:bg-[#2a5528] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
@@ -70,7 +89,6 @@ export default function Layout({ children, lang, setLang }) {
               </Link>
             </nav>
 
-            {/* Nyelvválasztó - Kapszula stílus */}
             <div className="flex items-center bg-white border border-slate-200 rounded-full p-1 shadow-sm">
               <button
                 onClick={() => setLang("hu")}
@@ -97,16 +115,18 @@ export default function Layout({ children, lang, setLang }) {
         </div>
       </header>
 
-      {/* --- FŐ TARTALOM --- */}
       <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 pt-32 pb-16">
         {children}
       </main>
 
-      {/* --- LÁBLÉC --- */}
       <footer className="bg-[#1a1a1a] text-slate-400 py-16 mt-auto">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="mb-8">
-             <span className="font-serif text-2xl text-slate-600 font-bold opacity-30">
+          <div className="mb-8 select-none">
+             {/* A TITKOS GOMB */}
+             <span 
+               onClick={handleSecretTrigger}
+               className="font-serif text-2xl text-slate-600 font-bold opacity-30 cursor-pointer hover:text-[#387035] hover:opacity-100 transition-all duration-300 active:scale-95 inline-block"
+             >
                {lang === 'hu' ? 'KocsonyaÚtlevél' : 'AspicPass'}
              </span>
           </div>
@@ -123,7 +143,6 @@ export default function Layout({ children, lang, setLang }) {
             </Link>
           </div>
           
-          {/* Powered by TripLog */}
           <div className="mt-10 pt-6 border-t border-white/5">
             <a 
               href="https://www.triplog.hu/" 
