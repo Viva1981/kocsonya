@@ -2,7 +2,7 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
-// --- SVG IKONOK (A zöld szekcióhoz) ---
+// --- SVG IKONOK ---
 const IconMeal = () => (
   <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <circle cx="12" cy="12" r="9" strokeWidth={1.2} />
@@ -60,7 +60,6 @@ const FORM_TEXTS = {
     loading: "Küldés folyamatban...",
     successTitle: "Sikeres feltöltés!",
     successText: "Köszönjük a játékot! A fotódat megkaptuk. Reméljük, ízlett a miskolci kocsonya! Sok szerencsét a sorsoláshoz.",
-    // ÚJ RÉSZEK A ZÖLD SZEKCIÓHOZ:
     rules: {
       title: "Kocsonyából élmény!",
       subtitle: "Vegyél részt a KocsonyaÚtlevél nyereményjátékban!",
@@ -92,7 +91,6 @@ const FORM_TEXTS = {
     loading: "Sending...",
     successTitle: "Upload Successful!",
     successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc aspic! Good luck with the draw.",
-    // ÚJ RÉSZEK A ZÖLD SZEKCIÓHOZ (ANGOL):
     rules: {
       title: "Make an experience out of Aspic!",
       subtitle: "Participate in the AspicPass prize game!",
@@ -122,13 +120,13 @@ export default function UploadPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Függvény az oldal tetejére ugráshoz (a zöld szekció gombjához)
-  const scrollToTop = (e) => {
+  // Gördítés az űrlaphoz
+  const scrollToForm = (e) => {
     e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    const formElement = document.getElementById("upload-form");
+    if (formElement) {
+      formElement.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   async function onSubmit(e) {
@@ -185,8 +183,55 @@ export default function UploadPage() {
     <Layout lang={lang} setLang={setLang}>
       <GlobalStyles />
       
-      {/* --- FORM SZEKCIÓ --- */}
-      <section className="max-w-2xl mx-auto rounded-[2.5rem] border border-slate-100 bg-white soft-shadow overflow-hidden mb-24">
+      {/* --- 1. SZEKCIÓ: ZÖLD INFORMÁCIÓS RÉSZ (FELÜL) --- */}
+      <section className="mb-16 mt-8 px-4 sm:px-6">
+        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div>
+              <h2 className="text-4xl font-serif font-bold mb-2">{t.rules.title}</h2>
+              <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
+              
+              <div className="space-y-8">
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconMeal /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconBook /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
+              </div>
+              <div className="mt-12">
+                {/* A gomb lefelé görget az űrlaphoz */}
+                <a 
+                  href="#upload-form"
+                  onClick={scrollToForm}
+                  className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl"
+                >
+                  {t.rules.cta}
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
+              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-4">{t.prizes.title}</h3>
+              <p className="text-white/80 mb-6 text-sm">{t.prizes.desc}</p>
+              <ul className="space-y-5 text-white">
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item1}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item2}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item3}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* --- 2. SZEKCIÓ: FORM RÉSZ (ALUL) --- */}
+      <section id="upload-form" className="max-w-2xl mx-auto rounded-[2.5rem] border border-slate-100 bg-white soft-shadow overflow-hidden mb-24 scroll-mt-12">
         
         {/* Header */}
         <div className="bg-[#387035] px-8 py-10 sm:px-12 text-center relative overflow-hidden">
@@ -325,53 +370,6 @@ export default function UploadPage() {
               </div>
             </form>
           )}
-        </div>
-      </section>
-
-      {/* --- ÚJ ZÖLD SZEKCIÓ (BEILLESZTVE A FORM ALÁ) --- */}
-      <section className="mb-24 px-4 sm:px-6">
-        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20 max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-            <div>
-              <h2 className="text-4xl font-serif font-bold mb-2">{t.rules.title}</h2>
-              <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
-              
-              <div className="space-y-8">
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconMeal /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconBook /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
-                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
-              </div>
-              <div className="mt-12">
-                {/* A gomb itt felfelé görget az űrlaphoz, mivel már ezen az oldalon vagyunk */}
-                <a 
-                  href="#" 
-                  onClick={scrollToTop}
-                  className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl"
-                >
-                  {t.rules.cta}
-                </a>
-              </div>
-            </div>
-
-            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
-              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-4">{t.prizes.title}</h3>
-              <p className="text-white/80 mb-6 text-sm">{t.prizes.desc}</p>
-              <ul className="space-y-5 text-white">
-                <li className="flex items-start gap-3">
-                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
-                    <span className="text-base leading-relaxed">{t.prizes.item1}</span>
-                </li>
-                <li className="flex items-start gap-3">
-                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
-                    <span className="text-base leading-relaxed">{t.prizes.item2}</span>
-                </li>
-                <li className="flex items-start gap-3">
-                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
-                    <span className="text-base leading-relaxed">{t.prizes.item3}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 
