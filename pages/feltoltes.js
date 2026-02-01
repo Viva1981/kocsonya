@@ -2,6 +2,28 @@ import { useState } from "react";
 import Layout from "../components/Layout";
 import { useLanguage } from "../components/useLanguage";
 
+// --- SVG IKONOK (A zöld szekcióhoz) ---
+const IconMeal = () => (
+  <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <circle cx="12" cy="12" r="9" strokeWidth={1.2} />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M8 7v3M7 7v2.5a1 1 0 002 0V7M8 10v7" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M16 7v10M16 7a2 2 0 012 2v3a2 2 0 01-2 2" />
+  </svg>
+);
+
+const IconBook = () => (
+  <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+  </svg>
+);
+
+const IconCamera = () => (
+  <svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+  </svg>
+);
+
 // --- STÍLUS ÉS BETŰTÍPUS ---
 const GlobalStyles = () => (
   <style jsx global>{`
@@ -10,8 +32,9 @@ const GlobalStyles = () => (
     body {
       font-family: 'DM Sans', sans-serif;
       background-color: #FDFBF7;
+      scroll-behavior: smooth;
     }
-    h1, h2, h3, .font-serif {
+    h1, h2, h3, h4, .font-serif {
       font-family: 'Playfair Display', serif;
     }
     .soft-shadow {
@@ -36,7 +59,23 @@ const FORM_TEXTS = {
     submit: "Beküldés és játék",
     loading: "Küldés folyamatban...",
     successTitle: "Sikeres feltöltés!",
-    successText: "Köszönjük a játékot! A fotódat megkaptuk. Reméljük, ízlett a miskolci kocsonya! Sok szerencsét a sorsoláshoz."
+    successText: "Köszönjük a játékot! A fotódat megkaptuk. Reméljük, ízlett a miskolci kocsonya! Sok szerencsét a sorsoláshoz.",
+    // ÚJ RÉSZEK A ZÖLD SZEKCIÓHOZ:
+    rules: {
+      title: "Kocsonyából élmény!",
+      subtitle: "Vegyél részt a KocsonyaÚtlevél nyereményjátékban!",
+      step1: "Kóstolj kocsonyát legalább három különböző helyen Miskolcon!",
+      step2: "Gyűjts legalább három pecsétet a KocsonyaÚtleveledbe!",
+      step3: "Fotózd le a lepecsételt oldalt, és töltsd fel!",
+      cta: "FOTÓ FELTÖLTÉSE MOST"
+    },
+    prizes: {
+      title: "Nyerd meg a három nyeremény egyikét!",
+      desc: "A három nyeremény minden esetben tartalmaz:",
+      item1: "Szállást két fő részére két éjszakára (Belvárosi Luxusapartman, Bükk Penthouse, Lillafüredi Hotel Palota)",
+      item2: "Az élményhétvégére teljes ellátást: két reggelit, két ebédet és két vacsorát válogatott miskolci éttermekben.",
+      item3: "Két Miskolc Pass-t a Visit Miskolc jóvoltából, amellyel felfedezheted a város attrakcióit."
+    }
   },
   en: {
     title: "Upload AspicPass",
@@ -52,7 +91,23 @@ const FORM_TEXTS = {
     submit: "Submit & Play",
     loading: "Sending...",
     successTitle: "Upload Successful!",
-    successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc aspic! Good luck with the draw."
+    successText: "Thank you for playing! We received your photo. We hope you enjoyed the Miskolc aspic! Good luck with the draw.",
+    // ÚJ RÉSZEK A ZÖLD SZEKCIÓHOZ (ANGOL):
+    rules: {
+      title: "Make an experience out of Aspic!",
+      subtitle: "Participate in the AspicPass prize game!",
+      step1: "Taste aspic in at least three different places in Miskolc!",
+      step2: "Collect at least three stamps in your AspicPass!",
+      step3: "Take a photo and upload it!",
+      cta: "UPLOAD PHOTO NOW"
+    },
+    prizes: {
+      title: "Win one of the three prizes!",
+      desc: "The three prizes always include:",
+      item1: "Accommodation for two people for two nights in Miskolc (Downtown Luxury Apartment, Bükk Penthouse, Lillafüred Hotel Palota)",
+      item2: "Full board for the experience weekend: two breakfasts, two lunches, and two dinners at selected restaurants.",
+      item3: "Two Miskolc Passes courtesy of Visit Miskolc to discover the city's attractions."
+    }
   }
 };
 
@@ -66,6 +121,15 @@ export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Függvény az oldal tetejére ugráshoz (a zöld szekció gombjához)
+  const scrollToTop = (e) => {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -120,7 +184,9 @@ export default function UploadPage() {
   return (
     <Layout lang={lang} setLang={setLang}>
       <GlobalStyles />
-      <section className="max-w-2xl mx-auto rounded-[2.5rem] border border-slate-100 bg-white soft-shadow overflow-hidden mb-12">
+      
+      {/* --- FORM SZEKCIÓ --- */}
+      <section className="max-w-2xl mx-auto rounded-[2.5rem] border border-slate-100 bg-white soft-shadow overflow-hidden mb-24">
         
         {/* Header */}
         <div className="bg-[#387035] px-8 py-10 sm:px-12 text-center relative overflow-hidden">
@@ -261,6 +327,54 @@ export default function UploadPage() {
           )}
         </div>
       </section>
+
+      {/* --- ÚJ ZÖLD SZEKCIÓ (BEILLESZTVE A FORM ALÁ) --- */}
+      <section className="mb-24 px-4 sm:px-6">
+        <div className="bg-[#387035] rounded-[2.5rem] p-8 sm:p-16 text-white shadow-2xl shadow-green-900/20 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div>
+              <h2 className="text-4xl font-serif font-bold mb-2">{t.rules.title}</h2>
+              <p className="text-[#aadd77] text-xl font-medium mb-10">{t.rules.subtitle}</p>
+              
+              <div className="space-y-8">
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconMeal /></div><div><h4 className="font-bold text-xl mb-1">1.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step1}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconBook /></div><div><h4 className="font-bold text-xl mb-1">2.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step2}</p></div></div>
+                <div className="flex items-start gap-6"><div className="p-4 bg-white/10 rounded-2xl text-[#aadd77] backdrop-blur-sm"><IconCamera /></div><div><h4 className="font-bold text-xl mb-1">3.</h4><p className="text-green-100 text-base leading-relaxed opacity-90">{t.rules.step3}</p></div></div>
+              </div>
+              <div className="mt-12">
+                {/* A gomb itt felfelé görget az űrlaphoz, mivel már ezen az oldalon vagyunk */}
+                <a 
+                  href="#" 
+                  onClick={scrollToTop}
+                  className="inline-block w-full sm:w-auto text-center bg-white text-[#387035] hover:bg-green-50 font-bold text-sm uppercase tracking-[0.1em] py-4 px-10 rounded-full transition-all shadow-lg hover:shadow-xl"
+                >
+                  {t.rules.cta}
+                </a>
+              </div>
+            </div>
+
+            <div className="bg-white/10 border border-white/10 rounded-3xl p-8 sm:p-10 backdrop-blur-md">
+              <h3 className="text-2xl font-serif font-bold text-[#aadd77] mb-4">{t.prizes.title}</h3>
+              <p className="text-white/80 mb-6 text-sm">{t.prizes.desc}</p>
+              <ul className="space-y-5 text-white">
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item1}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item2}</span>
+                </li>
+                <li className="flex items-start gap-3">
+                    <span className="text-[#aadd77] text-xl mt-1">★</span> 
+                    <span className="text-base leading-relaxed">{t.prizes.item3}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </Layout>
   );
 }
