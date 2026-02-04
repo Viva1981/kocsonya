@@ -52,7 +52,9 @@ export default function AdminPage() {
                 if (i === 1) key = "name";      // B oszlop: Név
                 if (i === 2) key = "address";   // C oszlop: Cím
                 if (i === 3) key = "phone";     // D oszlop: Telefonszám
-                if (i === 5) key = "imageUrl";  // F oszlop: Drive link
+                if (i === 5) key = "imageUrl1"; // Drive link 1
+                if (i === 7) key = "imageUrl2"; // Drive link 2
+
              } else {
                 // --- ÉTTERMEK ---
                 if (rawKey === "nev") key = "name";
@@ -143,7 +145,7 @@ export default function AdminPage() {
                     <th className="p-6">Név</th>
                     <th className="p-6 text-center">Cím</th>
                     <th className="p-6">Telefon</th>
-                    <th className="p-6 text-center">Fotó</th>
+                    <th className="p-6 text-center">Fotók</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y text-slate-700">
@@ -153,13 +155,32 @@ export default function AdminPage() {
                       <td className="p-6 font-bold">{s.name}</td>
                       <td className="p-6 text-sm text-slate-500 text-center">{s.address}</td>
                       <td className="p-6 text-sm font-medium text-[#387035]">{s.phone}</td>
-                      <td className="p-6 flex justify-center">
-                        {s.imageUrl ? (
-                           <a href={s.imageUrl} target="_blank" rel="noopener noreferrer">
-                              <img src={getImg(s.imageUrl)} className="w-16 h-16 object-cover rounded-lg border shadow-sm" />
-                           </a>
-                        ) : <span className="text-[10px] text-slate-300">Nincs kép</span>}
-                      </td>
+                      <td className="p-6">
+  <div className="flex gap-3 justify-center">
+    {s.imageUrl1 && (
+      <a href={s.imageUrl1} target="_blank" rel="noopener noreferrer">
+        <img
+          src={getImg(s.imageUrl1)}
+          className="w-16 h-16 object-cover rounded-lg border shadow-sm"
+        />
+      </a>
+    )}
+
+    {s.imageUrl2 && (
+      <a href={s.imageUrl2} target="_blank" rel="noopener noreferrer">
+        <img
+          src={getImg(s.imageUrl2)}
+          className="w-16 h-16 object-cover rounded-lg border shadow-sm"
+        />
+      </a>
+    )}
+
+    {!s.imageUrl1 && !s.imageUrl2 && (
+      <span className="text-[10px] text-slate-300">Nincs kép</span>
+    )}
+  </div>
+</td>
+
                     </tr>
                   ))}
                 </tbody>
