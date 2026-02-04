@@ -180,7 +180,7 @@ export default function UploadPage() {
       };
 
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbxOzy93QkZghcHsl3Vxsk_MOeqzPyvf4YLJsAH7PZL__YUTzmvTgO0KUc01Q9UwKqOJ/exec",
+        "https://script.google.com/macros/s/AKfycbzibfUN1q6SHIyC9_3n1jlRRdaErnn2CPKVLHyog7c_AcGUS4GzYJc9nweUPDgvt1z4/exec",
         {
           method: "POST",
           body: new URLSearchParams({
