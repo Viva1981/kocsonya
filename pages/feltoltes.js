@@ -179,15 +179,16 @@ export default function UploadPage() {
         files: encoded, // <= ÚJ
       };
 
-      const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbwb9pNmcfO1G-Ylt_GLEpTh7ac8_lMSo_lcjVwBJBf9YD5rpAUjEiw8z7-tVPz1VE0zdg/exec,
-        {
-          method: "POST",
-          body: new URLSearchParams({
-            data: JSON.stringify(payload),
-          }),
-        }
-      );
+     const res = await fetch(
+  "https://script.google.com/macros/s/AKfycbwb9pNmcfO1G-Ylt_GLEpTh7ac8_lMSo_lcjVwBJBf9YD5rpAUjEiw8z7-tVPz1VE0zdg/exec",
+  {
+    method: "POST",
+    body: new URLSearchParams({
+      data: JSON.stringify(payload),
+    }),
+  }
+);
+
 
       // ha a script nem JSON-t ad vissza, ez hibázna – de nálad eddig működött, szóval marad
       await res.json();
