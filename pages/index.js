@@ -36,6 +36,12 @@ const GlobalStyles = () => (
     .gm-style-iw-ch, .gm-ui-header-button, button[aria-label="Close"] {
       display: none !important;
     }
+    
+    /* Új animáció a játék gombhoz */
+    .game-btn-hover:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
   `}</style>
 );
 
@@ -45,7 +51,7 @@ const IconBook = () => (<svg className="w-8 h-8 text-[#77b92b]" fill="none" view
 const IconCamera = () => (<svg className="w-8 h-8 text-[#77b92b]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><circle cx="12" cy="13" r="3" strokeWidth={1.5} /></svg>);
 const IconMap = () => (<svg className="w-4 h-4 mr-1 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>);
 
-// --- SZÓTÁR (Minden elem átmentve) ---
+// --- SZÓTÁR (Minden elem átmentve + ÚJ JÁTÉK RÉSZ) ---
 const TRANSLATIONS = {
   hu: {
     hero: { title1: "A miskolci kocsonya", title2: "az asztalhoz ül.", subtitle: "Ha Miskolcra érkezel, van egy étel, amit nem lehet kihagyni. Ez a Bükk városának ikonikus fogása: a miskolci kocsonya.", cta_primary: "Játék és Feltöltés", cta_secondary: "Étteremlista" },
@@ -56,7 +62,8 @@ const TRANSLATIONS = {
     rules: { title: "Kocsonyából élmény!", subtitle: "Vegyél részt a KocsonyaÚtlevél nyereményjátékban!", step1: "Kóstolj kocsonyát legalább három különböző helyen Miskolcon!", step2: "Gyűjts legalább három pecsétet a KocsonyaÚtleveledbe!", step3: "Fotózd le a lepecsételt oldalt, és töltsd fel!", cta: "FOTÓ FELTÖLTÉSE MOST" },
     prizes: { title: "Nyerd meg a három nyeremény egyikét!", desc: "A három nyeremény minden esetben tartalmaz:", item1: "Szállást két fő részére két éjszakára (Belvárosi Luxusapartman, Bükk Penthouse, Lillafüredi Hotel Palota)", item2: "Az élményhétvégére teljes ellátást: két reggelit, két ebédet és két vacsorát válogatott miskolci éttermekben.", item3: "Két Miskolc Pass-t a Visit Miskolc jóvoltából, amellyel felfedezheted a város attrakcióit." },
     organizers: { title: "Akik mögötte állnak", p1: "„A miskolci kocsonya az asztalhoz ül” a miskolci vendéglátók közös ügye.", p2: "Az önszerveződő projekt a helyi éttermek, a Visit Miskolc és a Bükki Kör együttműködésével jött létre, azzal a céllal, hogy Miskolc gasztronómiáját megmutassa és élménnyé formálja." },
-    footer_cta: { title: "Indulhatunk?", subtitle: "A miskolci kocsonya az asztalhoz ül. Te is?", btn: "CSATLAKOZOM A JÁTÉKHOZ" }
+    footer_cta: { title: "Indulhatunk?", subtitle: "A miskolci kocsonya az asztalhoz ül. Te is?", btn: "CSATLAKOZOM A JÁTÉKHOZ" },
+    game_promo: { text: "Már csak egy kérdés maradt: A BÉKA VAGY A SÉFEK NYERNEK?" }
   },
   en: {
     hero: { title1: "Miskolc Aspic comes", title2: "to the table.", subtitle: "If you arrive in Miskolc, there is one dish you cannot miss. This is the iconic dish of the city of Bükk: the aspic.", cta_primary: "Play & Upload", cta_secondary: "Restaurant List" },
@@ -67,7 +74,8 @@ const TRANSLATIONS = {
     rules: { title: "Make an experience out of Aspic!", subtitle: "Participate in the AspicPass prize game!", step1: "Taste aspic in at least three different places in Miskolc!", step2: "Collect at least three stamps in your AspicPass!", step3: "Take a photo and upload it!", cta: "UPLOAD PHOTO NOW" },
     prizes: { title: "Win one of the three prizes!", desc: "The three prizes always include:", item1: "Accommodation for two people for two nights in Miskolc (Downtown Luxury Apartment, Bükk Penthouse, Lillafüred Hotel Palota)", item2: "Full board for the experience weekend: two breakfasts, two lunches, and two dinners at selected restaurants.", item3: "Two Miskolc Passes courtesy of Visit Miskolc to discover the city's attractions." },
     organizers: { title: "The People Behind It", p1: "“Miskolc Aspic takes a seat at the table” is the common cause of Miskolc caterers.", p2: "The self-organized project was created in cooperation with local restaurants, Visit Miskolc, and the Bükk Circle." },
-    footer_cta: { title: "Shall we start?", subtitle: "The Aspic takes a seat. Will you?", btn: "JOIN THE GAME" }
+    footer_cta: { title: "Shall we start?", subtitle: "The Aspic takes a seat. Will you?", btn: "JOIN THE GAME" },
+    game_promo: { text: "Only one question remains: DO THE FROG OR THE CHEFS WIN?" }
   }
 };
 
@@ -273,6 +281,23 @@ export default function HomePage() {
               <li>★ {t.prizes.item3}</li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ÚJ JÁTÉK SZEKCIÓ */}
+      <section className="mb-24 px-4 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#387035] mb-8 uppercase tracking-wide">
+            {t.game_promo.text}
+          </h2>
+          <a href="https://www.kocsonyautlevel.hu/kocsonya/pacman" className="inline-block game-btn-hover">
+            {/* Feltételezve, hogy a game.png a public/kocsonya mappában van */}
+            <img 
+              src="/kocsonya/game.png" 
+              alt="Játék indítása" 
+              className="h-32 md:h-40 w-auto mx-auto drop-shadow-xl" 
+            />
+          </a>
         </div>
       </section>
 
