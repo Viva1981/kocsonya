@@ -129,7 +129,7 @@ const RestaurantCard = ({ restaurant, lang, isAutoFlipped }) => {
                 <div key={i}>
                   <div className="flex justify-between items-baseline mb-1">
                     <span className="font-bold text-slate-900">{lang === 'hu' ? m.nameHu : m.nameEn}</span>
-                    {m.price && <span className="text-xs font-bold bg-[#f4f9f2] text-[#2F5E2B] px-2 py-1 rounded-full">{m.price} Ft</span>}
+                    {m.price && <span className="text-xs font-bold bg-[#f4f9f2] text-[#2F5E2B] px-2 py-1 rounded-full">{m.price} </span>}
                   </div>
                   <p className="text-sm text-slate-600 italic">{lang === 'hu' ? m.descHu : m.descEn}</p>
                 </div>
